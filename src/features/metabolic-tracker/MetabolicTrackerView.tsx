@@ -9,6 +9,7 @@ interface MetabolicTrackerViewProps {
   gender: 'male' | 'female'
   paf: string
   caloricTarget: CaloricTargetOutput | null
+  profileError: string | null
   setWeight: (v: string) => void
   setHeight: (v: string) => void
   setAge: (v: string) => void
@@ -20,6 +21,7 @@ interface MetabolicTrackerViewProps {
 export function MetabolicTrackerView({
   weight, height, age, gender, paf,
   caloricTarget,
+  profileError,
   setWeight, setHeight, setAge, setGender, setPaf,
   onCalculate,
 }: MetabolicTrackerViewProps) {
@@ -66,6 +68,12 @@ export function MetabolicTrackerView({
           Calcular perfil
         </PrimaryButton>
       </form>
+
+      {profileError && (
+        <p className="text-red-600 text-sm font-medium" role="alert">
+          {profileError}
+        </p>
+      )}
 
       {caloricTarget && (
         <div className="grid grid-cols-2 gap-3" aria-label="Resultados del perfil metabólico" aria-live="polite">

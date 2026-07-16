@@ -4,7 +4,7 @@ import type { FormEvent } from 'react'
 
 export function MetabolicTrackerContainer() {
   const {
-    weight, height, age, gender, paf, caloricTarget,
+    weight, height, age, gender, paf, caloricTarget, profileError,
     setWeight, setHeight, setAge, setGender, setPaf, calculateTarget,
   } = useTrackerStore()
 
@@ -27,6 +27,7 @@ export function MetabolicTrackerContainer() {
       setGender={setGender}
       setPaf={setPaf}
       onCalculate={handleCalculate}
+      profileError={profileError}
     />
   )
 }

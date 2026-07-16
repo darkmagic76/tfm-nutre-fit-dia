@@ -16,6 +16,7 @@ interface TrackerState {
   paf: string
   caloricTarget: CaloricTargetOutput | null
   restrictionActive: boolean
+  profileError: string | null
 
   setWeight: (v: string) => void
   setHeight: (v: string) => void
@@ -34,6 +35,7 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
   paf: '1.2',
   caloricTarget: null,
   restrictionActive: false,
+  profileError: null,
 
   setWeight: v => set({ weight: v }),
   setHeight: v => set({ height: v }),
@@ -51,7 +53,10 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
     const h = sanitizeNumeric(height, 250, 100)
     const a = sanitizeNumeric(age, 120, 18)
     const p = sanitizeNumeric(paf, 2.5, 1.0)
-    if (!w || !h) return
+    if (!w || !h) {
+      set({ profileError: 'Peso y altura son obligatorios para calcular el objetivo calórico' })
+      return
+    }
     const imc = computeIMC(w, h)
     const target = computeCaloricTarget({
       weight: w,
@@ -61,6 +66,6 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
       physicalActivityFactor: p || 1.2,
       imc,
     })
-    set({ caloricTarget: target, restrictionActive: target.restrictionActive })
+    set({ caloricTarget: target, restrictionActive: target.restrictionActive, profileError: null })
   },
 }))
