@@ -102,6 +102,43 @@ export function countRations(entries: Food[]): CountByCategory {
   return counts
 }
 
+function checkCategoryLimits(
+  counts: CountByCategory,
+  category: FoodCategoryType,
+  limit: RationLimit,
+  options?: { effectiveMax?: number },
+): RationViolation[] {
+  const violations: RationViolation[] = []
+  const current = counts[category]
+  const unit = limit.unit
+  const suffix = unit === 'day' ? 'día' : 'semana'
+  const effectiveMax = options?.effectiveMax ?? limit.max
+
+  if (effectiveMax !== undefined && current > effectiveMax) {
+    violations.push({
+      category,
+      current,
+      limit: effectiveMax,
+      direction: 'over',
+      unit,
+      message: `${category}: ${current} raciones (máx ${effectiveMax}/${suffix})`,
+    })
+  }
+
+  if (limit.min !== undefined && current < limit.min) {
+    violations.push({
+      category,
+      current,
+      limit: limit.min,
+      direction: 'under',
+      unit,
+      message: `${category}: ${current} raciones (mín ${limit.min}/${suffix})`,
+    })
+  }
+
+  return violations
+}
+
 /** Validate daily ration counts against INFORME_ADR limits */
 export function validateRations(
   counts: CountByCategory,
@@ -110,39 +147,14 @@ export function validateRations(
   const violations: RationViolation[] = []
 
   for (const [category, limit] of Object.entries(RATION_LIMITS) as [FoodCategoryType, RationLimit][]) {
-    const current = counts[category]
-
-    // Only validate daily limits here. Weekly limits are validated separately.
     if (limit.unit !== 'day') continue
 
-    // Max constraint
     let effectiveMax = limit.max
     if (limit.restrictOnCaloricDeficit && restrictionActive) {
-      effectiveMax = 4 // Cereals: max 4 when restriction active
+      effectiveMax = 4
     }
 
-    if (effectiveMax !== undefined && current > effectiveMax) {
-      violations.push({
-        category,
-        current,
-        limit: effectiveMax,
-        direction: 'over',
-        unit: 'day',
-        message: `${category}: ${current} raciones (máx ${effectiveMax}/día)`,
-      })
-    }
-
-    // Min constraint
-    if (limit.min !== undefined && current < limit.min) {
-      violations.push({
-        category,
-        current,
-        limit: limit.min,
-        direction: 'under',
-        unit: 'day',
-        message: `${category}: ${current} raciones (mín ${limit.min}/día)`,
-      })
-    }
+    violations.push(...checkCategoryLimits(counts, category, limit, { effectiveMax }))
   }
 
   const animalProteinCount = ANIMAL_PROTEIN_CATEGORIES.reduce(
@@ -164,33 +176,9 @@ export function validateWeeklyRations(counts: CountByCategory): ValidationResult
   ]
 
   for (const category of weeklyCategories) {
-    const limit = RATION_LIMITS[category]
-    const current = counts[category]
-
-    if (limit.min !== undefined && current < limit.min) {
-      violations.push({
-        category,
-        current,
-        limit: limit.min,
-        direction: 'under',
-        unit: 'week',
-        message: `${category}: ${current} raciones (mín ${limit.min}/semana)`,
-      })
-    }
-
-    if (limit.max !== undefined && current > limit.max) {
-      violations.push({
-        category,
-        current,
-        limit: limit.max,
-        direction: 'over',
-        unit: 'week',
-        message: `${category}: ${current} raciones (máx ${limit.max}/semana)`,
-      })
-    }
+    violations.push(...checkCategoryLimits(counts, category, RATION_LIMITS[category]))
   }
 
-  // Cross-rule: white meat restricted if fish exceeded (INFORME_ADR FR-2: Carnes Blancas LIMIT)
   const fishMax = RATION_LIMITS[FoodCategory.FISH].max
   if (counts[FoodCategory.WHITE_MEAT] > 0 && fishMax !== undefined && counts[FoodCategory.FISH] > fishMax) {
     violations.push({
