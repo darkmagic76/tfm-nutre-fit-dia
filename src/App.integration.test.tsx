@@ -1,21 +1,56 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import {
+  describe,
+  it,
+  expect,
+  beforeEach
+} from 'vitest'
+
+import {
+  render,
+  screen,
+  fireEvent
+} from '@testing-library/react'
+
 import App from './App'
 
 describe('App integration', () => {
   beforeEach(() => {
     render(<App />)
   })
-
+  // Función Helper para seleccionar una pestaña por su nombre
   const selectTab = (name: string) => {
     fireEvent.click(screen.getByRole('tab', { name: new RegExp(name, 'i') }))
   }
-
+  // Pruebas de integración de la aplicación, verificando la navegación entre pestañas 
+  // y la interacción con los componentes principales. 
   it('renders all navigation tabs', () => {
     expect(screen.getByRole('tab', { name: /semáforo/i })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: /hoy/i })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: /perfil/i })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: /plan/i })).toBeInTheDocument()
+  })
+  // Prueba accesibilidad de la navegación por teclado entre las pestañas, asegurando
+  // que se puede cambiar de una pestaña a otra con las teclas de flecha.
+  it('navigates tabs with ArrowRight keyboard', () => {
+    const tabs = screen.getAllByRole('tab')
+    const firstTab = tabs[0]
+
+    fireEvent.keyDown(document, { key: 'ArrowRight' })
+
+    const updatedTab = screen.getAllByRole('tab').find(
+      t => t.getAttribute('aria-selected') === 'true',
+    )
+    expect(updatedTab).toBeDefined()
+    expect(updatedTab).not.toBe(firstTab)
+  })
+
+  it('navigates with ArrowLeft wrapping to last tab', () => {
+    fireEvent.keyDown(document, { key: 'ArrowLeft' })
+
+    const selected = screen.getAllByRole('tab').find(
+      t => t.getAttribute('aria-selected') === 'true',
+    )
+    expect(selected?.textContent).toContain('Plan')
   })
 
   describe('Scanner', () => {
@@ -38,6 +73,48 @@ describe('App integration', () => {
 
       expect(screen.getByText(/AOVE/)).toBeInTheDocument()
     })
+
+    it('does nothing when classifying or adding without selecting a food', () => {
+      selectTab('Semáforo')
+
+      fireEvent.click(screen.getByRole('button', { name: /Clasificar/i }))
+      fireEvent.click(screen.getByRole('button', { name: /Añadir al/i }))
+
+      expect(screen.queryByRole('status')).toBeNull()
+    })
+
+    it('classifies a processed food with sugars as RED with reasons', () => {
+      selectTab('Semáforo')
+
+      const select = screen.getByLabelText('Seleccionar alimento')
+      fireEvent.change(select, { target: { value: 'proc-refresco-cola' } })
+
+      fireEvent.click(screen.getByRole('button', { name: /clasificar/i }))
+
+      expect(screen.getByText(/Evitar/)).toBeInTheDocument()
+    })
+
+    it('adds food to daily log and removes it', () => {
+      selectTab('Semáforo')
+
+      const select = screen.getByLabelText('Seleccionar alimento')
+      fireEvent.change(select, { target: { value: 'oil-aove' } })
+
+      fireEvent.click(screen.getByRole('button', { name: /Añadir al/i }))
+
+      selectTab('Hoy')
+      expect(screen.getByText(/AOVE/)).toBeInTheDocument()
+
+      fireEvent.click(screen.getByRole('button', { name: /eliminar aceite/i }))
+      expect(screen.queryByText(/AOVE/)).toBeNull()
+    })
+  })
+
+  describe('DailyLog', () => {
+    it('shows empty state when no foods registered', () => {
+      selectTab('Hoy')
+      expect(screen.getByText(/configurá tu perfil metabólico/i)).toBeInTheDocument()
+    })
   })
 
   describe('Metabolic Profile', () => {
@@ -48,6 +125,52 @@ describe('App integration', () => {
 
       expect(screen.getByText(/BMR/)).toBeInTheDocument()
       expect(screen.getByText(/TDEE/)).toBeInTheDocument()
+    })
+
+    it('shows profile error when weight is empty', () => {
+      selectTab('Perfil')
+
+      const weightInput = screen.getByLabelText('Peso (kg)')
+      fireEvent.change(weightInput, { target: { value: '' } })
+
+      fireEvent.click(screen.getByRole('button', { name: /calcular perfil/i }))
+
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+
+    it('shows "Sin restricción" when IMC <= 25', () => {
+      selectTab('Perfil')
+
+      const weightInput = screen.getByLabelText('Peso (kg)')
+      fireEvent.change(weightInput, { target: { value: '65' } })
+
+      fireEvent.click(screen.getByRole('button', { name: /calcular perfil/i }))
+
+      expect(screen.getByText(/Sin restricción/)).toBeInTheDocument()
+    })
+  })
+
+  describe('Plan', () => {
+    it('generates a weekly plan', () => {
+      selectTab('Plan')
+
+      fireEvent.click(screen.getByRole('button', { name: /generar plan/i }))
+
+      const status = screen.getByRole('status')
+      expect(status.textContent).toContain('Plan válido')
+      expect(screen.getByText(/Día 1/)).toBeInTheDocument()
+    })
+
+    it('toggles caloric restriction and shows generated plan', () => {
+      selectTab('Plan')
+
+      const checkbox = screen.getByLabelText(/activar restricción calórica/i)
+      fireEvent.click(checkbox)
+
+      fireEvent.click(screen.getByRole('button', { name: /generar plan/i }))
+
+      const status = screen.getByRole('status')
+      expect(status.textContent).toContain('Plan válido')
     })
   })
 })
