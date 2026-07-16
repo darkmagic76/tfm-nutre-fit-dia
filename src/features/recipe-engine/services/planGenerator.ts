@@ -6,6 +6,7 @@ import {
   validateWeeklyRations,
   countRations,
   emptyCounts,
+  RATION_LIMITS,
   type CountByCategory,
   type ValidationResult,
 } from '@shared/services/rationValidator'
@@ -87,10 +88,10 @@ function buildDailyTemplate(restrictionActive: boolean): TemplateSlot[] {
   const cerealMax = restrictionActive ? 4 : 5
   return [
     { category: FoodCategory.CEREALS, rations: cerealMax },
-    { category: FoodCategory.VEGETABLES, rations: 4 },
-    { category: FoodCategory.FRUITS, rations: 2 },
-    { category: FoodCategory.OLIVE_OIL, rations: 4 },
-    { category: FoodCategory.WATER, rations: 6 },
+    { category: FoodCategory.VEGETABLES, rations: RATION_LIMITS[FoodCategory.VEGETABLES].min ?? 3 },
+    { category: FoodCategory.FRUITS, rations: RATION_LIMITS[FoodCategory.FRUITS].min ?? 2 },
+    { category: FoodCategory.OLIVE_OIL, rations: RATION_LIMITS[FoodCategory.OLIVE_OIL].min ?? 3 },
+    { category: FoodCategory.WATER, rations: RATION_LIMITS[FoodCategory.WATER].min ?? 4 },
   ]
 }
 

@@ -37,7 +37,7 @@ export const RATION_LIMITS: Record<FoodCategoryType, RationLimit> = {
     min: 4, unit: 'week',
   },
   [FoodCategory.FISH]: {
-    min: 3, unit: 'week',
+    min: 3, max: 7, unit: 'week',
   },
   [FoodCategory.EGGS]: {
     max: 4, unit: 'week',
@@ -191,7 +191,8 @@ export function validateWeeklyRations(counts: CountByCategory): ValidationResult
   }
 
   // Cross-rule: white meat restricted if fish exceeded (INFORME_ADR FR-2: Carnes Blancas LIMIT)
-  if (counts[FoodCategory.WHITE_MEAT] > 0 && counts[FoodCategory.FISH] > (RATION_LIMITS[FoodCategory.FISH].max ?? 99)) {
+  const fishMax = RATION_LIMITS[FoodCategory.FISH].max
+  if (counts[FoodCategory.WHITE_MEAT] > 0 && fishMax !== undefined && counts[FoodCategory.FISH] > fishMax) {
     violations.push({
       category: FoodCategory.WHITE_MEAT,
       current: counts[FoodCategory.WHITE_MEAT],

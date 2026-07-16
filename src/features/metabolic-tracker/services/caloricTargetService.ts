@@ -31,6 +31,10 @@ function bmrMifflinStJeor(weight: number, height: number, age: number, gender: '
 }
 
 const SAFETY_FLOOR = 1200
+/** PREDIMED-Plus intensive intervention: 600 kcal daily deficit */
+const PREDIMED_PLUS_DEFICIT_KCAL = 600
+/** Safety cap: deficit must not exceed 30% of TDEE per SPECS_TECH §2 */
+const DEFICIT_CAP_RATIO = 0.3
 
 export function computeCaloricTarget(input: CaloricTargetInput): CaloricTargetOutput {
   const { weight, height, age, gender, physicalActivityFactor, imc } = input
@@ -42,7 +46,9 @@ export function computeCaloricTarget(input: CaloricTargetInput): CaloricTargetOu
   const restrictionActive = imc > 25
 
   // PREDIMED-Plus: 600 kcal deficit, capped at 30% of TDEE for safety
-  const rawDeficit = restrictionActive ? Math.min(600, Math.round(tdee * 0.3)) : 0
+  const rawDeficit = restrictionActive
+    ? Math.min(PREDIMED_PLUS_DEFICIT_KCAL, Math.round(tdee * DEFICIT_CAP_RATIO))
+    : 0
 
   const rawTarget = tdee - rawDeficit
 
