@@ -44,6 +44,28 @@ describe('App integration', () => {
     expect(updatedTab).not.toBe(firstTab)
   })
 
+  it('does not navigate when modifier key is held', () => {
+    const initial = screen.getAllByRole('tab').filter(
+      t => t.getAttribute('aria-selected') === 'true',
+    )
+    fireEvent.keyDown(document, { key: 'ArrowRight', ctrlKey: true })
+    const after = screen.getAllByRole('tab').filter(
+      t => t.getAttribute('aria-selected') === 'true',
+    )
+    expect(after).toEqual(initial)
+  })
+
+  it('does not navigate on non-arrow key', () => {
+    const initial = screen.getAllByRole('tab').filter(
+      t => t.getAttribute('aria-selected') === 'true',
+    )
+    fireEvent.keyDown(document, { key: 'x' })
+    const after = screen.getAllByRole('tab').filter(
+      t => t.getAttribute('aria-selected') === 'true',
+    )
+    expect(after).toEqual(initial)
+  })
+
   it('navigates with ArrowLeft wrapping to last tab', () => {
     fireEvent.keyDown(document, { key: 'ArrowLeft' })
 
@@ -114,6 +136,16 @@ describe('App integration', () => {
     it('shows empty state when no foods registered', () => {
       selectTab('Hoy')
       expect(screen.getByText(/configurá tu perfil metabólico/i)).toBeInTheDocument()
+    })
+
+    it('shows caloric summary after calculating metabolic profile', () => {
+      selectTab('Perfil')
+      fireEvent.click(screen.getByRole('button', { name: /calcular perfil/i }))
+
+      selectTab('Hoy')
+      const statuses = screen.getAllByRole('status')
+      const hasObjective = statuses.some(e => /Objetivo diario/.test(e.textContent ?? ''))
+      expect(hasObjective).toBe(true)
     })
   })
 

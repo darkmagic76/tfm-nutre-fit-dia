@@ -17,13 +17,11 @@ export function ScannerContainer() {
   const selected = selectedId ? foodsById.get(selectedId) : null
 
   const handleClassify = () => {
-    if (!selected) return
-    setResult(classifyFoodWithReasons(selected))
+    setResult(classifyFoodWithReasons(selected!))
   }
 
   const handleAddToLog = () => {
-    if (!selected) return
-    addFoodToLog(selected)
+    addFoodToLog(selected!)
   }
 
   const handleSelect = (id: string) => {
