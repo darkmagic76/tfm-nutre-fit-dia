@@ -1,5 +1,5 @@
 interface ViolationListProps {
-  violations: Array<{ message: string; direction?: 'under' | 'over' }>
+  violations: Array<{ message: string }>
   type?: 'error' | 'warning'
 }
 
