@@ -11,7 +11,7 @@ Este proyecto se basa en **la Nutrición mediante la Dieta Mediterránea (DM) y 
 ## Stack tecnológico utilizado
 
 | Tecnología | Versión | Propósito |
-|---|---|---|---|
+|---|---|---|
 | React | 19.2.7 | Componentes de UI (Container/Presentational) |
 | TypeScript | 6.0.2 | Type safety, erasableSyntaxOnly |
 | Vite | 8.1.1 | Servidor de desarrollo y builds |
@@ -186,83 +186,99 @@ Cada objeto `Recipe` en nuestra base de datos debe cumplir con un esquema de met
 1. **Fase 1: Domain Modeling** ✅ — Definición de tipos estrictos para perfiles metabólicos, raciones AESAN, tipos de alimentos, notification taxonomy.
 2. **Fase 2: Domain Services & Containers** ✅ — Implementación de lógica erMedDiet, Container/Presentational split, per-feature Zustand stores.
 3. **Fase 3: ADR Scaffolding** ✅ — ScannerAdapter (ADR-003), Activity Tracker (ADR-006), Sustainability (ADR-007), Nudge Engine (ADR-008).
-4. **Fase 4: CI/CD & Compliance** 🔲 — Automatización de pruebas unitarias para validación de raciones y despliegue.
+4. **Fase 4: Tests & Error Handling** ✅ — 120 tests (stores, utils, domain errors). Cero errores silenciosos. `ValidationError` y `NotFoundError` tipados. Cobertura real 97.2%.
 
-### Estructura de Proyecto (Scope Rule & Colocation)
+## Estructura de Proyecto (Scope Rule & Colocation)
 
 ```text
 src/
 ├── features/
 │   ├── nutritional-traffic-light/
-│   │   ├── components/                # UI específica (TrafficLightDisplay)
-│   │   ├── hooks/                     # useTrafficLightScanner
-│   │   ├── services/                  # classificationService (Lógica de Ocultos)
-│   │   └── NutritionalTrafficLightContainer.tsx
+│   │   ├── ScannerContainer.tsx          # Lógica: estado, store, handlers
+│   │   ├── ScannerView.tsx               # UI puro: props, sin store
+│   │   ├── store/scannerStore.ts         # Historial de escaneos (Zustand)
+│   │   └── services/                     # classificationService, occultSugarDetector
 │   ├── metabolic-tracker/
-│   │   ├── services/                  # bmiCalculator, glucoseLogic
-│   │   └── MetabolicTrackerContainer.tsx
-│   └── recipe-engine/
+│   │   ├── MetabolicTrackerContainer.tsx # Lógica: perfil metabólico
+│   │   ├── MetabolicTrackerView.tsx      # UI: formulario + resultados
+│   │   ├── store/trackerStore.ts         # Perfil + objetivo calórico + restrictionActive
+│   │   └── services/                     # caloricTargetService
+│   ├── med-diet-validator/
+│   │   ├── DailyLogContainer.tsx         # Lógica: registro diario
+│   │   ├── DailyLogView.tsx              # UI: lista alimentos + validación
+│   │   └── store/logStore.ts             # todayLog + validación (Zustand)
+│   ├── recipe-engine/
+│   │   ├── PlanContainer.tsx             # Lógica: plan semanal
+│   │   ├── PlanView.tsx                  # UI: checkbox + plan generado
+│   │   ├── store/planStore.ts            # weeklyPlan (Zustand)
+│   │   └── services/                     # planGenerator
+│   ├── activity-tracker/                 # [scaffolded] ADR-006 V1
+│   │   ├── types.ts                      # ActivityEntry, WeeklyGoal
+│   │   └── store/activityStore.ts        # weeklyMinutes, strengthSessions
+│   └── nudge-engine/                     # [scaffolded] ADR-008
+│       ├── types.ts                      # NudgeRule, NudgeContext
+│       └── store/nudgeStore.ts           # pending nudges queue
 ├── shared/
-│   ├── ui/                            # Botones y layouts atómicos
-│   ├── utils/                         # Formateadores genéricos
-│   └── types/                         # Interfaces base del dominio
+│   ├── domain/                           # FoodCategory, TrafficLight, Notification, Zod schemas
+│   ├── data/foods.ts                     # Catálogo 34 alimentos
+│   ├── errors.ts                         # DomainError, ValidationError, NotFoundError
+│   ├── services/rationValidator.ts       # Validación diaria/semanal (cross-feature)
+│   ├── sustainability/                   # [scaffolded] ADR-007 — EnvironmentalScore, Seasonality
+│   ├── ui/primitives.tsx                 # Card, SelectField, TabButton, StatCard
+│   └── utils/                            # parseNumeric, sanitizeNumeric, computeIMC
+├── infrastructure/
+│   └── ml/                               # ADR-003 — ScannerAdapter + MockScannerAdapter
+└── test/setup.ts                         # Testing Library + jsdom
 ```
 
-### Componente Contenedor: NutritionalTrafficLightContainer.tsx
+### Componente Contenedor: ScannerContainer.tsx
 
 ```typescript
-import React, { useState, useEffect } from 'react';
-import { TrafficLightUI } from './components/TrafficLightUI';
-import { classifyProduct } from './services/classificationService';
-import { Product, ClassificationColor, SystemAction } from './types/metabolic';
+import { useState } from 'react'
+import { foodsById } from '@shared/data/foods'
+import { classifyFoodWithReasons } from './services/classificationService'
+import { useLogStore } from '@features/med-diet-validator/store'
+import { ScannerView } from './ScannerView'
 
-interface Props {
-  productId: string;
-  userBMI: number;
-  diagnosisAge: number;
-}
+export function ScannerContainer() {
+  const [selectedId, setSelectedId] = useState('')
+  const [result, setResult] = useState<ReturnType<typeof classifyFoodWithReasons> | null>(null)
+  const addFoodToLog = useLogStore(s => s.addFoodToLog)
 
-const NutritionalTrafficLightContainer: React.FC<Props> = ({ 
-  productId, 
-  userBMI, 
-  diagnosisAge 
-}) => {
-  const [classification, setClassification] = useState<ClassificationColor | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const options = Array.from(foodsById.entries()).map(([id, food]) => ({
+    value: id,
+    label: `${food.name} ${food.isProcessed ? '⚠️' : ''}`,
+  }))
 
-  useEffect(() => {
-    const fetchAndAnalyze = async () => {
-      // Prioriza la detección de azúcares ocultos en la lógica del servicio
-      const productData: Product = await getProductDetails(productId);
-      const result = classifyProduct(productData, userBMI, diagnosisAge);
-      setClassification(result);
-      setLoading(false);
-    };
+  const selected = selectedId ? foodsById.get(selectedId) ?? null : null
 
-    fetchAndAnalyze();
-  }, [productId, userBMI, diagnosisAge]);
+  const handleClassify = () => {
+    if (!selected) return
+    setResult(classifyFoodWithReasons(selected))
+  }
 
-  const getSystemAction = (color: ClassificationColor): SystemAction => {
-    const actions: Record<ClassificationColor, SystemAction> = {
-      [ClassificationColor.GREEN]: SystemAction.PROMOTE,
-      [ClassificationColor.ORANGE]: SystemAction.MODERATE,
-      [ClassificationColor.RED]: SystemAction.BLOCK_AND_SUBSTITUTE
-    };
-    return actions[color];
-  };
+  const handleAddToLog = () => {
+    if (!selected) return
+    addFoodToLog(selected)
+  }
 
-  if (loading) return <p>Analizando impacto metabólico y sostenibilidad...</p>;
-  if (!classification) return <p>Error en el análisis del producto.</p>;
+  const handleSelect = (id: string) => {
+    setSelectedId(id)
+    setResult(null)
+  }
 
   return (
-    <TrafficLightUI 
-      color={classification} 
-      action={getSystemAction(classification)} 
+    <ScannerView
+      selectedId={selectedId}
+      options={options}
+      selected={selected}
+      result={result}
+      onSelect={handleSelect}
+      onClassify={handleClassify}
+      onAddToLog={handleAddToLog}
     />
-  );
-};
-
-export default NutritionalTrafficLightContainer;
+  )
+}
 ```
 
 ## 8. Conclusión Técnica y Sostenibilidad de la App
