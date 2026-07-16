@@ -1,5 +1,5 @@
 import type { CaloricTargetOutput } from './services/caloricTargetService'
-import { Card, PrimaryButton, StatCard, NumberField, SelectField } from '@shared/ui/primitives'
+import { Card, PrimaryButton, StatCard, NumberField, SelectField } from '@shared/ui'
 import type { ValidationError } from '@shared/errors'
 import type { FormEvent } from 'react'
 

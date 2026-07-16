@@ -1,5 +1,5 @@
 import { CATEGORY_DISPLAY_NAMES } from '@shared/domain'
-import { Card, PrimaryButton, ViolationList } from '@shared/ui/primitives'
+import { Card, PrimaryButton, ViolationList } from '@shared/ui'
 import type { WeeklyPlan } from './services/planGenerator'
 
 interface PlanViewProps {

@@ -1,6 +1,6 @@
 import { CATEGORY_DISPLAY_NAMES } from '@shared/domain'
 import type { Food } from '@shared/domain'
-import { Card, ViolationList, StatCard } from '@shared/ui/primitives'
+import { Card, ViolationList, StatCard } from '@shared/ui'
 import type { ValidationResult } from '@shared/services/rationValidator'
 
 interface CaloricDisplay {

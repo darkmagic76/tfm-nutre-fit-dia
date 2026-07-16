@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import { TabButton } from '@shared/ui/primitives'
+import { TabButton } from '@shared/ui'
 import { ScannerContainer } from '@features/nutritional-traffic-light/ScannerContainer'
 import { DailyLogContainer } from '@features/med-diet-validator/DailyLogContainer'
 import { MetabolicTrackerContainer } from '@features/metabolic-tracker/MetabolicTrackerContainer'

@@ -1,6 +1,6 @@
 import { TrafficLightColor, CATEGORY_DISPLAY_NAMES } from '@shared/domain'
 import type { Food } from '@shared/domain'
-import { Card, SelectField, PrimaryButton } from '@shared/ui/primitives'
+import { Card, SelectField, PrimaryButton } from '@shared/ui'
 import type { ClassificationResult } from './services/classificationService'
 
 const TRAFFIC_COLORS: Record<string, string> = {
