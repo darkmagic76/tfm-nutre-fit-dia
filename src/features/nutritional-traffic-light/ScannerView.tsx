@@ -59,14 +59,14 @@ export function ScannerView({
         <PrimaryButton onClick={onClassify} disabled={!selectedId}>
           Clasificar
         </PrimaryButton>
-        <button
+        <PrimaryButton
           onClick={onAddToLog}
           disabled={!selectedId}
-          className="flex-1 min-h-[44px] bg-amber-600 text-white py-2 rounded-lg text-sm font-medium disabled:opacity-40 hover:bg-amber-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 transition"
+          className="bg-amber-600 hover:bg-amber-700 focus-visible:outline-amber-600"
           aria-label="Añadir alimento al registro del día"
         >
           + Añadir al día
-        </button>
+        </PrimaryButton>
       </div>
 
       {result && (
