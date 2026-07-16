@@ -1,38 +1,12 @@
-import { useState, useCallback, useEffect } from 'react'
 import { TabButton } from '@shared/ui'
+import { useTabNavigation, TABS } from '@shared/hooks/useTabNavigation'
 import { ScannerContainer } from '@features/nutritional-traffic-light/ScannerContainer'
 import { DailyLogContainer } from '@features/med-diet-validator/DailyLogContainer'
 import { MetabolicTrackerContainer } from '@features/metabolic-tracker/MetabolicTrackerContainer'
 import { PlanContainer } from '@features/recipe-engine/PlanContainer'
 
-type Tab = 'scanner' | 'log' | 'metabolic' | 'plan'
-
-const TABS: Array<{ id: Tab; label: string; icon: string }> = [
-  { id: 'scanner', label: 'Semáforo', icon: '🔍' },
-  { id: 'log', label: 'Hoy', icon: '📝' },
-  { id: 'metabolic', label: 'Perfil', icon: '📊' },
-  { id: 'plan', label: 'Plan', icon: '📅' },
-]
-
 export default function App() {
-  const [tab, setTab] = useState<Tab>('scanner')
-
-  const handleKeyNav = useCallback((e: KeyboardEvent) => {
-    if (e.altKey || e.ctrlKey || e.metaKey) return
-    const currentIndex = TABS.findIndex(t => t.id === tab)
-    if (e.key === 'ArrowRight') {
-      e.preventDefault()
-      setTab(TABS[(currentIndex + 1) % TABS.length].id)
-    } else if (e.key === 'ArrowLeft') {
-      e.preventDefault()
-      setTab(TABS[(currentIndex - 1 + TABS.length) % TABS.length].id)
-    }
-  }, [tab])
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyNav)
-    return () => document.removeEventListener('keydown', handleKeyNav)
-  }, [handleKeyNav])
+  const { tab, setTab } = useTabNavigation()
 
   return (
     <div className="min-h-screen bg-stone-100 text-stone-900">
