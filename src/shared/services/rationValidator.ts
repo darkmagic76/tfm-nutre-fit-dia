@@ -198,3 +198,65 @@ export function validateWeeklyRations(counts: CountByCategory): ValidationResult
 
   return { valid: violations.length === 0, violations, animalProteinCount }
 }
+
+/**
+ * AESAN 2022 grammed portion standards per food category (pág. 52).
+ * Each category has a valid gram range for one ration.
+ */
+export const AESAN_GRAM_STANDARDS: Record<FoodCategoryType, { min: number; max: number }> = {
+  [FoodCategory.CEREALS]: { min: 40, max: 60 },
+  [FoodCategory.VEGETABLES]: { min: 150, max: 200 },
+  [FoodCategory.FRUITS]: { min: 120, max: 200 },
+  [FoodCategory.OLIVE_OIL]: { min: 10, max: 15 },
+  [FoodCategory.DAIRY]: { min: 200, max: 250 },
+  [FoodCategory.LEGUMES]: { min: 60, max: 80 },
+  [FoodCategory.FISH]: { min: 150, max: 200 },
+  [FoodCategory.EGGS]: { min: 50, max: 100 },
+  [FoodCategory.WHITE_MEAT]: { min: 100, max: 150 },
+  [FoodCategory.WATER]: { min: 200, max: 250 },
+}
+
+export type SafetyAlertSeverity = 'critical' | 'warning'
+
+export interface SafetyAlert {
+  severity: SafetyAlertSeverity
+  code: string
+  message: string
+  category: FoodCategoryType
+  acknowledgeRequired: boolean
+}
+
+/**
+ * Validate a food's gramsPerRation against AESAN 2022 gram standards.
+ * Returns SafetyAlert[] for portions outside the acceptable range.
+ */
+export function validateFoodPortions(foods: Food[]): SafetyAlert[] {
+  const alerts: SafetyAlert[] = []
+
+  for (const food of foods) {
+    const standard = AESAN_GRAM_STANDARDS[food.category]
+    if (!standard) continue
+
+    if (food.gramsPerRation < standard.min) {
+      alerts.push({
+        severity: 'warning',
+        code: 'PORTION_TOO_SMALL',
+        message: `${food.name}: ${food.gramsPerRation}g (mín ${standard.min}g/ración AESAN 2022)`,
+        category: food.category,
+        acknowledgeRequired: false,
+      })
+    }
+
+    if (food.gramsPerRation > standard.max) {
+      alerts.push({
+        severity: 'critical',
+        code: 'PORTION_TOO_LARGE',
+        message: `${food.name}: ${food.gramsPerRation}g (máx ${standard.max}g/ración AESAN 2022)`,
+        category: food.category,
+        acknowledgeRequired: true,
+      })
+    }
+  }
+
+  return alerts
+}

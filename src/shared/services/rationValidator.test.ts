@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { validateRations, validateWeeklyRations, countRations, emptyCounts } from './rationValidator'
+import { validateRations, validateWeeklyRations, countRations, emptyCounts, AESAN_GRAM_STANDARDS, validateFoodPortions } from './rationValidator'
 import { FoodCategory } from '@shared/domain'
 import type { CountByCategory } from './rationValidator'
-import { makeEntries } from '@/test/fixtures'
+import { makeEntries, makeFood } from '@/test/fixtures'
 
 function countsWith(overrides: Partial<CountByCategory> = {}): CountByCategory {
   return { ...emptyCounts(), ...overrides }
@@ -211,6 +211,66 @@ describe('rationValidator', () => {
       expect(counts[FoodCategory.CEREALS]).toBe(3)
       expect(counts[FoodCategory.VEGETABLES]).toBe(4)
       expect(counts[FoodCategory.FISH]).toBe(2)
+    })
+  })
+
+  describe('AESAN_GRAM_STANDARDS', () => {
+    it('covers all 10 food categories', () => {
+      expect(Object.keys(AESAN_GRAM_STANDARDS)).toHaveLength(10)
+    })
+
+    it('has valid bread range (40-60g)', () => {
+      expect(AESAN_GRAM_STANDARDS[FoodCategory.CEREALS]).toEqual({ min: 40, max: 60 })
+    })
+
+    it('has valid fish range (150-200g)', () => {
+      expect(AESAN_GRAM_STANDARDS[FoodCategory.FISH]).toEqual({ min: 150, max: 200 })
+    })
+  })
+
+  describe('validateFoodPortions', () => {
+    it('returns empty for food within standard', () => {
+      const food = makeFood({ category: FoodCategory.CEREALS, gramsPerRation: 50 })
+      expect(validateFoodPortions([food])).toEqual([])
+    })
+
+    it('returns warning for portion below minimum', () => {
+      const food = makeFood({ category: FoodCategory.CEREALS, gramsPerRation: 30 })
+      const alerts = validateFoodPortions([food])
+      expect(alerts).toHaveLength(1)
+      expect(alerts[0].severity).toBe('warning')
+      expect(alerts[0].code).toBe('PORTION_TOO_SMALL')
+      expect(alerts[0].acknowledgeRequired).toBe(false)
+    })
+
+    it('returns critical for portion above maximum', () => {
+      const food = makeFood({ category: FoodCategory.FISH, gramsPerRation: 250 })
+      const alerts = validateFoodPortions([food])
+      expect(alerts).toHaveLength(1)
+      expect(alerts[0].severity).toBe('critical')
+      expect(alerts[0].code).toBe('PORTION_TOO_LARGE')
+      expect(alerts[0].acknowledgeRequired).toBe(true)
+    })
+
+    it('returns alert for portion below minimum (warning)', () => {
+      const food = makeFood({ category: FoodCategory.WATER, gramsPerRation: 100 })
+      const alerts = validateFoodPortions([food])
+      expect(alerts).toHaveLength(1)
+      expect(alerts[0].severity).toBe('warning')
+    })
+
+    it('returns alerts for multiple foods', () => {
+      const small = makeFood({ category: FoodCategory.CEREALS, gramsPerRation: 20 })
+      const large = makeFood({ category: FoodCategory.FISH, gramsPerRation: 300 })
+      const alerts = validateFoodPortions([small, large])
+      expect(alerts).toHaveLength(2)
+    })
+
+    it('accepts food at exact boundary', () => {
+      const min = makeFood({ category: FoodCategory.CEREALS, gramsPerRation: 40 })
+      const max = makeFood({ category: FoodCategory.CEREALS, gramsPerRation: 60 })
+      expect(validateFoodPortions([min])).toEqual([])
+      expect(validateFoodPortions([max])).toEqual([])
     })
   })
 })
