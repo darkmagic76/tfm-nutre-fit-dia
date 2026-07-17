@@ -4,8 +4,8 @@ import type { FormEvent } from 'react'
 
 export function MetabolicTrackerContainer() {
   const {
-    weight, height, age, gender, paf, caloricTarget, profileError,
-    setWeight, setHeight, setAge, setGender, setPaf, calculateTarget,
+    weight, height, age, diagnosisAge, gender, paf, caloricTarget, profileError,
+    setWeight, setHeight, setAge, setDiagnosisAge, setGender, setPaf, calculateTarget,
   } = useTrackerStore()
 
   const handleCalculate = (e: FormEvent) => {
@@ -15,7 +15,7 @@ export function MetabolicTrackerContainer() {
 
   return (
     <MetabolicTrackerView
-      form={{ weight, height, age, gender, paf, setWeight, setHeight, setAge, setGender, setPaf }}
+      form={{ weight, height, age, diagnosisAge, gender, paf, setWeight, setHeight, setAge, setDiagnosisAge, setGender, setPaf }}
       caloricTarget={caloricTarget}
       profileError={profileError}
       onCalculate={handleCalculate}

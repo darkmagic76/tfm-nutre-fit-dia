@@ -7,7 +7,7 @@ interface ProfileFormProps {
   onSubmit: (e: FormEvent) => void
 }
 
-export function ProfileForm({ form: { weight, height, age, gender, paf, setWeight, setHeight, setAge, setGender, setPaf }, onSubmit }: ProfileFormProps) {
+export function ProfileForm({ form: { weight, height, age, diagnosisAge, gender, paf, setWeight, setHeight, setAge, setDiagnosisAge, setGender, setPaf }, onSubmit }: ProfileFormProps) {
   return (
     <form
       onSubmit={onSubmit}
@@ -19,6 +19,7 @@ export function ProfileForm({ form: { weight, height, age, gender, paf, setWeigh
         <NumberField id="weight" label="Peso (kg)" value={weight} onChange={setWeight} min={30} />
         <NumberField id="height" label="Altura (cm)" value={height} onChange={setHeight} min={100} />
         <NumberField id="age" label="Edad" value={age} onChange={setAge} min={18} />
+        <NumberField id="diagnosisAge" label="Edad diagnóstico DT2" value={diagnosisAge} onChange={setDiagnosisAge} min={0} />
         <SelectField
           id="gender"
           label="Género"

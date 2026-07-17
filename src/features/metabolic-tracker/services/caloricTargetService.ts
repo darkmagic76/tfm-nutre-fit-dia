@@ -7,6 +7,9 @@ import { isRestrictionCandidate } from '@shared/utils'
  * Amendment 2026-07-15: deficit is now CONDITIONAL on IMC > 25.
  * SPECS_RF RF-02: "Reducción automática de 600 kcal/día si el IMC > 25"
  * SPECS_TECH §2: "Trigger automático ante IMC > 25"
+ *
+ * diagnosisAge is stored for downstream phenotypic filtering (FR-4.1).
+ * It does not alter the MSJ formula itself.
  */
 
 export type CaloricTargetInput = UserMetrics

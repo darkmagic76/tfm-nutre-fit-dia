@@ -9,6 +9,7 @@ describe('trackerStore', () => {
     expect(state.weight).toBe('80')
     expect(state.height).toBe('170')
     expect(state.age).toBe('55')
+    expect(state.diagnosisAge).toBe('55')
     expect(state.gender).toBe('male')
     expect(state.paf).toBe('1.2')
     expect(state.caloricTarget).toBeNull()
@@ -35,6 +36,11 @@ describe('trackerStore', () => {
     it('updates paf', () => {
       useTrackerStore.getState().setPaf('1.725')
       expect(useTrackerStore.getState().paf).toBe('1.725')
+    })
+
+    it('updates diagnosisAge', () => {
+      useTrackerStore.getState().setDiagnosisAge('45')
+      expect(useTrackerStore.getState().diagnosisAge).toBe('45')
     })
 
     it('accepts valid gender', () => {
@@ -114,6 +120,28 @@ describe('trackerStore', () => {
       const state = useTrackerStore.getState()
       expect(state.profileError).toBeInstanceOf(ValidationError)
       expect(state.profileError!.message).toContain('Error al procesar')
+    })
+
+    it('rejects diagnosisAge greater than current age', () => {
+      useTrackerStore.getState().setWeight('80')
+      useTrackerStore.getState().setHeight('170')
+      useTrackerStore.getState().setAge('40')
+      useTrackerStore.getState().setDiagnosisAge('45')
+      useTrackerStore.getState().calculateTarget()
+      const state = useTrackerStore.getState()
+      expect(state.profileError).toBeInstanceOf(ValidationError)
+      expect(state.profileError!.message).toContain('edad de diagnóstico')
+    })
+
+    it('accepts diagnosisAge equal to current age', () => {
+      useTrackerStore.getState().setWeight('80')
+      useTrackerStore.getState().setHeight('170')
+      useTrackerStore.getState().setAge('50')
+      useTrackerStore.getState().setDiagnosisAge('50')
+      useTrackerStore.getState().calculateTarget()
+      const state = useTrackerStore.getState()
+      expect(state.caloricTarget).not.toBeNull()
+      expect(state.profileError).toBeNull()
     })
   })
 })

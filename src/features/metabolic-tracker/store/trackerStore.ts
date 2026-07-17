@@ -12,6 +12,7 @@ const genderSchema = z.enum(['male', 'female'])
 const DEFAULT_WEIGHT = '80'
 const DEFAULT_HEIGHT = '170'
 const DEFAULT_AGE = '55'
+const DEFAULT_DIAGNOSIS_AGE = '55'
 const DEFAULT_PAF = '1.2'
 
 const WEIGHT_MIN = 30
@@ -23,10 +24,14 @@ const AGE_MAX = 120
 const PAF_MIN = 1.0
 const PAF_MAX = 2.5
 
+const DIAGNOSIS_AGE_MIN = 0
+const DIAGNOSIS_AGE_MAX = 120
+
 interface TrackerState {
   weight: string
   height: string
   age: string
+  diagnosisAge: string
   gender: 'male' | 'female'
   paf: string
   caloricTarget: CaloricTargetOutput | null
@@ -36,6 +41,7 @@ interface TrackerState {
   setWeight: (v: string) => void
   setHeight: (v: string) => void
   setAge: (v: string) => void
+  setDiagnosisAge: (v: string) => void
   setGender: (v: string) => void
   setPaf: (v: string) => void
   setRestrictionActive: (v: boolean) => void
@@ -46,6 +52,7 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
   weight: DEFAULT_WEIGHT,
   height: DEFAULT_HEIGHT,
   age: DEFAULT_AGE,
+  diagnosisAge: DEFAULT_DIAGNOSIS_AGE,
   gender: 'male',
   paf: DEFAULT_PAF,
   caloricTarget: null,
@@ -55,6 +62,7 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
   setWeight: v => set({ weight: v }),
   setHeight: v => set({ height: v }),
   setAge: v => set({ age: v }),
+  setDiagnosisAge: v => set({ diagnosisAge: v }),
 
   setGender: v => {
     try {
@@ -74,20 +82,31 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
   setRestrictionActive: v => set({ restrictionActive: v }),
 
   calculateTarget: () => {
-    const { weight, height, age, gender, paf } = get()
+    const { weight, height, age, diagnosisAge, gender, paf } = get()
 
-    let w: number, h: number, a: number, p: number
+    let w: number, h: number, a: number, p: number, da: number
     try {
       w = parseNumeric(weight, WEIGHT_MAX, WEIGHT_MIN)
       h = parseNumeric(height, HEIGHT_MAX, HEIGHT_MIN)
       a = parseNumeric(age, AGE_MAX, AGE_MIN)
       p = parseNumeric(paf, PAF_MAX, PAF_MIN)
+      da = parseNumeric(diagnosisAge, DIAGNOSIS_AGE_MAX, DIAGNOSIS_AGE_MIN)
     } catch (e) {
       set({
         profileError:
           e instanceof ValidationError
             ? e
             : new ValidationError(`Error al procesar: ${(e as Error).message}`),
+      })
+      return
+    }
+
+    if (da > a) {
+      set({
+        profileError: new ValidationError(
+          'La edad de diagnóstico no puede ser mayor que la edad actual',
+          { diagnosisAge: da, currentAge: a },
+        ),
       })
       return
     }
@@ -100,6 +119,7 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
       gender,
       physicalActivityFactor: p,
       imc,
+      diagnosisAge: da,
     })
     set({ caloricTarget: target, restrictionActive: target.restrictionActive, profileError: null })
   },
