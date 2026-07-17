@@ -21,13 +21,4 @@ export function parseNumeric(value: string, max: number, min = 0): number {
   return num
 }
 
-export function sanitizeNumeric(value: string, max: number, min = 0): number {
-  try {
-    return parseNumeric(value, max, min)
-  } catch {
-    const cleaned = value.trim()
-    const num = parseFloat(cleaned)
-    if (Number.isNaN(num)) return min
-    return Math.max(min, Math.min(num, max))
-  }
-}
+

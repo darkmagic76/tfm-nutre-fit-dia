@@ -42,7 +42,7 @@ export function computeCaloricTarget(input: CaloricTargetInput): CaloricTargetOu
   const bmr = bmrMifflinStJeor(input)
   const tdee = Math.round(bmr * physicalActivityFactor)
 
-  // SPECS_RF RF-02: deficit ONLY when IMC > 25
+  // SPECS_RF RF-02: deficit ONLY when IMC > 25 (via isRestrictionCandidate)
   const restrictionActive = isRestrictionCandidate(imc)
 
   // PREDIMED-Plus: 600 kcal deficit, capped at 30% of TDEE for safety
