@@ -6,6 +6,7 @@ import {
   computeCaloricTarget,
   type CaloricTargetOutput,
 } from '../services/caloricTargetService'
+import { recordWeight, detectIMCThresholdCrossing } from '../services/biomarkerTrackingService'
 
 const genderSchema = z.enum(['male', 'female'])
 
@@ -121,6 +122,23 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
       imc,
       diagnosisAge: da,
     })
-    set({ caloricTarget: target, restrictionActive: target.restrictionActive, profileError: null })
+
+    // FR-5.1: record weight reading for biomarker trends
+    recordWeight(w, h)
+    // Detect if IMC crossed the 25 threshold
+    const crossing = detectIMCThresholdCrossing()
+    const crossedMessage = crossing === 'crossed_above'
+      ? 'IMC ha superado 25 — restricción calórica activada'
+      : crossing === 'crossed_below'
+        ? 'IMC ha bajado de 25 — restricción calórica desactivada'
+        : null
+
+    set({
+      caloricTarget: target,
+      restrictionActive: target.restrictionActive,
+      profileError: crossedMessage
+        ? new ValidationError(crossedMessage, { crossing, prevIMC: 'see history' })
+        : null,
+    })
   },
 }))

@@ -1,9 +1,13 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useTrackerStore } from './trackerStore'
 import { ValidationError } from '@shared/errors'
 import * as utils from '@shared/utils'
+import { resetBiomarkerHistory } from '../services/biomarkerTrackingService'
 
 describe('trackerStore', () => {
+  beforeEach(() => {
+    resetBiomarkerHistory()
+  })
   it('has default values', () => {
     const state = useTrackerStore.getState()
     expect(state.weight).toBe('80')
