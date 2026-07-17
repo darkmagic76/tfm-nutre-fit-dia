@@ -156,7 +156,7 @@ describe('App integration', () => {
 
       fireEvent.click(screen.getByRole('button', { name: /calcular perfil/i }))
 
-      expect(screen.getByRole('alert')).toBeInTheDocument()
+      expect(screen.getAllByRole('alert').length).toBeGreaterThan(1)
     })
 
     it('shows "Sin restricción" when IMC <= 25', () => {

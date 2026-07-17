@@ -1,4 +1,4 @@
-import { TabButton } from '@shared/ui'
+import { TabButton, LegalDisclaimer } from '@shared/ui'
 import { useTabNavigation, TABS } from '@shared/hooks/useTabNavigation'
 import { ScannerContainer } from '@features/nutritional-traffic-light/ScannerContainer'
 import { DailyLogContainer } from '@features/med-diet-validator/DailyLogContainer'
@@ -37,6 +37,8 @@ export default function App() {
       </header>
 
       <main className="max-w-3xl mx-auto p-4 sm:p-6" id="main-content">
+        <LegalDisclaimer />
+        <div className="h-2" />
         <div role="tabpanel" id="panel-scanner" hidden={tab !== 'scanner'} aria-label="Semáforo nutricional">
           {tab === 'scanner' && <ScannerContainer />}
         </div>

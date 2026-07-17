@@ -1,5 +1,5 @@
 import { CATEGORY_DISPLAY_NAMES } from '@shared/domain'
-import { Card, PrimaryButton, ViolationList } from '@shared/ui'
+import { Card, PrimaryButton, ViolationList, LegalDisclaimer } from '@shared/ui'
 import type { WeeklyPlan } from './services/planGenerator'
 
 interface PlanViewProps {
@@ -20,6 +20,8 @@ export function PlanView({
       title="📅 Plan Semanal erMedDiet"
       description="7 días con todos los grupos alimentarios. Cumple AESAN 2022."
     >
+      <LegalDisclaimer />
+      <div className="h-2" />
       <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[44px]">
         <input
           type="checkbox"
