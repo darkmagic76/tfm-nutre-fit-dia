@@ -26,8 +26,6 @@ export interface NudgeContext {
   restrictionActive: boolean
   /** Total animal protein servings consumed today */
   animalProteinCount: number
-  /** Whether the current day's log is valid */
-  isTodayValid: boolean
   /** Ration counts per category for today */
   counts: CountByCategory
   /** Whether today's log contains a high-glycemic fruit */

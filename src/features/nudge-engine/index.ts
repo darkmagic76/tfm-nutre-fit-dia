@@ -1,5 +1,5 @@
 export { useNudgeStore } from './store'
 export { CooldownTracker } from './cooldownTracker'
-export { SAFETY_RULES } from './rules'
+export { NUDGE_RULES } from './rules'
 export { buildNudgeContext, evaluateRules } from './engine'
 export type { NudgeRule, SafetyRule, NudgeContext, NudgeEvaluation } from './types'

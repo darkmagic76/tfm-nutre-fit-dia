@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { buildNudgeContext, evaluateRules } from './engine'
 import { CooldownTracker } from './cooldownTracker'
-import { SAFETY_RULES } from './rules'
+import { NUDGE_RULES } from './rules'
 import { useTrackerStore } from '@features/metabolic-tracker/store'
 import { useLogStore } from '@features/med-diet-validator/store'
 import { FoodCategory } from '@shared/domain'
@@ -47,8 +47,6 @@ describe('Nudge Engine Integration', () => {
     })
 
     const cooldown = new CooldownTracker(() => 0)
-    // Pin currentHour by directly setting after build (we can't mock Date easily)
-    // Instead, we assert the context shape first
     const ctx = buildNudgeContext()
 
     expect(ctx.restrictionActive).toBe(true)
@@ -59,12 +57,12 @@ describe('Nudge Engine Integration', () => {
 
     // Evaluate with overridden hour that triggers vegetables deficit
     const eveningCtx = { ...ctx, currentHour: 21 }
-    const results = evaluateRules(eveningCtx, SAFETY_RULES, cooldown)
+    const results = evaluateRules(eveningCtx, NUDGE_RULES, cooldown)
 
     // CEREALS_RESTRICTION + FRUITS_GLYCEMIC_ALERT + VEGETABLES_DEFICIT
     // + ADHERENCE_GLUCOSE + ADHERENCE_WEIGHT + WATER_HYDRATION
-    // + AOVE_TAGGING + HC_INACTIVITY_ADJUST
-    expect(results).toHaveLength(9) // +LEGUMES_GLYCEMIC_BASE
+    // + AOVE_TAGGING + LEGUMES_GLYCEMIC_BASE + HC_INACTIVITY_ADJUST
+    expect(results).toHaveLength(9)
     const matchedIds = results.map(r => r.rule.id)
     expect(matchedIds).toContain('CEREALS_RESTRICTION')
     expect(matchedIds).toContain('FRUITS_GLYCEMIC_ALERT')
@@ -79,16 +77,16 @@ describe('Nudge Engine Integration', () => {
 
     // First evaluation — should match
     const ctx = buildNudgeContext()
-    const firstPass = evaluateRules(ctx, SAFETY_RULES, cooldown)
-    expect(firstPass).toHaveLength(7) // CEREALS + ADHERENCE_GLUCOSE + ADHERENCE_WEIGHT + WATER + AOVE + HC_INACTIVITY
+    const firstPass = evaluateRules(ctx, NUDGE_RULES, cooldown)
+    expect(firstPass).toHaveLength(7) // CEREALS + ADHERENCE_GLUCOSE + ADHERENCE_WEIGHT + WATER + AOVE + LEGUMES_GLYCEMIC_BASE + HC_INACTIVITY
     expect(firstPass[0].rule.id).toBe('CEREALS_RESTRICTION')
 
     // Simulate caller registering cooldown
     cooldown.register('CEREALS_RESTRICTION')
 
     // Second evaluation — CEREALS_RESTRICTION now on cooldown
-    const secondPass = evaluateRules(ctx, SAFETY_RULES, cooldown)
-    expect(secondPass).toHaveLength(6) // ADHERENCE_GLUCOSE + ADHERENCE_WEIGHT + WATER + AOVE + HC_INACTIVITY
+    const secondPass = evaluateRules(ctx, NUDGE_RULES, cooldown)
+    expect(secondPass).toHaveLength(6) // ADHERENCE_GLUCOSE + ADHERENCE_WEIGHT + WATER + AOVE + LEGUMES_GLYCEMIC_BASE + HC_INACTIVITY
   })
 
   it('does not match when no rules trigger', () => {
@@ -100,7 +98,9 @@ describe('Nudge Engine Integration', () => {
     // Override hour to be before 20 so VEGETABLES_DEFICIT doesn't trigger
     const morningCtx = { ...ctx, currentHour: 12 }
 
-    const results = evaluateRules(morningCtx, SAFETY_RULES, cooldown)
-    expect(results).toHaveLength(6) // ADHERENCE_GLUCOSE + ADHERENCE_WEIGHT + WATER + AOVE + HC_INACTIVITY
+    const results = evaluateRules(morningCtx, NUDGE_RULES, cooldown)
+    // ADHERENCE_GLUCOSE + ADHERENCE_WEIGHT + WATER_HYDRATION + AOVE_TAGGING
+    // + LEGUMES_GLYCEMIC_BASE + HC_INACTIVITY_ADJUST
+    expect(results).toHaveLength(6)
   })
 })

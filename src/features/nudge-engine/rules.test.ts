@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { SAFETY_RULES, HIGH_GLYCEMIC_FRUITS } from './rules'
+import { NUDGE_RULES, HIGH_GLYCEMIC_FRUITS } from './rules'
 import { emptyCounts } from '@shared/services/rationValidator'
 import { FoodCategory } from '@shared/domain'
 import type { NudgeContext } from './types'
@@ -8,7 +8,6 @@ function makeContext(overrides: Partial<NudgeContext> = {}): NudgeContext {
   return {
     restrictionActive: false,
     animalProteinCount: 0,
-    isTodayValid: true,
     counts: emptyCounts(),
     containsHighGlycemicFruit: false,
     currentHour: 12,
@@ -24,9 +23,9 @@ function makeContext(overrides: Partial<NudgeContext> = {}): NudgeContext {
   }
 }
 
-describe('SAFETY_RULES', () => {
+describe('NUDGE_RULES', () => {
   describe('CEREALS_RESTRICTION', () => {
-    const rule = SAFETY_RULES.find(r => r.id === 'CEREALS_RESTRICTION')
+    const rule = NUDGE_RULES.find(r => r.id === 'CEREALS_RESTRICTION')
     it('exists with correct id', () => {
       expect(rule).toBeDefined()
     })
@@ -57,7 +56,7 @@ describe('SAFETY_RULES', () => {
   })
 
   describe('FRUITS_GLYCEMIC_ALERT', () => {
-    const rule = SAFETY_RULES.find(r => r.id === 'FRUITS_GLYCEMIC_ALERT')
+    const rule = NUDGE_RULES.find(r => r.id === 'FRUITS_GLYCEMIC_ALERT')
     it('exists with correct id', () => {
       expect(rule).toBeDefined()
     })
@@ -74,7 +73,7 @@ describe('SAFETY_RULES', () => {
   })
 
   describe('VEGETABLES_DEFICIT', () => {
-    const rule = SAFETY_RULES.find(r => r.id === 'VEGETABLES_DEFICIT')
+    const rule = NUDGE_RULES.find(r => r.id === 'VEGETABLES_DEFICIT')
     it('exists with correct id', () => {
       expect(rule).toBeDefined()
     })
@@ -120,7 +119,7 @@ describe('HIGH_GLYCEMIC_FRUITS set', () => {
 })
 
 describe('DAIRY_CALCIUM_NUDGE', () => {
-  const rule = SAFETY_RULES.find(r => r.id === 'DAIRY_CALCIUM_NUDGE')
+  const rule = NUDGE_RULES.find(r => r.id === 'DAIRY_CALCIUM_NUDGE')
   it('fires when animalProteinCount > 2', () => {
     expect(rule!.condition(makeContext({ animalProteinCount: 3 }))).toBe(true)
   })
@@ -130,7 +129,7 @@ describe('DAIRY_CALCIUM_NUDGE', () => {
 })
 
 describe('WATER_HYDRATION', () => {
-  const rule = SAFETY_RULES.find(r => r.id === 'WATER_HYDRATION')
+  const rule = NUDGE_RULES.find(r => r.id === 'WATER_HYDRATION')
   it('fires when waterRations < 4', () => {
     expect(rule!.condition(makeContext({ waterRations: 2 }))).toBe(true)
   })
@@ -140,7 +139,7 @@ describe('WATER_HYDRATION', () => {
 })
 
 describe('HYPERGLYCEMIA_NUDGE', () => {
-  const rule = SAFETY_RULES.find(r => r.id === 'HYPERGLYCEMIA_NUDGE')
+  const rule = NUDGE_RULES.find(r => r.id === 'HYPERGLYCEMIA_NUDGE')
   it('fires when glucose > 180', () => {
     expect(rule!.condition(makeContext({ latestGlucose: 200 }))).toBe(true)
   })
@@ -150,7 +149,7 @@ describe('HYPERGLYCEMIA_NUDGE', () => {
 })
 
 describe('ADHERENCE_GLUCOSE', () => {
-  const rule = SAFETY_RULES.find(r => r.id === 'ADHERENCE_GLUCOSE')
+  const rule = NUDGE_RULES.find(r => r.id === 'ADHERENCE_GLUCOSE')
   it('fires when lastGlucoseTimestamp is null', () => {
     expect(rule!.condition(makeContext({ lastGlucoseTimestamp: null }))).toBe(true)
   })
@@ -160,21 +159,21 @@ describe('ADHERENCE_GLUCOSE', () => {
 })
 
 describe('ADHERENCE_WEIGHT', () => {
-  const rule = SAFETY_RULES.find(r => r.id === 'ADHERENCE_WEIGHT')
+  const rule = NUDGE_RULES.find(r => r.id === 'ADHERENCE_WEIGHT')
   it('fires when lastWeightTimestamp is null', () => {
     expect(rule!.condition(makeContext({ lastWeightTimestamp: null }))).toBe(true)
   })
 })
 
 describe('AOVE_TAGGING', () => {
-  const rule = SAFETY_RULES.find(r => r.id === 'AOVE_TAGGING')
+  const rule = NUDGE_RULES.find(r => r.id === 'AOVE_TAGGING')
   it('fires when olive_oil count is 0', () => {
     expect(rule!.condition(makeContext())).toBe(true)
   })
 })
 
 describe('LEGUMES_GLYCEMIC_BASE', () => {
-  const rule = SAFETY_RULES.find(r => r.id === 'LEGUMES_GLYCEMIC_BASE')
+  const rule = NUDGE_RULES.find(r => r.id === 'LEGUMES_GLYCEMIC_BASE')
   it('fires on day >= 4 with legumes < 1', () => {
     expect(rule!.condition(makeContext({ dayOfWeek: 5, counts: { ...emptyCounts(), [FoodCategory.LEGUMES]: 0 } }))).toBe(true)
   })
@@ -184,21 +183,35 @@ describe('LEGUMES_GLYCEMIC_BASE', () => {
 })
 
 describe('FISH_COD_TAG', () => {
-  const rule = SAFETY_RULES.find(r => r.id === 'FISH_COD_TAG')
+  const rule = NUDGE_RULES.find(r => r.id === 'FISH_COD_TAG')
   it('fires when hasBacalao is true', () => {
     expect(rule!.condition(makeContext({ hasBacalao: true }))).toBe(true)
   })
 })
 
 describe('EGGS_RED_MEAT_ALT', () => {
-  const rule = SAFETY_RULES.find(r => r.id === 'EGGS_RED_MEAT_ALT')
+  const rule = NUDGE_RULES.find(r => r.id === 'EGGS_RED_MEAT_ALT')
   it('fires when whiteMeat > 0 and no eggs', () => {
     expect(rule!.condition(makeContext({ hasEggs: false, counts: { ...emptyCounts(), [FoodCategory.WHITE_MEAT]: 1 } }))).toBe(true)
   })
 })
 
+describe('WHITE_MEAT_RESTRICT', () => {
+  const rule = NUDGE_RULES.find(r => r.id === 'WHITE_MEAT_RESTRICT')
+  it('fires when FISH > 7 and WHITE_MEAT > 0', () => {
+    expect(rule!.condition(makeContext({
+      counts: { ...emptyCounts(), [FoodCategory.FISH]: 8, [FoodCategory.WHITE_MEAT]: 1 },
+    }))).toBe(true)
+  })
+  it('does not fire when FISH is within limit', () => {
+    expect(rule!.condition(makeContext({
+      counts: { ...emptyCounts(), [FoodCategory.FISH]: 7, [FoodCategory.WHITE_MEAT]: 1 },
+    }))).toBe(false)
+  })
+})
+
 describe('HC_INACTIVITY_ADJUST', () => {
-  const rule = SAFETY_RULES.find(r => r.id === 'HC_INACTIVITY_ADJUST')
+  const rule = NUDGE_RULES.find(r => r.id === 'HC_INACTIVITY_ADJUST')
   it('fires when weeklyActivityMinutes < 150', () => {
     expect(rule!.condition(makeContext({ weeklyActivityMinutes: 100 }))).toBe(true)
   })

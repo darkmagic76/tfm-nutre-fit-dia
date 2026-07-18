@@ -35,13 +35,13 @@ export function buildNudgeContext(): NudgeContext {
   const hasBacalao = todayLog.some(f => f.name.toLowerCase().includes('bacalao'))
   const hasEggs = counts[FoodCategory.EGGS] > 0
 
-  const currentHour = new Date().getHours()
-  const dayOfWeek = new Date().getDay()
+  const now = new Date()
+  const currentHour = now.getHours()
+  const dayOfWeek = now.getDay()
 
   return {
     restrictionActive,
     animalProteinCount,
-    isTodayValid: true,
     counts,
     containsHighGlycemicFruit,
     currentHour,

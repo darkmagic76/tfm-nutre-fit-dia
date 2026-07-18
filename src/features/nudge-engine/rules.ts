@@ -1,4 +1,13 @@
 import { NotificationType, NotificationSeverity, FoodCategory } from '@shared/domain'
+import {
+  COOLDOWN_24H,
+  COOLDOWN_12H,
+  COOLDOWN_6H,
+  COOLDOWN_4H,
+  COOLDOWN_3H,
+  COOLDOWN_7D,
+  COOLDOWN_NONE,
+} from './cooldownDurations'
 import type { SafetyRule } from './types'
 
 /** High-glycemic fruits that trigger a safety alert when consumed */
@@ -10,13 +19,13 @@ export const HIGH_GLYCEMIC_FRUITS: ReadonlySet<string> = new Set([
   'plátano maduro',
 ])
 
-/** All safety rules evaluated by the nudge engine */
-export const SAFETY_RULES: SafetyRule[] = [
+/** All nudge rules evaluated by the engine */
+export const NUDGE_RULES: SafetyRule[] = [
   {
     id: 'CEREALS_RESTRICTION',
     type: NotificationType.SAFETY_ALERT,
     severity: NotificationSeverity.HARD_BLOCK,
-    cooldown: 24 * 60, // 24 hours in minutes
+    cooldown: COOLDOWN_24H,
     title: 'Límite de cereales excedido',
     body: 'Has superado las 4 raciones de cereales permitidas durante la restricción calórica.',
     condition: ctx =>
@@ -26,7 +35,7 @@ export const SAFETY_RULES: SafetyRule[] = [
     id: 'FRUITS_GLYCEMIC_ALERT',
     type: NotificationType.SAFETY_ALERT,
     severity: NotificationSeverity.SOFT_WARN,
-    cooldown: 24 * 60, // 24 hours in minutes
+    cooldown: COOLDOWN_24H,
     title: 'Fruta de alto índice glucémico',
     body: 'Has registrado una fruta con alto índice glucémico. Considera alternativas como manzana o pera.',
     condition: ctx => ctx.containsHighGlycemicFruit,
@@ -35,7 +44,7 @@ export const SAFETY_RULES: SafetyRule[] = [
     id: 'VEGETABLES_DEFICIT',
     type: NotificationType.SAFETY_ALERT,
     severity: NotificationSeverity.SOFT_WARN,
-    cooldown: 6 * 60, // 6 hours in minutes
+    cooldown: COOLDOWN_6H,
     title: '¿Has comido suficientes verduras?',
     body: 'Llevas menos de 3 raciones de verduras hoy. Intenta incluir una ración en la cena.',
     condition: ctx =>
@@ -48,7 +57,7 @@ export const SAFETY_RULES: SafetyRule[] = [
     id: 'DAIRY_CALCIUM_NUDGE',
     type: NotificationType.BEHAVIORAL_NUDGE,
     severity: NotificationSeverity.INFO,
-    cooldown: 12 * 60, // 12 hours
+    cooldown: COOLDOWN_12H,
     title: 'Proteína animal elevada',
     body: 'Has consumido más de 2 raciones de proteína animal hoy. Considera fuentes de calcio vegetal (brócoli, almendras, sardinas).',
     condition: ctx => ctx.animalProteinCount > 2,
@@ -57,7 +66,7 @@ export const SAFETY_RULES: SafetyRule[] = [
     id: 'WATER_HYDRATION',
     type: NotificationType.BEHAVIORAL_NUDGE,
     severity: NotificationSeverity.INFO,
-    cooldown: 3 * 60, // 3 hours
+    cooldown: COOLDOWN_3H,
     title: 'Recordatorio de hidratación',
     body: 'Recuerda beber agua. Objetivo: 4-8 vasos al día.',
     condition: ctx => ctx.waterRations < 4,
@@ -66,7 +75,7 @@ export const SAFETY_RULES: SafetyRule[] = [
     id: 'HYPERGLYCEMIA_NUDGE',
     type: NotificationType.BEHAVIORAL_NUDGE,
     severity: NotificationSeverity.INFO,
-    cooldown: 3 * 60, // 3 hours
+    cooldown: COOLDOWN_3H,
     title: 'Glucosa elevada',
     body: 'Tu última lectura de glucosa es elevada. Considera una caminata de 15 minutos o una receta rica en fibra soluble.',
     condition: ctx => ctx.latestGlucose !== null && ctx.latestGlucose > 180,
@@ -75,24 +84,24 @@ export const SAFETY_RULES: SafetyRule[] = [
     id: 'ADHERENCE_GLUCOSE',
     type: NotificationType.BEHAVIORAL_NUDGE,
     severity: NotificationSeverity.INFO,
-    cooldown: 4 * 60, // 4 hours
+    cooldown: COOLDOWN_4H,
     title: 'Registra tu glucosa',
     body: 'No has registrado tu glucosa en las últimas 4 horas. Mantener el registro ayuda a tu control metabólico.',
     condition: ctx => {
       if (ctx.lastGlucoseTimestamp === null) return true
-      return (Date.now() - ctx.lastGlucoseTimestamp) > 4 * 60 * 60 * 1000
+      return (Date.now() - ctx.lastGlucoseTimestamp) > COOLDOWN_4H * 60 * 1000
     },
   },
   {
     id: 'ADHERENCE_WEIGHT',
     type: NotificationType.BEHAVIORAL_NUDGE,
     severity: NotificationSeverity.INFO,
-    cooldown: 4 * 60, // 4 hours
+    cooldown: COOLDOWN_4H,
     title: 'Registra tu peso',
     body: 'No has registrado tu peso en las últimas 4 horas. El seguimiento regular permite ajustar tu plan.',
     condition: ctx => {
       if (ctx.lastWeightTimestamp === null) return true
-      return (Date.now() - ctx.lastWeightTimestamp) > 4 * 60 * 60 * 1000
+      return (Date.now() - ctx.lastWeightTimestamp) > COOLDOWN_4H * 60 * 1000
     },
   },
 
@@ -102,7 +111,7 @@ export const SAFETY_RULES: SafetyRule[] = [
     id: 'AOVE_TAGGING',
     type: NotificationType.SYSTEM_ACTION,
     severity: NotificationSeverity.INFO,
-    cooldown: 24 * 60,
+    cooldown: COOLDOWN_24H,
     title: 'AOVE requerido',
     body: 'El AOVE debe estar presente en cada comida principal.',
     condition: ctx => ctx.counts[FoodCategory.OLIVE_OIL] === 0,
@@ -111,7 +120,7 @@ export const SAFETY_RULES: SafetyRule[] = [
     id: 'LEGUMES_GLYCEMIC_BASE',
     type: NotificationType.SYSTEM_ACTION,
     severity: NotificationSeverity.INFO,
-    cooldown: 24 * 60,
+    cooldown: COOLDOWN_24H,
     title: 'Legumbres insuficientes esta semana',
     body: 'Las legumbres son requisito base para el control glucémico. Objetivo: ≥4 raciones/semana.',
     condition: ctx => ctx.dayOfWeek >= 4 && ctx.counts[FoodCategory.LEGUMES] < 1,
@@ -120,7 +129,7 @@ export const SAFETY_RULES: SafetyRule[] = [
     id: 'FISH_COD_TAG',
     type: NotificationType.SYSTEM_ACTION,
     severity: NotificationSeverity.INFO,
-    cooldown: 0,
+    cooldown: COOLDOWN_NONE,
     title: 'Bacalao — High Protein Low Fat',
     body: 'El bacalao es una proteína de alta prioridad (0.7% grasa).',
     condition: ctx => ctx.hasBacalao,
@@ -129,7 +138,7 @@ export const SAFETY_RULES: SafetyRule[] = [
     id: 'EGGS_RED_MEAT_ALT',
     type: NotificationType.SYSTEM_ACTION,
     severity: NotificationSeverity.INFO,
-    cooldown: 0,
+    cooldown: COOLDOWN_NONE,
     title: 'Huevos como alternativa',
     body: 'Los huevos son alternativa preferente a carnes rojas.',
     condition: ctx =>
@@ -139,7 +148,7 @@ export const SAFETY_RULES: SafetyRule[] = [
     id: 'WHITE_MEAT_RESTRICT',
     type: NotificationType.SYSTEM_ACTION,
     severity: NotificationSeverity.INFO,
-    cooldown: 7 * 24 * 60, // weekly
+    cooldown: COOLDOWN_7D,
     title: 'Restringir carnes blancas',
     body: 'Se han superado las raciones de pescado. Considera reducir carnes blancas.',
     condition: ctx =>
@@ -149,7 +158,7 @@ export const SAFETY_RULES: SafetyRule[] = [
     id: 'HC_INACTIVITY_ADJUST',
     type: NotificationType.SYSTEM_ACTION,
     severity: NotificationSeverity.INFO,
-    cooldown: 24 * 60,
+    cooldown: COOLDOWN_24H,
     title: 'Actividad física insuficiente',
     body: 'No has alcanzado los 150 min/semana de actividad moderada. Considera reducir carga de HC.',
     condition: ctx => ctx.weeklyActivityMinutes < 150,

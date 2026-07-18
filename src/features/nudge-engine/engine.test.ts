@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { buildNudgeContext, evaluateRules } from './engine'
 import { CooldownTracker } from './cooldownTracker'
-import { SAFETY_RULES } from './rules'
+import { NUDGE_RULES } from './rules'
 import { useTrackerStore } from '@features/metabolic-tracker/store'
 import { useLogStore } from '@features/med-diet-validator/store'
 import { FoodCategory } from '@shared/domain'
@@ -72,7 +72,6 @@ describe('evaluateRules', () => {
     const ctx: NudgeContext = {
       restrictionActive: true,
       animalProteinCount: 0,
-      isTodayValid: true,
       counts: { ...emptyCounts(), [FoodCategory.CEREALS]: 5, [FoodCategory.OLIVE_OIL]: 1 },
       containsHighGlycemicFruit: false,
       currentHour: 12,
@@ -86,7 +85,7 @@ describe('evaluateRules', () => {
       dayOfWeek: 3,
     }
 
-    const results = evaluateRules(ctx, SAFETY_RULES, cooldown)
+    const results = evaluateRules(ctx, NUDGE_RULES, cooldown)
 
     // Only CEREALS_RESTRICTION should match
     expect(results).toHaveLength(1)
@@ -102,7 +101,6 @@ describe('evaluateRules', () => {
     const ctx: NudgeContext = {
       restrictionActive: true,
       animalProteinCount: 0,
-      isTodayValid: true,
       counts: { ...emptyCounts(), [FoodCategory.CEREALS]: 5, [FoodCategory.OLIVE_OIL]: 1 },
       containsHighGlycemicFruit: false,
       currentHour: 12,
@@ -116,7 +114,7 @@ describe('evaluateRules', () => {
       dayOfWeek: 3,
     }
 
-    const results = evaluateRules(ctx, SAFETY_RULES, cooldown)
+    const results = evaluateRules(ctx, NUDGE_RULES, cooldown)
     expect(results).toHaveLength(0)
   })
 
@@ -125,7 +123,6 @@ describe('evaluateRules', () => {
     const ctx: NudgeContext = {
       restrictionActive: false,
       animalProteinCount: 0,
-      isTodayValid: true,
       counts: { ...emptyCounts(), [FoodCategory.OLIVE_OIL]: 1 },
       containsHighGlycemicFruit: false,
       currentHour: 12,
@@ -139,7 +136,7 @@ describe('evaluateRules', () => {
       dayOfWeek: 3,
     }
 
-    const results = evaluateRules(ctx, SAFETY_RULES, cooldown)
+    const results = evaluateRules(ctx, NUDGE_RULES, cooldown)
     expect(results).toHaveLength(0)
   })
 
@@ -148,7 +145,6 @@ describe('evaluateRules', () => {
     const ctx: NudgeContext = {
       restrictionActive: true,
       animalProteinCount: 0,
-      isTodayValid: true,
       counts: { ...emptyCounts(), [FoodCategory.CEREALS]: 5, [FoodCategory.OLIVE_OIL]: 1 },
       containsHighGlycemicFruit: false,
       currentHour: 12,
@@ -171,7 +167,6 @@ describe('evaluateRules', () => {
     const ctx: NudgeContext = {
       restrictionActive: true,
       animalProteinCount: 0,
-      isTodayValid: true,
       counts: { ...emptyCounts(), [FoodCategory.CEREALS]: 5, [FoodCategory.OLIVE_OIL]: 1 },
       containsHighGlycemicFruit: false,
       currentHour: 12,
@@ -184,14 +179,14 @@ describe('evaluateRules', () => {
       weeklyActivityMinutes: 200,
       dayOfWeek: 3,
     }
-    const rulesCount = SAFETY_RULES.length
+    const rulesCount = NUDGE_RULES.length
 
-    evaluateRules(ctx, SAFETY_RULES, cooldown)
+    evaluateRules(ctx, NUDGE_RULES, cooldown)
 
     // Cooldown should NOT have been mutated by evaluateRules
     expect(cooldown.isOnCooldown('CEREALS_RESTRICTION', 1440)).toBe(false)
     // Rules array should be unchanged
-    expect(SAFETY_RULES).toHaveLength(rulesCount)
+    expect(NUDGE_RULES).toHaveLength(rulesCount)
   })
 
   it('returns multiple evaluations when multiple rules match', () => {
@@ -199,7 +194,6 @@ describe('evaluateRules', () => {
     const ctx: NudgeContext = {
       restrictionActive: true,
       animalProteinCount: 0,
-      isTodayValid: true,
       counts: { ...emptyCounts(), [FoodCategory.CEREALS]: 6, [FoodCategory.VEGETABLES]: 1 },
       containsHighGlycemicFruit: true,
       currentHour: 22,
@@ -213,7 +207,7 @@ describe('evaluateRules', () => {
       dayOfWeek: 3,
     }
 
-    const results = evaluateRules(ctx, SAFETY_RULES, cooldown)
+    const results = evaluateRules(ctx, NUDGE_RULES, cooldown)
 
     // Should match: CEREALS_RESTRICTION, FRUITS_GLYCEMIC_ALERT, VEGETABLES_DEFICIT
     // + ADHERENCE_GLUCOSE + ADHERENCE_WEIGHT + WATER_HYDRATION + AOVE_TAGGING
