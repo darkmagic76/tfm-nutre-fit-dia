@@ -101,5 +101,6 @@ Fase 4 — Pulido (LOW)
 - **Scope Rule**: código usado por 1 feature → dentro de esa feature. Usado por 2+ → `shared/` con estructura de domain module.
 - **NudgeEngine wiring**: `evaluateAndEnqueue()` se dispara en `ScannerContainer.handleClassify` y `handleAddToLog`. Singleton `CooldownTracker` previene notificaciones duplicadas.
 - **Activity form**: `NumberField` usa estado local (`useState`) — bug de `value=""` fijo corregido.
+- **Infra**: `tsconfig.app.json` excluye tests del build. Husky activo: pre-commit (lint) + pre-push (quality). `coverage/` en `.gitignore`.
 - **ADR-003 ScannerAdapter**: la interfaz ya existe. `MockScannerAdapter` implementado. La extensión para Dual Qualification (H4) es backward-compatible.
 - **Supabase reservado V2**: sin imports en V1. La app funciona completamente offline con datos estáticos del catálogo.

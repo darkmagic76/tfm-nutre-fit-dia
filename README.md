@@ -100,13 +100,13 @@ src/
 
 ## Funcionalidades principales
 
-- **Semáforo Nutricional**: Clasifica alimentos en Verde/Naranja/Rojo según impacto metabólico. Detecta azúcares ocultos en procesados. SafetyAlert en frutas de alta carga glucémica.
-- **Metabolic Tracker**: Calcula objetivo calórico diario con déficit condicional (IMC > 25). Perfil fenotípico con edad diagnóstico. Registro de glucosa y biomarcadores.
-- **Validador Dieta Mediterránea**: Valida frecuencias diarias y semanales según matriz AESAN 2022. Gramos exactos por ración (AESAN 2022 pág. 52). SafetyAlert type para alertas clínicas.
-- **Recipe Engine**: Genera planes semanales con restricción calórica. Aviso legal dietista (RNF-01) visible en Dashboard y Plan.
-- **Activity Goal Tracker** ✅: Seguimiento WHO/OMS 150-300 min/semana + ≥2 días fuerza. Compliance % y streak. Tab en dashboard.
-- **Nudge Engine** ✅: 14 reglas: 3 SafetyAlert + 5 BehavioralNudge + 6 SystemAction. CooldownTracker, NudgeStore. 255 tests.
-- **Sustainability Scoring** ✅: `computeEnvironmentalScore()` con constantes AESAN/EAT-Lancet. Pesos 50/30/20. Integrado en RecipeEngine (ranking dual).
+- **Semáforo Nutricional**: Clasifica alimentos en Verde/Naranja/Rojo. Detecta azúcares ocultos. SafetyAlert en frutas de alta carga glucémica. **Calificación Dual** (salud + sostenibilidad) integrada.
+- **Metabolic Tracker**: Calcula objetivo calórico con déficit condicional (IMC > 25). Perfil fenotípico. Registro de glucosa y biomarcadores.
+- **Validador Dieta Mediterránea**: Valida frecuencias diarias/semanales según matriz AESAN 2022. Control de gramajes exactos por ración.
+- **Recipe Engine**: Planes semanales con restricción calórica. Ranking dual salud+sostenibilidad. Badges culturales UNESCO (🏺👥🌿).
+- **Activity Goal Tracker**: Seguimiento WHO/OMS 150-300 min/semana. Compliance % y streak. Tab en dashboard.
+- **Nudge Engine**: 14 reglas (SafetyAlert + BehavioralNudge + SystemAction). Panel UI con badge contador + historial de engagement. Disparador automático al clasificar/añadir alimentos.
+- **Sustainability Scoring**: `computeEnvironmentalScore()` con constantes AESAN/EAT-Lancet. Pesos configurables 50/30/20. Integrado en RecipeEngine (ranking dual).
 
 ## Especificación Técnica y Arquitectónica: Ecosistema de Autocuidado Integral (DT2 y Salud Sostenible)
 
