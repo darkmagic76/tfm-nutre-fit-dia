@@ -21,3 +21,4 @@ export {
 } from './constants'
 
 export { computeEnvironmentalScore } from './scoringService'
+export { suggestAlternative, BLUE_FISH_IDS } from './substitutionService'
