@@ -6,7 +6,7 @@ import {
   computeCaloricTarget,
   type CaloricTargetOutput,
 } from '../services/caloricTargetService'
-import { recordWeight, detectIMCThresholdCrossing } from '../services/biomarkerTrackingService'
+import { recordWeight, detectIMCThresholdCrossing, recordGlucose } from '../services/biomarkerTrackingService'
 
 const genderSchema = z.enum(['male', 'female'])
 
@@ -35,6 +35,8 @@ interface TrackerState {
   diagnosisAge: string
   gender: 'male' | 'female'
   paf: string
+  glucose: string
+  glucoseContext: 'fasting' | 'postprandial'
   caloricTarget: CaloricTargetOutput | null
   restrictionActive: boolean
   profileError: ValidationError | null
@@ -45,6 +47,8 @@ interface TrackerState {
   setDiagnosisAge: (v: string) => void
   setGender: (v: string) => void
   setPaf: (v: string) => void
+  setGlucose: (v: string) => void
+  setGlucoseContext: (v: 'fasting' | 'postprandial') => void
   setRestrictionActive: (v: boolean) => void
   calculateTarget: () => void
 }
@@ -56,6 +60,8 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
   diagnosisAge: DEFAULT_DIAGNOSIS_AGE,
   gender: 'male',
   paf: DEFAULT_PAF,
+  glucose: '',
+  glucoseContext: 'fasting',
   caloricTarget: null,
   restrictionActive: false,
   profileError: null,
@@ -80,10 +86,12 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
   },
 
   setPaf: v => set({ paf: v }),
+  setGlucose: v => set({ glucose: v }),
+  setGlucoseContext: v => set({ glucoseContext: v }),
   setRestrictionActive: v => set({ restrictionActive: v }),
 
   calculateTarget: () => {
-    const { weight, height, age, diagnosisAge, gender, paf } = get()
+    const { weight, height, age, diagnosisAge, gender, paf, glucose, glucoseContext } = get()
 
     let w: number, h: number, a: number, p: number, da: number
     try {
@@ -110,6 +118,15 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
         ),
       })
       return
+    }
+
+    // FR-5.1: record glucose if provided
+    const glucoseTrimmed = glucose.trim()
+    if (glucoseTrimmed !== '') {
+      const g = parseFloat(glucoseTrimmed)
+      if (!Number.isNaN(g) && g > 0) {
+        recordGlucose({ value: g, timestamp: Date.now(), context: glucoseContext })
+      }
     }
 
     const imc = computeIMC(w, h)

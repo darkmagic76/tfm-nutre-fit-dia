@@ -29,6 +29,8 @@ export interface UserMetricsFormData {
   gender: 'male' | 'female'
   paf: string
   diagnosisAge: string
+  glucose: string
+  glucoseContext: 'fasting' | 'postprandial'
 }
 
 export interface UserMetricsFormSetters {
@@ -38,6 +40,8 @@ export interface UserMetricsFormSetters {
   setGender: (v: string) => void
   setPaf: (v: string) => void
   setDiagnosisAge: (v: string) => void
+  setGlucose: (v: string) => void
+  setGlucoseContext: (v: 'fasting' | 'postprandial') => void
 }
 
 export interface UserMetricsFormState extends UserMetricsFormData, UserMetricsFormSetters {}

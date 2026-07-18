@@ -16,6 +16,7 @@ dist-ssr
 .env
 .env.*
 !.env.example
+AGENTS.md
 
 # Editor directories and files
 .vscode/*

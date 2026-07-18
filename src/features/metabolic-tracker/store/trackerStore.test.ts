@@ -14,6 +14,8 @@ describe('trackerStore', () => {
     expect(state.height).toBe('170')
     expect(state.age).toBe('55')
     expect(state.diagnosisAge).toBe('55')
+    expect(state.glucose).toBe('')
+    expect(state.glucoseContext).toBe('fasting')
     expect(state.gender).toBe('male')
     expect(state.paf).toBe('1.2')
     expect(state.caloricTarget).toBeNull()
@@ -45,6 +47,16 @@ describe('trackerStore', () => {
     it('updates diagnosisAge', () => {
       useTrackerStore.getState().setDiagnosisAge('45')
       expect(useTrackerStore.getState().diagnosisAge).toBe('45')
+    })
+
+    it('updates glucose', () => {
+      useTrackerStore.getState().setGlucose('120')
+      expect(useTrackerStore.getState().glucose).toBe('120')
+    })
+
+    it('updates glucoseContext', () => {
+      useTrackerStore.getState().setGlucoseContext('postprandial')
+      expect(useTrackerStore.getState().glucoseContext).toBe('postprandial')
     })
 
     it('accepts valid gender', () => {

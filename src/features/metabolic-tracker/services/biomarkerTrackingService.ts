@@ -1,4 +1,4 @@
-import { computeIMC } from '@shared/utils'
+import { computeIMC, IMC_NORMAL_MAX } from '@shared/utils'
 import type { GlucoseReading, WeightReading, BiomarkerTrend } from './biomarkerTypes'
 
 const glucoseHistory: GlucoseReading[] = []
@@ -67,9 +67,9 @@ export function getTrend(): BiomarkerTrend {
 }
 
 /**
- * Detect if IMC crossed the 25 threshold between the last two weight readings.
- * Returns 'crossed_above' if IMC went from ≤25 to >25.
- * Returns 'crossed_below' if IMC went from >25 to ≤25.
+ * Detect if IMC crossed the clinical threshold between the last two weight readings.
+ * Returns 'crossed_above' if IMC went from ≤threshold to >threshold.
+ * Returns 'crossed_below' if IMC went from >threshold to ≤threshold.
  * Returns null if insufficient data or no crossing.
  */
 export function detectIMCThresholdCrossing(): 'crossed_above' | 'crossed_below' | null {
@@ -78,8 +78,8 @@ export function detectIMCThresholdCrossing(): 'crossed_above' | 'crossed_below' 
   const prev = weightHistory[weightHistory.length - 2].imc
   const curr = weightHistory[weightHistory.length - 1].imc
 
-  if (prev <= 25 && curr > 25) return 'crossed_above'
-  if (prev > 25 && curr <= 25) return 'crossed_below'
+  if (prev <= IMC_NORMAL_MAX && curr > IMC_NORMAL_MAX) return 'crossed_above'
+  if (prev > IMC_NORMAL_MAX && curr <= IMC_NORMAL_MAX) return 'crossed_below'
   return null
 }
 
