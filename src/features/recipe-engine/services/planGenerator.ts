@@ -10,6 +10,7 @@ import {
   type CountByCategory,
   type ValidationResult,
 } from '@shared/services/rationValidator'
+import { computeEnvironmentalScore } from '@shared/sustainability'
 
 /**
  * Simplified meal plan entry.
@@ -36,6 +37,8 @@ export interface WeeklyPlan {
  *
  * Strategy: template-based. Each day follows a preset pattern of food categories,
  * ensuring daily minimums are met. Weekly totals accumulate for weekly validation.
+ *
+ * Food selection prefers sustainability: lower carbon footprint + seasonal first.
  */
 export function generateWeeklyPlan(restrictionActive: boolean): WeeklyPlan {
   const dailyTemplate = buildDailyTemplate(restrictionActive)
@@ -45,14 +48,14 @@ export function generateWeeklyPlan(restrictionActive: boolean): WeeklyPlan {
 
   for (let day = 1; day <= 7; day++) {
     const dailyEntries = dailyTemplate.map(slot => ({
-      food: pickFood(slot.category, day),
+      food: pickSustainableFood(slot.category, day),
       rations: slot.rations,
     }))
 
     // Merge weekly-distributed slots into their target day
     const dayWeeklySlots = weeklySlots.filter(s => s.day === day)
     const extraEntries = dayWeeklySlots.map(slot => ({
-      food: pickFood(slot.category, day),
+      food: pickSustainableFood(slot.category, day),
       rations: slot.rations,
     }))
 
@@ -125,9 +128,17 @@ function getWeeklySlots(): { day: number; category: FoodCategory; rations: numbe
   ]
 }
 
-/** Pick a food from the catalog, cycling through available options per day */
-function pickFood(category: FoodCategory, day: number): Food {
-  const options = foods.filter(f => f.category === category && !f.isProcessed)
+/**
+ * Pick a food from the catalog, preferring sustainability.
+ *
+ * Ranks available natural (non-processed) foods by environmental score,
+ * then cycles through them per day for variety while keeping carbon footprint low.
+ */
+function pickSustainableFood(category: FoodCategory, day: number): Food {
+  const options = foods
+    .filter(f => f.category === category && !f.isProcessed)
+    .sort((a, b) => computeEnvironmentalScore(b).score - computeEnvironmentalScore(a).score)
+
   if (options.length === 0) {
     // Fallback to first in category, including processed if no natural
     const fallback = foods.filter(f => f.category === category)
