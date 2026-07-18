@@ -4,9 +4,11 @@ import { useActivityStore } from '@features/activity-tracker'
 import { countRations } from '@shared/services/rationValidator'
 import { FoodCategory, ANIMAL_PROTEIN_CATEGORIES, type SystemNotification } from '@shared/domain'
 import { getTrend } from '@features/metabolic-tracker/services/biomarkerTrackingService'
-import { HIGH_GLYCEMIC_FRUITS } from './rules'
+import { HIGH_GLYCEMIC_FRUITS, NUDGE_RULES } from './rules'
+import { CooldownTracker } from './cooldownTracker'
+import { useNudgeStore } from './store'
 import type { NudgeContext, NudgeEvaluation, SafetyRule } from './types'
-import type { CooldownTracker } from './cooldownTracker'
+import type { CooldownTracker as CooldownTrackerType } from './cooldownTracker'
 
 /**
  * Build the current nudge context by reading store state.
@@ -79,7 +81,7 @@ function buildNotification(rule: SafetyRule): SystemNotification {
 export function evaluateRules(
   ctx: NudgeContext,
   rules: SafetyRule[],
-  cooldown: CooldownTracker,
+  cooldown: CooldownTrackerType,
 ): NudgeEvaluation[] {
   return rules
     .filter(rule => rule.condition(ctx) && !cooldown.isOnCooldown(rule.id, rule.cooldown))
@@ -87,4 +89,24 @@ export function evaluateRules(
       rule,
       notification: buildNotification(rule),
     }))
+}
+
+/** Singleton cooldown tracker — persists across evaluateAndEnqueue calls */
+const cooldownTracker = new CooldownTracker()
+
+/**
+ * Full pipeline: build context → evaluate rules → enqueue notifications → register cooldowns.
+ *
+ * This is the integration point called by UI components (ScannerContainer, DailyLogContainer)
+ * whenever a user action might trigger nudges.
+ */
+export function evaluateAndEnqueue(): void {
+  const ctx = buildNudgeContext()
+  const results = evaluateRules(ctx, NUDGE_RULES, cooldownTracker)
+  const { enqueue } = useNudgeStore.getState()
+
+  for (const result of results) {
+    enqueue(result.notification)
+    cooldownTracker.register(result.rule.id)
+  }
 }

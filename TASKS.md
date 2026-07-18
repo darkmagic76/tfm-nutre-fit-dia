@@ -99,5 +99,7 @@ Fase 4 — Pulido (LOW)
 - **FR-MATRIX desactualizada**: RF-02 (déficit 600 kcal condicional a IMC > 25) ya está implementado en `caloricTargetService.ts` con tests. La matriz lo marca como ⚠️ Pendiente. Corregir en M5.
 - **279 tests verdes**: cualquier feature nueva debe mantener el TDD estricto (RED → GREEN → TRIANGULATE → REFACTOR).
 - **Scope Rule**: código usado por 1 feature → dentro de esa feature. Usado por 2+ → `shared/` con estructura de domain module.
+- **NudgeEngine wiring**: `evaluateAndEnqueue()` se dispara en `ScannerContainer.handleClassify` y `handleAddToLog`. Singleton `CooldownTracker` previene notificaciones duplicadas.
+- **Activity form**: `NumberField` usa estado local (`useState`) — bug de `value=""` fijo corregido.
 - **ADR-003 ScannerAdapter**: la interfaz ya existe. `MockScannerAdapter` implementado. La extensión para Dual Qualification (H4) es backward-compatible.
 - **Supabase reservado V2**: sin imports en V1. La app funciona completamente offline con datos estáticos del catálogo.

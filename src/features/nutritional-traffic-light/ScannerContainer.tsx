@@ -3,6 +3,7 @@ import { foodsById } from '@shared/data/foods'
 import { classifyFoodWithReasons } from './services/classificationService'
 import { checkSafetyAlerts } from './services/safetyCheck'
 import { useLogStore } from '@features/med-diet-validator/store'
+import { evaluateAndEnqueue } from '@features/nudge-engine'
 import { ScannerView } from './ScannerView'
 import type { SafetyAlert } from '@shared/services/rationValidator'
 
@@ -23,10 +24,12 @@ export function ScannerContainer() {
     const food = selected!
     setResult(classifyFoodWithReasons(food))
     setSafetyAlerts(checkSafetyAlerts(food))
+    evaluateAndEnqueue()
   }
 
   const handleAddToLog = () => {
     addFoodToLog(selected!)
+    evaluateAndEnqueue()
   }
 
   const handleSelect = (id: string) => {

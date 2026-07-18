@@ -1,6 +1,7 @@
 import { Card, NumberField, PrimaryButton } from '@shared/ui'
 import type { WeeklyGoal } from './types'
 import type { FormEvent } from 'react'
+import { useState } from 'react'
 
 interface ActivityTrackerViewProps {
   weeklyMinutes: number
@@ -25,16 +26,18 @@ export function ActivityTrackerView({
   onAddEntry,
   onSubmit,
 }: ActivityTrackerViewProps) {
+  const [minutes, setMinutes] = useState('')
+  const [sessions, setSessions] = useState('')
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    const form = e.target as HTMLFormElement
-    const data = new FormData(form)
-    const minutes = Number(data.get('minutes')) || 0
-    const sessions = Number(data.get('sessions')) || 0
-    if (minutes > 0 || sessions > 0) {
-      onAddEntry({ moderateMinutes: minutes, strengthSessions: sessions })
+    const mm = Number(minutes) || 0
+    const ss = Number(sessions) || 0
+    if (mm > 0 || ss > 0) {
+      onAddEntry({ moderateMinutes: mm, strengthSessions: ss })
+      setMinutes('')
+      setSessions('')
     }
-    form.reset()
     onSubmit(e)
   }
 
@@ -72,8 +75,8 @@ export function ActivityTrackerView({
 
       <form onSubmit={handleSubmit} className="space-y-3" aria-label="Registro de actividad física" noValidate>
         <div className="grid grid-cols-2 gap-3">
-          <NumberField id="minutes" label="Minutos moderados" value="" onChange={() => {}} min={0} />
-          <NumberField id="sessions" label="Sesiones fuerza" value="" onChange={() => {}} min={0} />
+          <NumberField id="minutes" label="Minutos moderados" value={minutes} onChange={setMinutes} min={0} />
+          <NumberField id="sessions" label="Sesiones fuerza" value={sessions} onChange={setSessions} min={0} />
         </div>
         <PrimaryButton type="submit">
           Registrar actividad
