@@ -105,6 +105,73 @@ describe('PlanView', () => {
     expect(screen.getByLabelText('erMedDiet')).toBeInTheDocument()
   })
 
+  it('shows social eating text when socialEating is true', () => {
+    const culturalPlan: WeeklyPlan = {
+      days: [{ day: 1, entries: [{ food: lentejas, rations: 1 }] }],
+      dailyResults: [{ valid: true, violations: [], animalProteinCount: 0 }],
+      weeklyResult: { valid: true, violations: [], animalProteinCount: 0 },
+      valid: true,
+    }
+    render(<PlanView {...defaultProps} weeklyPlan={culturalPlan} />)
+    expect(screen.getByText('Ideal para comer en compañía')).toBeInTheDocument()
+  })
+
+  it('shows cooking technique label when cookingTechnique is set', () => {
+    const culturalPlan: WeeklyPlan = {
+      days: [{ day: 1, entries: [{ food: lentejas, rations: 1 }] }],
+      dailyResults: [{ valid: true, violations: [], animalProteinCount: 0 }],
+      weeklyResult: { valid: true, violations: [], animalProteinCount: 0 },
+      valid: true,
+    }
+    render(<PlanView {...defaultProps} weeklyPlan={culturalPlan} />)
+    expect(screen.getByText('Preparación: guiso tradicional')).toBeInTheDocument()
+  })
+
+  it.each([
+    ['stew', 'guiso tradicional'],
+    ['steam', 'al vapor'],
+    ['boiled', 'hervido'],
+    ['grilled', 'a la plancha'],
+    ['raw', 'en crudo'],
+  ])('renders correct label for cooking technique: %s → %s', (technique, label) => {
+    const cooked = food({
+      id: `test-${technique}`, name: `Test ${technique}`, category: FoodCategory.LEGUMES,
+      gramsPerRation: 60, kcalPer100g: 340, proteinPer100g: 24, carbsPer100g: 54,
+      fiberPer100g: 11, fatPer100g: 1.5, carbonFootprint: 0.8, isSeasonal: true,
+      culturalMetadata: { traditionalCuisine: true, cookingTechnique: technique as 'stew' | 'steam' | 'boiled' | 'grilled' | 'raw', erMedDiet: true },
+    })
+    const plan: WeeklyPlan = {
+      days: [{ day: 1, entries: [{ food: cooked, rations: 1 }] }],
+      dailyResults: [{ valid: true, violations: [], animalProteinCount: 0 }],
+      weeklyResult: { valid: true, violations: [], animalProteinCount: 0 },
+      valid: true,
+    }
+    render(<PlanView {...defaultProps} weeklyPlan={plan} />)
+    expect(screen.getByText(`Preparación: ${label}`)).toBeInTheDocument()
+  })
+
+  it('does not show social eating or cooking text when flags are false', () => {
+    // food with culturalMetadata but socialEating: false and no cookingTechnique
+    const soloTraditional = food({
+      id: 'fish-sardinas', name: 'Sardinas', category: FoodCategory.FISH,
+      gramsPerRation: 100, kcalPer100g: 208, proteinPer100g: 25, carbsPer100g: 0,
+      fiberPer100g: 0, fatPer100g: 11, carbonFootprint: 3.5, isSeasonal: true,
+      culturalMetadata: { traditionalCuisine: true, socialEating: false, erMedDiet: true },
+    })
+    const plan: WeeklyPlan = {
+      days: [{ day: 1, entries: [{ food: soloTraditional, rations: 1 }] }],
+      dailyResults: [{ valid: true, violations: [], animalProteinCount: 0 }],
+      weeklyResult: { valid: true, violations: [], animalProteinCount: 0 },
+      valid: true,
+    }
+    render(<PlanView {...defaultProps} weeklyPlan={plan} />)
+    // Emoji for traditional cuisine still renders
+    expect(screen.getByLabelText('Cocina tradicional')).toBeInTheDocument()
+    // Text spans must NOT appear
+    expect(screen.queryByText('Ideal para comer en compañía')).not.toBeInTheDocument()
+    expect(screen.queryByText(/Preparación:/)).not.toBeInTheDocument()
+  })
+
   it('does not render cultural badges when food has no metadata', () => {
     const plainFood = food({
       id: 'veg-brocoli', name: 'Brócoli', category: FoodCategory.VEGETABLES,
