@@ -4,6 +4,7 @@ import { ScannerContainer } from '@features/nutritional-traffic-light/ScannerCon
 import { DailyLogContainer } from '@features/med-diet-validator/DailyLogContainer'
 import { MetabolicTrackerContainer } from '@features/metabolic-tracker/MetabolicTrackerContainer'
 import { PlanContainer } from '@features/recipe-engine/PlanContainer'
+import { ActivityTrackerContainer } from '@features/activity-tracker'
 
 export default function App() {
   const { tab, setTab } = useTabNavigation()
@@ -50,6 +51,9 @@ export default function App() {
         </div>
         <div role="tabpanel" id="panel-plan" hidden={tab !== 'plan'} aria-label="Plan semanal">
           {tab === 'plan' && <PlanContainer />}
+        </div>
+        <div role="tabpanel" id="panel-activity" hidden={tab !== 'activity'} aria-label="Actividad física">
+          {tab === 'activity' && <ActivityTrackerContainer />}
         </div>
       </main>
 
