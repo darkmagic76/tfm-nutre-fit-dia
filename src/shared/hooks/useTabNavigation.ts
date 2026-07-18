@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 
-export type Tab = 'scanner' | 'log' | 'metabolic' | 'plan' | 'activity'
+export type Tab = 'scanner' | 'log' | 'metabolic' | 'plan' | 'activity' | 'nudges'
 
 export const TABS: Array<{ id: Tab; label: string; icon: string }> = [
   { id: 'scanner', label: 'Semáforo', icon: '🔍' },
@@ -8,6 +8,7 @@ export const TABS: Array<{ id: Tab; label: string; icon: string }> = [
   { id: 'metabolic', label: 'Perfil', icon: '📊' },
   { id: 'plan', label: 'Plan', icon: '📅' },
   { id: 'activity', label: 'Actividad', icon: '🏃' },
+  { id: 'nudges', label: 'Nudges', icon: '🔔' },
 ]
 
 export function useTabNavigation() {

@@ -5,6 +5,7 @@ import { DailyLogContainer } from '@features/med-diet-validator/DailyLogContaine
 import { MetabolicTrackerContainer } from '@features/metabolic-tracker/MetabolicTrackerContainer'
 import { PlanContainer } from '@features/recipe-engine/PlanContainer'
 import { ActivityTrackerContainer } from '@features/activity-tracker'
+import { NudgePanelContainer } from '@features/nudge-engine/NudgePanelContainer'
 
 export default function App() {
   const { tab, setTab } = useTabNavigation()
@@ -54,6 +55,9 @@ export default function App() {
         </div>
         <div role="tabpanel" id="panel-activity" hidden={tab !== 'activity'} aria-label="Actividad física">
           {tab === 'activity' && <ActivityTrackerContainer />}
+        </div>
+        <div role="tabpanel" id="panel-nudges" hidden={tab !== 'nudges'} aria-label="Nudges y notificaciones">
+          {tab === 'nudges' && <NudgePanelContainer />}
         </div>
       </main>
 

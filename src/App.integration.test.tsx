@@ -61,7 +61,7 @@ describe('App integration', () => {
     fireEvent.keyDown(document, { key: 'ArrowLeft' })
 
     const selected = getSelectedTabs()[0]
-    expect(selected?.textContent).toContain('Actividad')
+    expect(selected?.textContent).toContain('Nudges')
   })
 
   describe('Scanner', () => {
