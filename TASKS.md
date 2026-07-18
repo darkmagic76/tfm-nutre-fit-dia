@@ -1,6 +1,6 @@
 # TASKS.md — Nutri-Fit-Día: Features por Criticidad Funcional
 
-Generado: 2026-07-17 | Rama: `develop` | Tests: 169 ✅ | Lint: 0 | Typecheck: limpio
+Generado: 2026-07-17 | Actualizado: 2026-07-18 | Rama: `develop` | Tests: 237 ✅ | Lint: 0 | Typecheck: limpio
 
 ---
 
@@ -14,9 +14,13 @@ Generado: 2026-07-17 | Rama: `develop` | Tests: 169 ✅ | Lint: 0 | Typecheck: l
 | Recipe Engine | ✅ Implementado — planGenerator + PlanContainer, sustainability badges integrados |
 | Domain Types | ✅ Implementado — FoodCategory, TrafficLight, Notification, Zod schemas, domain errors |
 | UI Primitives | ✅ Implementado — 7 componentes con tests unitarios |
-| Activity Tracker | 🔶 Scaffold (types + store, sin lógica) |
-| Nudge Engine | 🔶 Scaffold (types + store, sin reglas ni motor) |
+| Activity Tracker | ✅ Implementado (H1) — useActivityTracker, compliance %, streak, dashboard tab |
+| Nudge Engine | 🔶 Parcial (H2 PR1 ✅) — Core engine + 3 SafetyAlerts, 31 tests. BehavioralNudges + SystemActions pendientes (PR2, PR3). |
 | Sustainability | 🔶 Scaffold (solo types, sin scoring ni substitution) |
+| UserProfile + Filtro Fenotípico | ✅ Implementado (C1) — UserProfileSchema (Zod), diagnosisAge, phenotypic filter |
+| Legal Disclaimer | ✅ Implementado (C3) — RNF-01 banner persistente en Dashboard + Plan |
+| SafetyAlert UI | ✅ Implementado (C4) — SafetyAlertDisplay, high-glycemic fruit detection |
+| Biomarker Tracking | ✅ Implementado (C5) — GlucoseReading, WeightReading, IMC threshold crossing, getTrend |
 
 ---
 
@@ -26,18 +30,20 @@ Generado: 2026-07-17 | Rama: `develop` | Tests: 169 ✅ | Lint: 0 | Typecheck: l
 
 | # | Tarea | ADR / Fuente | Descripción | Esfuerzo | Dependencias |
 |---|---|---|---|---|---|
-| **C1** | **UserProfile + Filtro Fenotípico** | ADR-004, FR-4.1 | Implementar `UserProfileSchema` (Zod) con edad diagnóstico, IMC, género. Crear `useProfile` hook que persista en `trackerStore`. Conectar con `caloricTargetService` para el déficit condicional. | M | Ninguna |
-| **C2** | **ErMedDietValidator completo** | FR-2.1, RF-01, ADR-005 | Implementar validador de raciones AESAN 2022 con gramos exactos por ración (40-60g pan, 150-200g pescado). Límites: cereales ≤4/día en restricción, AOVE 3-6/día, legumbres ≥4/semana. Alertas `SafetyAlert` para excesos. | L | ADR-005 (tipos listos) |
-| **C3** | **Aviso Legal Dietista (RNF-01)** | SPECS_RF RNF-01 | Componente UI obligatorio: banner persistente "Este plan debe ser validado por un dietista-nutricionista colegiado". No bloqueante pero siempre visible en Dashboard y Plan. | S | Ninguna |
-| **C4** | **SafetyAlert en UI** | ADR-008 | Implementar renderizado de `SafetyAlert` en ScannerContainer: si cereales > 4 en restricción → hard block. Si frutas alta carga glucémica → soft warning. Incluir acknowledge obligatorio. | M | C2 (necesita las reglas) |
-| **C5** | **Monitoreo Biomarcadores** | FR-5.1 | Implementar `biomarkerTrackingService` para registro de glucosa, peso, IMC. Recalcular objetivo calórico si IMC cruza el umbral de 25. Tipos `GlucoseReading`, `WeightReading` ya existen. | M | C1 |
+| **C1** | **UserProfile + Filtro Fenotípico** | ADR-004, FR-4.1 | ✅ **Completado** — `UserProfileSchema` (Zod), diagnosisAge, validación ≤ currentAge, integrado en trackerStore + UI | M | — |
+| **C2** | **ErMedDietValidator completo** | FR-2.1, RF-01, ADR-005 | ✅ **Completado** — `AESAN_GRAM_STANDARDS` (10 categorías), `SafetyAlert` type, `validateFoodPortions()` | L | — |
+| **C3** | **Aviso Legal Dietista (RNF-01)** | SPECS_RF RNF-01 | ✅ **Completado** — `LegalDisclaimer` banner en Dashboard + Plan, role="alert" | S | — |
+| **C4** | **SafetyAlert en UI** | ADR-008 | ✅ **Completado** — `SafetyAlertDisplay` component, `safetyCheck` service (high-glycemic fruits), acknowledge button | M | — |
+| **C5** | **Monitoreo Biomarcadores** | FR-5.1 | ✅ **Completado** — `biomarkerTrackingService`: `GlucoseReading`, `WeightReading`, `IMC` threshold crossing, `getTrend`, glucose UI field | M | — |
+
+### Fase 1: 5/5 completada 🎉
 
 ### HIGH — Valor funcional principal
 
 | # | Tarea | ADR / Fuente | Descripción | Esfuerzo | Dependencias |
 |---|---|---|---|---|---|
-| **H1** | **Activity Goal Tracker V1** | ADR-006, RF-03 | Implementar `useActivityTracker` hook con entrada manual de minutos semanales (150-300) y días de fuerza (≥2). Mostrar compliance % y streak en dashboard. Tipos y store ya existen. | M | Ninguna |
-| **H2** | **Nudge Engine: Reglas Core** | ADR-008 | Implementar `evaluateRules()` con las 17 reglas de INFORME_ADR mapeadas a la taxonomía (SafetyAlert/SystemAction/BehavioralNudge). Incluir cooldown para evitar fatiga de notificaciones. Tipos y store ya existen. | L | C1 (necesita UserProfile) |
+| **H1** | **Activity Goal Tracker V1** | ADR-006, RF-03 | ✅ **Completado** — `useActivityTracker` hook, compliance %, streak, tab "🏃 Actividad" | M | — |
+| **H2** | **Nudge Engine: Reglas Core** | ADR-008 | 🔶 **PR1 ✅** — Core engine + CooldownTracker + 3 SafetyAlerts (237 tests). **PR2/PR3 pendientes** (BehavioralNudges + SystemActions). | L | C1 ✅ |
 | **H3** | **Sustainability Scoring Core** | ADR-007, FR-2.2 | Implementar `computeEnvironmentalScore()` con constantes de emisiones AESAN/EAT-Lancet y pesos configurables. Conectar con RecipeEngine para ranking dual (salud + sostenibilidad). Tipos ya existen. | M | Ninguna |
 | **H4** | **Dual Qualification Scanner** | ADR-003 + ADR-007 | Extender `ScanResult` con `environmentalScore` opcional. Modificar `classificationService` para devolver ambas puntuaciones. Backward-compatible: si no hay datos ambientales, solo clasificación de salud. | S | H3 |
 | **H5** | **Metadata Cultural UNESCO** | FR-5.2 | Añadir campos `culturalMetadata` a `RecipeSchema`: valor biológico proteico, huella de carbono/hídrica, flag erMedDiet, procedencia geográfica. Mostrar badges informativos en RecipePlanDisplay. | S | Ninguna |

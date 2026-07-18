@@ -69,7 +69,18 @@ src/
 │   │   ├── PlanView.tsx                  # UI: checkbox + plan generado
 │   │   ├── store/planStore.ts            # weeklyPlan (Zustand)
 │   │   └── services/                     # planGenerator
-│   ├── activity-tracker/                 # [scaffolded] ADR-006 V1
+│   ├── activity-tracker/                 # ADR-006 — Activity Goal Tracker V1 ✅
+│   │   ├── ActivityTrackerContainer.tsx    # Lógica: compliance + streak
+│   │   ├── ActivityTrackerView.tsx         # UI: metas OMS + formulario
+│   │   ├── hooks/useActivityTracker.ts     # Hook: compliance %, streak, weeklyGoal
+│   │   ├── store/activityStore.ts          # weeklyMinutes + entries (Zustand)
+│   │   └── types.ts                        # ActivityEntry, WeeklyGoal, ComplianceReport
+│   ├── nudge-engine/                      # ADR-008 — Nudge Engine 🔶 (PR1 ✅, PR2/3 pendientes)
+│   │   ├── engine.ts                       # buildNudgeContext + evaluateRules (puro)
+│   │   ├── rules.ts                        # SafetyAlert rules (CEREALS, FRUITS, VEGETABLES)
+│   │   ├── cooldownTracker.ts             # CooldownTracker (in-memory)
+│   │   ├── store/nudgeStore.ts            # pending + history (Zustand)
+│   │   └── types.ts                       # NudgeRule, NudgeContext, SafetyRule
 │   │   ├── types.ts                      # ActivityEntry, WeeklyGoal
 │   │   └── store/activityStore.ts        # weeklyMinutes, strengthSessions
 │   └── nudge-engine/                     # [scaffolded] ADR-008
@@ -89,12 +100,12 @@ src/
 
 ## Funcionalidades principales
 
-- **Semáforo Nutricional**: Clasifica alimentos en Verde/Naranja/Rojo según impacto metabólico. Detecta azúcares ocultos en procesados (18 tests).
-- **Metabolic Tracker**: Calcula objetivo calórico diario con déficit condicional de 600 kcal (solo si IMC > 25). 12 tests.
-- **Validador Dieta Mediterránea**: Valida frecuencias diarias y semanales según matriz AESAN 2022 (41 tests).
-- **Recipe Engine**: Genera planes semanales con restricción calórica opcional. 12 tests.
-- **Activity Tracker** `[scaffolded]`: Seguimiento WHO/OMS 150-300 min/semana + 2 días de fuerza. ADR-006 V1.
-- **Nudge Engine** `[scaffolded]`: Taxonomía de notificaciones SafetyAlert / SystemAction / BehavioralNudge. ADR-008.
+- **Semáforo Nutricional**: Clasifica alimentos en Verde/Naranja/Rojo según impacto metabólico. Detecta azúcares ocultos en procesados. SafetyAlert en frutas de alta carga glucémica.
+- **Metabolic Tracker**: Calcula objetivo calórico diario con déficit condicional (IMC > 25). Perfil fenotípico con edad diagnóstico. Registro de glucosa y biomarcadores.
+- **Validador Dieta Mediterránea**: Valida frecuencias diarias y semanales según matriz AESAN 2022. Gramos exactos por ración (AESAN 2022 pág. 52). SafetyAlert type para alertas clínicas.
+- **Recipe Engine**: Genera planes semanales con restricción calórica. Aviso legal dietista (RNF-01) visible en Dashboard y Plan.
+- **Activity Goal Tracker** ✅: Seguimiento WHO/OMS 150-300 min/semana + ≥2 días fuerza. Compliance % y streak. Tab en dashboard.
+- **Nudge Engine** 🔶: Core engine + 3 SafetyAlert rules (PR1 ✅). CooldownTracker anti-fatiga. BehavioralNudges y SystemActions pendientes (PR2/PR3).
 - **Sustainability Scoring** `[scaffolded]`: EnvironmentalScore con huella de carbono, estacionalidad y proximidad. ADR-007.
 
 ## Especificación Técnica y Arquitectónica: Ecosistema de Autocuidado Integral (DT2 y Salud Sostenible)
@@ -212,7 +223,18 @@ src/
 │   │   ├── PlanView.tsx                  # UI: checkbox + plan generado
 │   │   ├── store/planStore.ts            # weeklyPlan (Zustand)
 │   │   └── services/                     # planGenerator
-│   ├── activity-tracker/                 # [scaffolded] ADR-006 V1
+│   ├── activity-tracker/                 # ADR-006 — Activity Goal Tracker V1 ✅
+│   │   ├── ActivityTrackerContainer.tsx    # Lógica: compliance + streak
+│   │   ├── ActivityTrackerView.tsx         # UI: metas OMS + formulario
+│   │   ├── hooks/useActivityTracker.ts     # Hook: compliance %, streak, weeklyGoal
+│   │   ├── store/activityStore.ts          # weeklyMinutes + entries (Zustand)
+│   │   └── types.ts                        # ActivityEntry, WeeklyGoal, ComplianceReport
+│   ├── nudge-engine/                      # ADR-008 — Nudge Engine 🔶 (PR1 ✅, PR2/3 pendientes)
+│   │   ├── engine.ts                       # buildNudgeContext + evaluateRules (puro)
+│   │   ├── rules.ts                        # SafetyAlert rules (CEREALS, FRUITS, VEGETABLES)
+│   │   ├── cooldownTracker.ts             # CooldownTracker (in-memory)
+│   │   ├── store/nudgeStore.ts            # pending + history (Zustand)
+│   │   └── types.ts                       # NudgeRule, NudgeContext, SafetyRule
 │   │   ├── types.ts                      # ActivityEntry, WeeklyGoal
 │   │   └── store/activityStore.ts        # weeklyMinutes, strengthSessions
 │   └── nudge-engine/                     # [scaffolded] ADR-008
