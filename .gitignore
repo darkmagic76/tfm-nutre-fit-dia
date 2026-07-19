@@ -33,3 +33,9 @@ AGENTS.md
 # Engram generated
 .atl/.skill-registry.cache.json
 .atl/skill-registry.md
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

@@ -32,9 +32,9 @@ function CulturalBadges({ meta }: { meta: CulturalMetadata }) {
   return (
     <>
       <span className="inline-flex gap-1 ml-1" aria-label="Metadata cultural UNESCO">
-        {meta.traditionalCuisine && <span title="Cocina tradicional" aria-label="Cocina tradicional">🏺</span>}
-        {meta.socialEating && <span title="Comida en compañía" aria-label="Comida en compañía">👥</span>}
-        {meta.erMedDiet && <span title="erMedDiet" aria-label="erMedDiet">🌿</span>}
+        {meta.traditionalCuisine && <span title="Cocina tradicional" aria-label="Cocina tradicional"><span aria-hidden="true">🏺</span></span>}
+        {meta.socialEating && <span title="Comida en compañía" aria-label="Comida en compañía"><span aria-hidden="true">👥</span></span>}
+        {meta.erMedDiet && <span title="erMedDiet" aria-label="erMedDiet"><span aria-hidden="true">🌿</span></span>}
       </span>
       {meta.socialEating && <span className="text-xs text-emerald-700 ml-1">Ideal para comer en compañía</span>}
       {meta.cookingTechnique && COOKING_LABELS[meta.cookingTechnique] && (
@@ -54,8 +54,8 @@ interface PlanViewProps {
 function ZeroWasteBadges({ food }: { food: Food }) {
   return (
     <span className="inline-flex gap-1 ml-1">
-      {food.isZeroWaste && <span title="Zero Waste" aria-label="Zero Waste">♻️</span>}
-      {food.isUglyProduce && <span title="KM0 / Defectos estéticos" aria-label="KM0">🥕</span>}
+      {food.isZeroWaste && <span title="Zero Waste" aria-label="Zero Waste"><span aria-hidden="true">♻️</span></span>}
+      {food.isUglyProduce && <span title="KM0 / Defectos estéticos" aria-label="KM0"><span aria-hidden="true">🥕</span></span>}
     </span>
   )
 }

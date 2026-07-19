@@ -23,6 +23,7 @@ Este proyecto se basa en **la Nutrición mediante la Dieta Mediterránea (DM) y 
 | Testing Library React | 16.3.2 | Testing conductual de componentes |
 | Oxlint | 1.71.0 | Linting basado en Rust |
 | jsdom | 29.1.1 | Entorno browser para tests |
+| Playwright | 1.61.1 | Tests E2E — flujo completo de usuario |
 | pnpm | — | Gestor de paquetes rápido y eficiente en disco |
 
 ## Información sobre su instalación y ejecución
@@ -39,6 +40,8 @@ pnpm dev
 # Tests (TDD)
 pnpm test:run        # Tests unitarios y de componentes
 pnpm test:coverage   # Con cobertura
+pnpm test:e2e        # Tests end-to-end con Playwright
+pnpm test:e2e:ui     # E2E en modo interactivo
 
 # Calidad
 pnpm quality         # lint + typecheck + tests
@@ -201,7 +204,8 @@ Cada objeto `Recipe` en nuestra base de datos debe cumplir con un esquema de met
 1. **Fase 1: Domain Modeling** ✅ — Definición de tipos estrictos para perfiles metabólicos, raciones AESAN, tipos de alimentos, notification taxonomy.
 2. **Fase 2: Domain Services & Containers** ✅ — Implementación de lógica erMedDiet, Container/Presentational split, per-feature Zustand stores.
 3. **Fase 3: ADR Scaffolding** ✅ — ScannerAdapter (ADR-003), Activity Tracker (ADR-006), Sustainability (ADR-007), Nudge Engine (ADR-008).
-4. **Fase 4: Tests & Error Handling** ✅ — 383 tests (37 files). Cero errores silenciosos. `ValidationError` y `NotFoundError` tipados.
+4. **Fase 4: Tests & Error Handling** ✅ — 387 tests (38 unitarios + 3 E2E). Cero errores silenciosos. `ValidationError` y `NotFoundError` tipados.
+5. **Fase 5: E2E & Accesibilidad** ✅ — Playwright smoke tests (scan→classify→plan). WCAG 2.1 AA: roles ARIA, aria-labels, keyboard nav, skip links.
 
 ## Estructura de Proyecto (Scope Rule & Colocation)
 

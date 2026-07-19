@@ -68,7 +68,7 @@ export function ActivityTrackerView({
         <span className="text-sm text-stone-500">cumplimiento</span>
         {streak > 0 && (
           <span className="text-sm text-amber-600 ml-auto" aria-label={`Racha de ${streak} semanas`}>
-            🔥 {streak} sem
+            <span aria-hidden="true">🔥</span> {streak} sem
           </span>
         )}
       </div>

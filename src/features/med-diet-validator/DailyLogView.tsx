@@ -35,7 +35,7 @@ export function DailyLogView({
 
       {!caloricTarget && (
         <p className="text-amber-600 text-sm" role="status">
-          💡 {t['log.emptyProfile']}
+          <span aria-hidden="true">💡</span> {t['log.emptyProfile']}
         </p>
       )}
 
