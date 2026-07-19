@@ -103,13 +103,14 @@ src/
 - **Semáforo Nutricional**: Clasifica alimentos en Verde/Naranja/Rojo. Detecta azúcares ocultos. SafetyAlert en frutas de alta carga glucémica. **Calificación Dual** (salud + sostenibilidad) integrada.
 - **Metabolic Tracker**: Calcula objetivo calórico con déficit condicional (IMC > 25). Perfil fenotípico. Registro de glucosa y biomarcadores.
 - **Validador Dieta Mediterránea**: Valida frecuencias diarias/semanales según matriz AESAN 2022. Control de gramajes exactos por ración.
-- **Recipe Engine**: Planes semanales con restricción calórica. Ranking dual salud+sostenibilidad. Badges culturales UNESCO (🏺👥🌿).
+- **Recipe Engine**: Planes semanales con restricción calórica. Ranking dual salud+sostenibilidad. **Fraccionamiento 3-6 tomas diarias** con kcal por comida. Badges culturales UNESCO (🏺👥🌿). AOVE obligatorio en cada comida principal.
 - **Activity Goal Tracker**: Seguimiento WHO/OMS 150-300 min/semana. Compliance % y streak. Tab en dashboard.
 - **Nudge Engine**: 15 reglas (SafetyAlert + BehavioralNudge + SystemAction). Panel UI con badge contador + historial de engagement. Sustitución inteligente (M2): alternativas sostenibles cuando environmentalScore < 30.
 - **Sustainability Scoring**: `computeEnvironmentalScore()` con constantes AESAN/EAT-Lancet. Pesos configurables 50/30/20. Integrado en RecipeEngine (ranking dual).
 - **Substitution Service**: `suggestAlternative(food)` — WHITE_MEAT → LEGUMES + blue FISH (AESAN 2.4.2.1). Ranking por environmental score. Top 3 alternativas.
 - **Convivialidad**: Sugerencias textuales UNESCO en PlanView: "Ideal para comer en compañía" + técnicas culinarias (guiso, vapor, hervido, plancha, crudo).
 - **Zero-Waste**: `isUglyProduce` + `isZeroWaste` en FoodSchema. Badges ♻️🥕 en PlanView. 7 alimentos etiquetados como zero-waste.
+- **Dashboard de Sostenibilidad**: Tab 🌍 Eco con puntuación ambiental (50/30/20), emisiones comparativas EAT-Lancet, y contador Zero-Waste. Layout responsive.
 
 ## Especificación Técnica y Arquitectónica: Ecosistema de Autocuidado Integral (DT2 y Salud Sostenible)
 
@@ -200,7 +201,7 @@ Cada objeto `Recipe` en nuestra base de datos debe cumplir con un esquema de met
 1. **Fase 1: Domain Modeling** ✅ — Definición de tipos estrictos para perfiles metabólicos, raciones AESAN, tipos de alimentos, notification taxonomy.
 2. **Fase 2: Domain Services & Containers** ✅ — Implementación de lógica erMedDiet, Container/Presentational split, per-feature Zustand stores.
 3. **Fase 3: ADR Scaffolding** ✅ — ScannerAdapter (ADR-003), Activity Tracker (ADR-006), Sustainability (ADR-007), Nudge Engine (ADR-008).
-4. **Fase 4: Tests & Error Handling** ✅ — 353 tests (36 files). Cero errores silenciosos. `ValidationError` y `NotFoundError` tipados.
+4. **Fase 4: Tests & Error Handling** ✅ — 383 tests (37 files). Cero errores silenciosos. `ValidationError` y `NotFoundError` tipados.
 
 ## Estructura de Proyecto (Scope Rule & Colocation)
 

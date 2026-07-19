@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { PlanView } from './PlanView'
 import { FoodCategory, food } from '@shared/domain'
-import type { WeeklyPlan } from './services/planGenerator'
+import { MealType, type WeeklyPlan } from './services/planGenerator'
+import { useTrackerStore } from '@features/metabolic-tracker/store'
 
 const lentejas = food({
   id: 'legume-lentejas', name: 'Lentejas', category: FoodCategory.LEGUMES,
@@ -240,5 +241,127 @@ describe('PlanView', () => {
     expect(screen.queryByLabelText('Cocina tradicional')).not.toBeInTheDocument()
     expect(screen.queryByLabelText('Comida en compañía')).not.toBeInTheDocument()
     expect(screen.queryByLabelText('erMedDiet')).not.toBeInTheDocument()
+  })
+
+  describe('meal grouping', () => {
+    const baseFood = (id: string, name: string, cat: FoodCategory) => food({
+      id, name, category: cat,
+      gramsPerRation: 100, kcalPer100g: 100, proteinPer100g: 5,
+      carbsPer100g: 10, fiberPer100g: 1, fatPer100g: 2,
+      carbonFootprint: 0.5, isSeasonal: true,
+    })
+
+    function groupedPlan(entries: WeeklyPlan['days'][0]['entries']): WeeklyPlan {
+      return {
+        days: [{ day: 1, entries }],
+        dailyResults: [{ valid: true, violations: [], animalProteinCount: 0 }],
+        weeklyResult: { valid: true, violations: [], animalProteinCount: 0 },
+        valid: true,
+      }
+    }
+
+    it('renders meals in BREAKFAST → LUNCH → DINNER → SNACK order', () => {
+      const plan = groupedPlan([
+        { food: baseFood('f1', 'Arroz', FoodCategory.CEREALS), rations: 1, mealType: MealType.DINNER },
+        { food: baseFood('f2', 'Pan', FoodCategory.CEREALS), rations: 1, mealType: MealType.LUNCH },
+        { food: baseFood('f3', 'Fruta', FoodCategory.FRUITS), rations: 1, mealType: MealType.BREAKFAST },
+        { food: baseFood('f4', 'Yogur', FoodCategory.DAIRY), rations: 1, mealType: MealType.SNACK },
+      ])
+      render(<PlanView {...defaultProps} weeklyPlan={plan} />)
+
+      const headers = screen.getAllByRole('heading', { level: 3 })
+      expect(headers).toHaveLength(4)
+      expect(headers[0]).toHaveTextContent(/desayuno/i)
+      expect(headers[1]).toHaveTextContent(/almuerzo/i)
+      expect(headers[2]).toHaveTextContent(/cena/i)
+      expect(headers[3]).toHaveTextContent(/snack/i)
+    })
+
+    it('skips empty meal groups (e.g., no SNACK)', () => {
+      const plan = groupedPlan([
+        { food: baseFood('f1', 'Fruta', FoodCategory.FRUITS), rations: 1, mealType: MealType.BREAKFAST },
+        { food: baseFood('f2', 'Arroz', FoodCategory.CEREALS), rations: 1, mealType: MealType.LUNCH },
+      ])
+      render(<PlanView {...defaultProps} weeklyPlan={plan} />)
+
+      const headers = screen.getAllByRole('heading', { level: 3 })
+      expect(headers).toHaveLength(2)
+      expect(headers[0]).toHaveTextContent(/desayuno/i)
+      expect(headers[1]).toHaveTextContent(/almuerzo/i)
+    })
+
+    it('preserves existing features (cultural badges, zero waste)', () => {
+      const culturalFood = food({
+        id: 'test-cultural', name: 'Garbanzos', category: FoodCategory.LEGUMES,
+        gramsPerRation: 60, kcalPer100g: 340, proteinPer100g: 24,
+        carbsPer100g: 54, fiberPer100g: 11, fatPer100g: 1.5,
+        carbonFootprint: 0.8, isSeasonal: true,
+        culturalMetadata: { traditionalCuisine: true, erMedDiet: true },
+      })
+      const plan = groupedPlan([
+        { food: culturalFood, rations: 1, mealType: MealType.LUNCH },
+      ])
+      render(<PlanView {...defaultProps} weeklyPlan={plan} />)
+      // Cultural badge still renders
+      expect(screen.getByLabelText('Cocina tradicional')).toBeInTheDocument()
+      expect(screen.getByLabelText('erMedDiet')).toBeInTheDocument()
+    })
+  })
+
+  describe('kcal display', () => {
+    const kcalFood = (id: string, name: string, cat: FoodCategory, kcal: number, grams: number) => food({
+      id, name, category: cat,
+      gramsPerRation: grams, kcalPer100g: kcal, proteinPer100g: 5,
+      carbsPer100g: 10, fiberPer100g: 1, fatPer100g: 2,
+      carbonFootprint: 0.5, isSeasonal: true,
+    })
+
+    function kcalPlan(entries: WeeklyPlan['days'][0]['entries']): WeeklyPlan {
+      return {
+        days: [{ day: 1, entries }],
+        dailyResults: [{ valid: true, violations: [], animalProteinCount: 0 }],
+        weeklyResult: { valid: true, violations: [], animalProteinCount: 0 },
+        valid: true,
+      }
+    }
+
+    it('displays kcal and % for each meal group', () => {
+      // 2× foodA (100kcal/100g, 50g) each → (100*50/100)*2 = 100 kcal
+      // 1× foodB (200kcal/100g, 100g) → (200*100/100)*1 = 200 kcal
+      // Total LUNCH: 300 kcal, % = 300/2000*100 = 15%
+      useTrackerStore.setState({
+        caloricTarget: { target: 2000, bmr: 1500, tdee: 2000, deficit: 0, restrictionActive: false },
+      })
+      const plan = kcalPlan([
+        { food: kcalFood('a', 'FoodA', FoodCategory.CEREALS, 100, 50), rations: 2, mealType: MealType.LUNCH },
+        { food: kcalFood('b', 'FoodB', FoodCategory.VEGETABLES, 200, 100), rations: 1, mealType: MealType.LUNCH },
+      ])
+      render(<PlanView {...defaultProps} weeklyPlan={plan} />)
+      const header = screen.getByRole('heading', { level: 3, name: /almuerzo/i })
+      expect(header).toHaveTextContent(/3\d{2}.*kcal/i)
+      expect(header).toHaveTextContent(/1[5-9]%/i) // 15%
+    })
+
+    it('shows — when caloricTarget is null', () => {
+      useTrackerStore.setState({ caloricTarget: null })
+      const plan = kcalPlan([
+        { food: kcalFood('a', 'FoodA', FoodCategory.CEREALS, 100, 50), rations: 1, mealType: MealType.BREAKFAST },
+      ])
+      render(<PlanView {...defaultProps} weeklyPlan={plan} />)
+      const header = screen.getByRole('heading', { level: 3, name: /desayuno/i })
+      expect(header).toHaveTextContent(/—/)
+    })
+
+    it('shows — when caloricTarget.target is zero', () => {
+      useTrackerStore.setState({
+        caloricTarget: { target: 0, bmr: 0, tdee: 0, deficit: 0, restrictionActive: false },
+      })
+      const plan = kcalPlan([
+        { food: kcalFood('a', 'FoodA', FoodCategory.CEREALS, 100, 50), rations: 1, mealType: MealType.BREAKFAST },
+      ])
+      render(<PlanView {...defaultProps} weeklyPlan={plan} />)
+      const header = screen.getByRole('heading', { level: 3, name: /desayuno/i })
+      expect(header).toHaveTextContent(/—/)
+    })
   })
 })

@@ -52,6 +52,8 @@ export const FoodSchema = z.object({
   isUglyProduce: z.boolean().default(false),
   /** Whether food is local AND seasonal AND unpackaged (superset of isSeasonal) */
   isZeroWaste: z.boolean().default(false),
+  /** High-priority protein source (e.g., Bacalao 0.7% fat per SPECS_TECH §3, INFORME_ADR). planGenerator favors these in selection. */
+  isHighPriority: z.boolean().default(false),
   /** kg CO2eq per kg of food (ADR-007, optional for V1) */
   carbonFootprint: z.number().min(0).optional(),
   /** Whether in season for Iberian peninsula (simplified) */

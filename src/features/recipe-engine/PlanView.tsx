@@ -1,7 +1,23 @@
 import { CATEGORY_DISPLAY_NAMES } from '@shared/domain'
 import type { CulturalMetadata, Food } from '@shared/domain'
 import { Card, PrimaryButton, ViolationList, LegalDisclaimer } from '@shared/ui'
-import type { WeeklyPlan } from './services/planGenerator'
+import { MealType, type MealEntry, type WeeklyPlan } from './services/planGenerator'
+import { useTrackerStore } from '@features/metabolic-tracker/store'
+
+function computeMealKcal(entries: MealEntry[]): number {
+  return entries.reduce((sum, e) => {
+    return sum + (e.food.kcalPer100g * e.food.gramsPerRation / 100) * e.rations
+  }, 0)
+}
+
+const MEAL_ORDER: MealType[] = [MealType.BREAKFAST, MealType.LUNCH, MealType.DINNER, MealType.SNACK]
+
+const MEAL_LABELS: Record<MealType, string> = {
+  [MealType.BREAKFAST]: 'Desayuno',
+  [MealType.LUNCH]: 'Almuerzo',
+  [MealType.DINNER]: 'Cena',
+  [MealType.SNACK]: 'Snack',
+}
 
 const COOKING_LABELS: Record<string, string> = {
   stew: 'guiso tradicional',
@@ -105,24 +121,50 @@ export function PlanView({
           <div className="space-y-2 max-h-96 overflow-y-auto mt-3" role="list" aria-label="Plan semanal">
             {weeklyPlan.days.map(day => {
               const dayValid = weeklyPlan.dailyResults[day.day - 1]?.valid !== false
+              // Group entries by mealType (default BREAKFAST for backward compat)
+              const groups = new Map<MealType, MealEntry[]>()
+              for (const meal of MEAL_ORDER) groups.set(meal, [])
+              for (const entry of day.entries) {
+                const meal = entry.mealType ?? MealType.BREAKFAST
+                const list = groups.get(meal)
+                if (list) list.push(entry)
+              }
+
+              const caloricTarget = useTrackerStore.getState().caloricTarget
+
               return (
                 <details key={day.day} className="bg-stone-50 rounded-lg">
                   <summary className="font-medium cursor-pointer text-sm p-2 min-h-[44px] flex items-center">
                     <span>Día {day.day} — {day.entries.length} alimentos</span>
                     {!dayValid && <span className="ml-2" aria-label="Violaciones detectadas">⚠️</span>}
                   </summary>
-                  <ul className="px-3 pb-2 space-y-1 text-sm">
-                    {day.entries.map((e, i) => (
-                      <li key={i} className="flex justify-between py-1 border-t border-stone-200">
-                        <span>
-                          {e.rations}× {e.food.name}
-                          {e.food.culturalMetadata && <CulturalBadges meta={e.food.culturalMetadata} />}
-                          <ZeroWasteBadges food={e.food} />
-                        </span>
-                        <span className="text-stone-400">{CATEGORY_DISPLAY_NAMES[e.food.category]}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="px-3 pb-2 space-y-3 text-sm">
+                    {MEAL_ORDER.map(meal => {
+                      const entries = groups.get(meal) ?? []
+                      if (entries.length === 0) return null
+                      const mealKcal = computeMealKcal(entries)
+                      const kcalText = caloricTarget && caloricTarget.target > 0
+                        ? `${Math.round(mealKcal)} kcal / ${Math.round((mealKcal / caloricTarget.target) * 100)}%`
+                        : '—'
+                      return (
+                        <div key={meal}>
+                          <h3 className="font-semibold text-stone-700 mb-1">{MEAL_LABELS[meal]} ({kcalText})</h3>
+                          <ul className="space-y-1">
+                            {entries.map((e, i) => (
+                              <li key={i} className="flex justify-between py-1 border-t border-stone-200">
+                                <span>
+                                  {e.rations}× {e.food.name}
+                                  {e.food.culturalMetadata && <CulturalBadges meta={e.food.culturalMetadata} />}
+                                  <ZeroWasteBadges food={e.food} />
+                                </span>
+                                <span className="text-stone-400">{CATEGORY_DISPLAY_NAMES[e.food.category]}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </details>
               )
             })}

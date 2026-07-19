@@ -75,16 +75,17 @@ pnpm dev
 
 Abre `http://localhost:5173` en el navegador.
 
-La aplicación tiene 6 pestañas:
+La aplicación tiene 7 pestañas:
 
 | Pestaña | Funcionalidad |
 |---|---|
 | 🔍 **Semáforo** | Clasificación dual (salud + sostenibilidad) + detección de azúcares ocultos |
 | 📝 **Hoy** | Registro diario con validación de raciones AESAN 2022 |
 | 📊 **Perfil** | Cálculo de objetivo calórico erMedDiet + biomarcadores + perfil fenotípico |
-| 📅 **Plan** | Plan semanal con ranking dual + badges UNESCO 🏺👥🌿 + ZeroWaste ♻️🥕 |
+| 📅 **Plan** | Plan semanal con ranking dual, fraccionamiento 3-6 tomas, kcal por comida, badges UNESCO 🏺👥🌿 + ZeroWaste ♻️🥕 |
 | 🏃 **Actividad** | Seguimiento WHO/OMS 150-300 min + sesiones de fuerza |
 | 🔔 **Nudges** | Panel de notificaciones con badge contador + historial de engagement |
+| 🌍 **Eco** | Puntuación ambiental (carbono 50%, temporalidad 30%, proximidad 20%), Zero-Waste, emisiones comparativas EAT-Lancet |
 
 ---
 
@@ -119,7 +120,7 @@ Pipeline de calidad:
 pnpm quality
   ├── pnpm lint       → Oxlint (Rust, ultrarrápido)
   ├── pnpm typecheck  → TypeScript 6 (erasableSyntaxOnly)
-  └── pnpm test:run   → Vitest (353 tests)
+  └── pnpm test:run   → Vitest (383 tests)
 ```
 
 ---

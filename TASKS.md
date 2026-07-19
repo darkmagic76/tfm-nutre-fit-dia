@@ -1,6 +1,6 @@
 # TASKS.md — Nutri-Fit-Día: Features por Criticidad Funcional
 
-Generado: 2026-07-17 | Actualizado: 2026-07-18 | Rama: `develop` | Tests: 353 ✅ | Lint: 0 | Typecheck: limpio
+Generado: 2026-07-17 | Actualizado: 2026-07-19 | Rama: `develop` | Tests: 383 ✅ | Lint: 0 | Typecheck: limpio
 
 ---
 
@@ -11,7 +11,7 @@ Generado: 2026-07-17 | Actualizado: 2026-07-18 | Rama: `develop` | Tests: 353 �
 | Nutritional Traffic Light | ✅ Implementado (FR-3.1, FR-3.2) — classificationService + occultSugarDetector, 22 tests |
 | Metabolic Tracker | ✅ Implementado (FR-4.2, RF-02) — caloricTargetService con déficit condicional IMC > 25 |
 | Med Diet Validator | ✅ Implementado — rationValidator cross-feature, DailyLog con Container/Presentational |
-| Recipe Engine | ✅ Implementado — planGenerator + PlanContainer, sustainability badges integrados |
+| Recipe Engine | ✅ Implementado — planGenerator + PlanContainer, sustainability badges, fraccionamiento 3-6 tomas (M7) |
 | Domain Types | ✅ Implementado — FoodCategory, TrafficLight, Notification, Zod schemas, domain errors |
 | UI Primitives | ✅ Implementado — 7 componentes con tests unitarios |
 | Activity Tracker | ✅ Implementado (H1) — useActivityTracker, compliance %, streak, dashboard tab |
@@ -60,14 +60,16 @@ Generado: 2026-07-17 | Actualizado: 2026-07-18 | Rama: `develop` | Tests: 353 �
 | **M4** | **Zero-Waste Module** | SPECS_TECH | ✅ **Completado** — `isUglyProduce` + `isZeroWaste` en FoodSchema. 7 alimentos etiquetados. `ZeroWasteBadges` (♻️🥕) en PlanView. Dataset integrity tests. 9/9 specs. | S | H3 ✅ |
 | **M5** | **FR-MATRIX Sync** | FR-MATRIX | ✅ **Completado** — Matriz sincronizada con implementación real. RF-02 ya ✅, M1-M4 reflejados, 353 tests, fecha 2026-07-19. | XS | Ninguna |
 | **M6** | **Fortalecimiento Muscular 2d/semana** | SPECS_TECH §6, RF-03 | ✅ **Completado** — Implementado en H1: `strengthSessionsMin=2`, `meetsStrength` en useActivityTracker, badge "✅ Objetivo" en ActivityTrackerView. Test existente verifica compliance 100%. | S | H1 ✅ |
-| **M7** | **Fraccionamiento 3-6 tomas diarias** | SPECS_TECH §5 | Extender `planGenerator` para distribuir alimentos diarios en 3-6 tomas. Mostrar estructura de comidas en `PlanView` (desayuno, almuerzo, cena, snacks). | M | H4 |
+| **M7** | **Fraccionamiento 3-6 tomas diarias** | SPECS_TECH §5 | ✅ **Completado** — `MealType` enum, `buildDailyTemplate(mealCount)` 3-6 tomas, `enforceAOVE` post-processing, PlanView agrupado por comida con kcal + % target. 24 tests nuevos. | M | H4 |
+
+### Fase 3: 7/7 completada 🎉
 
 ### LOW — Pulido y experiencia
 
 | # | Tarea | ADR / Fuente | Descripción | Esfuerzo | Dependencias |
 |---|---|---|---|---|---|
-| **L1** | **Bacalao Priority Tag** | SPECS_TECH | Etiquetar Bacalao como "High_Protein_Low_Fat" (0.7% grasa) y priorizarlo en planGenerator como proteína de alta prioridad. | XS | Ninguna |
-| **L2** | **Dashboard Unificado** | — | Refactor `App.tsx` para un dashboard unificado con las 4 pestañas actuales + Activity + Nudges + Sustainability. Layout responsive. | L | H1, H4, H7 |
+| **L1** | **Bacalao Priority Tag** | SPECS_TECH | ✅ **Completado** — `isHighPriority: true` en FoodSchema + Bacalao. `pickSustainableFood()` prioriza high-priority foods sobre environmental score. 2 tests nuevos. | XS | Ninguna |
+| **L2** | **Dashboard Unificado** | — | ✅ **Completado** — Nueva feature `sustainability/` con Container/Presentational (emisiones, zero-waste, scoring). Tab "🌍 Eco" integrado. Nav responsive: iconos en mobile, icono+label en desktop. `overflow-x-auto` + `flex-wrap`. 4 tests. | L | H1, H4, H7 |
 | **L3** | **i18n ES/EN** | — | Extraer todos los strings de UI a archivos de traducción. Inglés por defecto, español como locale principal. | L | Ninguna |
 | **L4** | **E2E Smoke Tests** | — | Tests end-to-end con Playwright: flujo completo de escaneo → clasificación → registro → plan semanal. | M | L2 |
 | **L5** | **A11y Audit** | RNF-03 | Auditoría de accesibilidad WCAG 2.1 AA: focus management, aria labels, contraste, navegación por teclado. | M | Ninguna |
@@ -96,7 +98,7 @@ Fase 4 — Pulido (LOW)
 
 ## Notas
 
-- **353 tests verdes**: cualquier feature nueva debe mantener el TDD estricto (RED → GREEN → TRIANGULATE → REFACTOR).
+- **383 tests verdes**: cualquier feature nueva debe mantener el TDD estricto (RED → GREEN → TRIANGULATE → REFACTOR).
 - **Scope Rule**: código usado por 1 feature → dentro de esa feature. Usado por 2+ → `shared/` con estructura de domain module.
 - **NudgeEngine wiring**: `evaluateAndEnqueue()` se dispara en `ScannerContainer.handleClassify` y `handleAddToLog`. Singleton `CooldownTracker` previene notificaciones duplicadas.
 - **Activity form**: `NumberField` usa estado local (`useState`) — bug de `value=""` fijo corregido.

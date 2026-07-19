@@ -62,3 +62,19 @@ describe('Dataset integrity: zero-waste tagged foods', () => {
     expect(salmon.isZeroWaste).toBe(false)
   })
 })
+
+describe('FoodSchema isHighPriority', () => {
+  it('defaults isHighPriority to false when omitted', () => {
+    const result = FoodSchema.parse({
+      id: 'test-food',
+      name: 'Test Food',
+      category: 'vegetables',
+      gramsPerRation: 100,
+      kcalPer100g: 50,
+      proteinPer100g: 2,
+      carbsPer100g: 10,
+      fatPer100g: 0.5,
+    })
+    expect(result.isHighPriority).toBe(false)
+  })
+})

@@ -6,6 +6,7 @@ import { MetabolicTrackerContainer } from '@features/metabolic-tracker/Metabolic
 import { PlanContainer } from '@features/recipe-engine/PlanContainer'
 import { ActivityTrackerContainer } from '@features/activity-tracker'
 import { NudgePanelContainer } from '@features/nudge-engine/NudgePanelContainer'
+import { SustainabilityContainer } from '@features/sustainability/SustainabilityContainer'
 
 export default function App() {
   const { tab, setTab } = useTabNavigation()
@@ -18,7 +19,7 @@ export default function App() {
           Ecosistema de Autocuidado Integral para Diabetes Tipo 2
         </p>
         <nav
-          className="flex justify-center gap-2 mt-4 flex-wrap"
+          className="flex justify-center gap-1 sm:gap-2 mt-4 flex-wrap overflow-x-auto px-2"
           role="tablist"
           aria-label="Navegación principal"
         >
@@ -29,7 +30,8 @@ export default function App() {
               onClick={() => setTab(t.id)}
               aria-controls={`panel-${t.id}`}
             >
-              {t.icon} {t.label}
+              <span className="sm:hidden" aria-hidden="true">{t.icon}</span>
+              <span className="hidden sm:inline">{t.icon} {t.label}</span>
             </TabButton>
           ))}
         </nav>
@@ -38,7 +40,7 @@ export default function App() {
         </p>
       </header>
 
-      <main className="max-w-3xl mx-auto p-4 sm:p-6" id="main-content">
+      <main className="max-w-3xl mx-auto p-3 sm:p-6" id="main-content">
         <LegalDisclaimer />
         <div className="h-2" />
         <div role="tabpanel" id="panel-scanner" hidden={tab !== 'scanner'} aria-label="Semáforo nutricional">
@@ -58,6 +60,9 @@ export default function App() {
         </div>
         <div role="tabpanel" id="panel-nudges" hidden={tab !== 'nudges'} aria-label="Nudges y notificaciones">
           {tab === 'nudges' && <NudgePanelContainer />}
+        </div>
+        <div role="tabpanel" id="panel-sustainability" hidden={tab !== 'sustainability'} aria-label="Sostenibilidad">
+          {tab === 'sustainability' && <SustainabilityContainer />}
         </div>
       </main>
 
