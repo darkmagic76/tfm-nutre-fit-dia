@@ -95,4 +95,23 @@ export interface Translations {
 
   // Legal
   'legal.disclaimer': string
+
+  // Form labels
+  'form.weight': string
+  'form.height': string
+  'form.age': string
+  'form.diagnosisAge': string
+  'form.glucose': string
+  'form.gender': string
+  'form.genderMale': string
+  'form.genderFemale': string
+  'form.paf': string
+  'form.pafSedentary': string
+  'form.pafLight': string
+  'form.pafModerate': string
+  'form.pafActive': string
+  'form.pafVeryActive': string
+  'form.glucoseContext': string
+  'form.glucoseFasting': string
+  'form.glucosePostprandial': string
 }

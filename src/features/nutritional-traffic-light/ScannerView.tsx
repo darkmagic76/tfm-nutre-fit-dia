@@ -3,6 +3,7 @@ import type { Food } from '@shared/domain'
 import { Card, SelectField, PrimaryButton, SafetyAlertDisplay } from '@shared/ui'
 import type { ClassificationResult } from './services/classificationService'
 import type { SafetyAlert } from '@shared/services/rationValidator'
+import { useT } from '@shared/i18n'
 
 const TRAFFIC_COLORS: Record<string, string> = {
   [TrafficLightColor.GREEN]: 'bg-emerald-500',
@@ -39,15 +40,17 @@ export function ScannerView({
   onAddToLog,
   onAcknowledgeAlert,
 }: ScannerViewProps) {
+  const t = useT()
+
   return (
-    <Card title="🔍 Semáforo Nutricional" description="Modelo Hospital Rey Juan Carlos. Azúcares ocultos o grasas trans → ROJO automático.">
+    <Card title={t['scanner.title']} description={t['scanner.description']}>
       <SelectField
         id="food-select"
-        label="Seleccionar alimento"
+        label={t['ui.selectFood']}
         value={selectedId}
         onChange={v => onSelect(v)}
         options={options}
-        placeholder="— Seleccionar alimento —"
+        placeholder={t['scanner.emptySelection']}
       />
 
       {selected && (
@@ -62,15 +65,15 @@ export function ScannerView({
 
       <div className="flex gap-2">
         <PrimaryButton onClick={onClassify} disabled={!selectedId}>
-          Clasificar
+          {t['ui.classify']}
         </PrimaryButton>
         <PrimaryButton
           onClick={onAddToLog}
           disabled={!selectedId}
           className="bg-amber-600 hover:bg-amber-700 focus-visible:outline-amber-600"
-          aria-label="Añadir alimento al registro del día"
+          aria-label={t['ui.addToLog']}
         >
-          + Añadir al día
+          + {t['tab.log']}
         </PrimaryButton>
       </div>
 

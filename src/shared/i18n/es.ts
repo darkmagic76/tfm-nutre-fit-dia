@@ -85,4 +85,22 @@ export const es: Translations = {
   'sustainability.emissionsDesc': 'kg CO₂eq por kg de alimento (EAT-Lancet)',
 
   'legal.disclaimer': '⚕️ Toda recomendación, cantidad y plan nutricional debe ser validado por un dietista-nutricionista colegiado.',
+
+  'form.weight': 'Peso (kg)',
+  'form.height': 'Altura (cm)',
+  'form.age': 'Edad',
+  'form.diagnosisAge': 'Edad diagnóstico DT2',
+  'form.glucose': 'Glucosa (mg/dL)',
+  'form.gender': 'Género',
+  'form.genderMale': 'Hombre',
+  'form.genderFemale': 'Mujer',
+  'form.paf': 'Factor de actividad física',
+  'form.pafSedentary': 'Sedentario (1.2)',
+  'form.pafLight': 'Ligero (1.375)',
+  'form.pafModerate': 'Moderado (1.55)',
+  'form.pafActive': 'Activo (1.725)',
+  'form.pafVeryActive': 'Muy activo (1.9)',
+  'form.glucoseContext': 'Contexto glucosa',
+  'form.glucoseFasting': 'Ayunas',
+  'form.glucosePostprandial': 'Postprandial',
 }
