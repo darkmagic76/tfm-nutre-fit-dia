@@ -2,7 +2,8 @@ import { useTrackerStore } from '@features/metabolic-tracker/store'
 import { useLogStore } from '@features/med-diet-validator/store'
 import { useActivityStore } from '@features/activity-tracker'
 import { countRations } from '@shared/services/rationValidator'
-import { FoodCategory, ANIMAL_PROTEIN_CATEGORIES, type SystemNotification } from '@shared/domain'
+import { FoodCategory, ANIMAL_PROTEIN_CATEGORIES, type Food, type SystemNotification } from '@shared/domain'
+import { computeEnvironmentalScore, suggestAlternative } from '@shared/sustainability'
 import { getTrend } from '@features/metabolic-tracker/services/biomarkerTrackingService'
 import { HIGH_GLYCEMIC_FRUITS, NUDGE_RULES } from './rules'
 import { CooldownTracker } from './cooldownTracker'
@@ -15,8 +16,10 @@ import type { CooldownTracker as CooldownTrackerType } from './cooldownTracker'
  *
  * This is the ONE integration boundary that reads Zustand stores.
  * All impurity is concentrated here — evaluateRules stays pure.
+ *
+ * @param food - Optional scanned food to compute environmental score and alternatives.
  */
-export function buildNudgeContext(): NudgeContext {
+export function buildNudgeContext(food?: Food): NudgeContext {
   const { restrictionActive } = useTrackerStore.getState()
   const { todayLog } = useLogStore.getState()
   const { weeklyMinutes } = useActivityStore.getState()
@@ -41,6 +44,17 @@ export function buildNudgeContext(): NudgeContext {
   const currentHour = now.getHours()
   const dayOfWeek = now.getDay()
 
+  // M2: smart substitution — compute from optional scanned food
+  let environmentalScore: number | null = null
+  let alternatives: string[] | null = null
+
+  if (food) {
+    const envResult = computeEnvironmentalScore(food)
+    const altResults = suggestAlternative(food)
+    environmentalScore = envResult.score
+    alternatives = altResults.length > 0 ? altResults.map(f => f.name) : null
+  }
+
   return {
     restrictionActive,
     animalProteinCount,
@@ -55,17 +69,19 @@ export function buildNudgeContext(): NudgeContext {
     hasEggs,
     weeklyActivityMinutes: weeklyMinutes,
     dayOfWeek,
+    environmentalScore,
+    alternatives,
   }
 }
 
-function buildNotification(rule: SafetyRule): SystemNotification {
+function buildNotification(rule: SafetyRule, ctx: NudgeContext): SystemNotification {
   return {
     id: `${rule.id}-${Date.now()}`,
     type: rule.type,
     severity: rule.severity,
     target: 'user',
     title: rule.title,
-    body: rule.body,
+    body: typeof rule.body === 'function' ? rule.body(ctx) : rule.body,
     ruleSource: rule.id,
     triggeredAt: new Date(),
   }
@@ -87,7 +103,7 @@ export function evaluateRules(
     .filter(rule => rule.condition(ctx) && !cooldown.isOnCooldown(rule.id, rule.cooldown))
     .map(rule => ({
       rule,
-      notification: buildNotification(rule),
+      notification: buildNotification(rule, ctx),
     }))
 }
 
@@ -100,8 +116,8 @@ const cooldownTracker = new CooldownTracker()
  * This is the integration point called by UI components (ScannerContainer, DailyLogContainer)
  * whenever a user action might trigger nudges.
  */
-export function evaluateAndEnqueue(): void {
-  const ctx = buildNudgeContext()
+export function evaluateAndEnqueue(food?: Food): void {
+  const ctx = buildNudgeContext(food)
   const results = evaluateRules(ctx, NUDGE_RULES, cooldownTracker)
   const { enqueue } = useNudgeStore.getState()
 

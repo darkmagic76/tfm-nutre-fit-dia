@@ -48,6 +48,10 @@ export const FoodSchema = z.object({
   hasTransFats: z.boolean().default(false),
   /** Whether this is a "processed" food (scanner target) */
   isProcessed: z.boolean().default(false),
+  /** Whether food has cosmetic defects (odd shape, spots) but is perfectly edible */
+  isUglyProduce: z.boolean().default(false),
+  /** Whether food is local AND seasonal AND unpackaged (superset of isSeasonal) */
+  isZeroWaste: z.boolean().default(false),
   /** kg CO2eq per kg of food (ADR-007, optional for V1) */
   carbonFootprint: z.number().min(0).optional(),
   /** Whether in season for Iberian peninsula (simplified) */

@@ -64,6 +64,27 @@ describe('buildNudgeContext', () => {
     const ctx = buildNudgeContext()
     expect(ctx.containsHighGlycemicFruit).toBe(false)
   })
+
+  it('sets environmentalScore and alternatives when food is provided', () => {
+    const highCarbonFood = makeFood({
+      id: 'chorizo',
+      name: 'Chorizo',
+      category: FoodCategory.RED_MEAT,
+      carbonFootprint: 8.0,
+    })
+    const ctx = buildNudgeContext(highCarbonFood)
+
+    expect(ctx.environmentalScore).toBeGreaterThanOrEqual(0)
+    expect(ctx.alternatives).not.toBeNull()
+    expect(ctx.alternatives!.length).toBeGreaterThan(0)
+  })
+
+  it('sets environmentalScore to null and alternatives to null when food is NOT provided', () => {
+    const ctx = buildNudgeContext()
+
+    expect(ctx.environmentalScore).toBeNull()
+    expect(ctx.alternatives).toBeNull()
+  })
 })
 
 describe('evaluateRules', () => {
@@ -83,11 +104,13 @@ describe('evaluateRules', () => {
       hasEggs: false,
       weeklyActivityMinutes: 200,
       dayOfWeek: 3,
+      environmentalScore: null,
+      alternatives: null,
     }
 
     const results = evaluateRules(ctx, NUDGE_RULES, cooldown)
 
-    // Only CEREALS_RESTRICTION should match
+    // Only CEREALS_RESTRICTION should match (dayOfWeek=3 < 4 → LEGUMES_GLYCEMIC_BASE does NOT fire)
     expect(results).toHaveLength(1)
     expect(results[0].rule.id).toBe('CEREALS_RESTRICTION')
     expect(results[0].notification.type).toBe('safety_alert')
@@ -112,6 +135,8 @@ describe('evaluateRules', () => {
       hasEggs: false,
       weeklyActivityMinutes: 200,
       dayOfWeek: 3,
+      environmentalScore: null,
+      alternatives: null,
     }
 
     const results = evaluateRules(ctx, NUDGE_RULES, cooldown)
@@ -134,6 +159,8 @@ describe('evaluateRules', () => {
       hasEggs: false,
       weeklyActivityMinutes: 200,
       dayOfWeek: 3,
+      environmentalScore: null,
+      alternatives: null,
     }
 
     const results = evaluateRules(ctx, NUDGE_RULES, cooldown)
@@ -156,6 +183,8 @@ describe('evaluateRules', () => {
       hasEggs: false,
       weeklyActivityMinutes: 200,
       dayOfWeek: 3,
+      environmentalScore: null,
+      alternatives: null,
     }
 
     const results = evaluateRules(ctx, [], cooldown)
@@ -178,6 +207,8 @@ describe('evaluateRules', () => {
       hasEggs: false,
       weeklyActivityMinutes: 200,
       dayOfWeek: 3,
+      environmentalScore: null,
+      alternatives: null,
     }
     const rulesCount = NUDGE_RULES.length
 
@@ -205,6 +236,8 @@ describe('evaluateRules', () => {
       hasEggs: false,
       weeklyActivityMinutes: 200,
       dayOfWeek: 3,
+      environmentalScore: null,
+      alternatives: null,
     }
 
     const results = evaluateRules(ctx, NUDGE_RULES, cooldown)

@@ -172,6 +172,57 @@ describe('PlanView', () => {
     expect(screen.queryByText(/Preparación:/)).not.toBeInTheDocument()
   })
 
+  describe('ZeroWasteBadges', () => {
+    const zeroWasteFood = food({
+      id: 'test-zw', name: 'Zero Waste Food', category: FoodCategory.VEGETABLES,
+      gramsPerRation: 100, kcalPer100g: 50, proteinPer100g: 2,
+      carbsPer100g: 10, fiberPer100g: 1, fatPer100g: 0.5,
+      carbonFootprint: 0.2, isSeasonal: true,
+      isZeroWaste: true,
+    })
+
+    const uglyProduceFood = food({
+      id: 'test-ugly', name: 'Ugly Produce Food', category: FoodCategory.FRUITS,
+      gramsPerRation: 150, kcalPer100g: 52, proteinPer100g: 0.3,
+      carbsPer100g: 14, fiberPer100g: 2.4, fatPer100g: 0.2,
+      carbonFootprint: 0.3, isSeasonal: true,
+      isUglyProduce: true,
+    })
+
+    function buildPlan(foodItem: typeof zeroWasteFood): WeeklyPlan {
+      return {
+        days: [{ day: 1, entries: [{ food: foodItem, rations: 1 }] }],
+        dailyResults: [{ valid: true, violations: [], animalProteinCount: 0 }],
+        weeklyResult: { valid: true, violations: [], animalProteinCount: 0 },
+        valid: true,
+      }
+    }
+
+    it('renders ♻️ badge when isZeroWaste is true', () => {
+      render(<PlanView {...defaultProps} weeklyPlan={buildPlan(zeroWasteFood)} />)
+      expect(screen.getByLabelText('Zero Waste')).toBeInTheDocument()
+      expect(screen.getByTitle('Zero Waste')).toBeInTheDocument()
+    })
+
+    it('renders 🥕 badge when isUglyProduce is true', () => {
+      render(<PlanView {...defaultProps} weeklyPlan={buildPlan(uglyProduceFood)} />)
+      expect(screen.getByLabelText('KM0')).toBeInTheDocument()
+      expect(screen.getByTitle('KM0 / Defectos estéticos')).toBeInTheDocument()
+    })
+
+    it('renders no badges when both flags are false', () => {
+      const plainFood = food({
+        id: 'test-plain', name: 'Plain Food', category: FoodCategory.CEREALS,
+        gramsPerRation: 50, kcalPer100g: 240, proteinPer100g: 8,
+        carbsPer100g: 42, fiberPer100g: 7, fatPer100g: 2,
+        carbonFootprint: 0.8, isSeasonal: true,
+      })
+      render(<PlanView {...defaultProps} weeklyPlan={buildPlan(plainFood)} />)
+      expect(screen.queryByLabelText('Zero Waste')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('KM0')).not.toBeInTheDocument()
+    })
+  })
+
   it('does not render cultural badges when food has no metadata', () => {
     const plainFood = food({
       id: 'veg-brocoli', name: 'Brócoli', category: FoodCategory.VEGETABLES,

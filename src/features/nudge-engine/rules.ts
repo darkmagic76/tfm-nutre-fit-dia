@@ -163,4 +163,23 @@ export const NUDGE_RULES: SafetyRule[] = [
     body: 'No has alcanzado los 150 min/semana de actividad moderada. Considera reducir carga de HC.',
     condition: ctx => ctx.weeklyActivityMinutes < 150,
   },
+
+  // ─── M2: smart substitution ───
+
+  {
+    id: 'SUSTAINABLE_SUBSTITUTION',
+    type: NotificationType.BEHAVIORAL_NUDGE,
+    severity: NotificationSeverity.INFO,
+    cooldown: COOLDOWN_4H,
+    title: 'Sustitución inteligente',
+    body: ctx => {
+      const names = ctx.alternatives?.slice(0, 3).join(', ') ?? ''
+      return `Considera alternativas más sostenibles: ${names}`
+    },
+    condition: ctx =>
+      ctx.environmentalScore !== null &&
+      ctx.environmentalScore < 30 &&
+      ctx.alternatives !== null &&
+      ctx.alternatives.length > 0,
+  },
 ]

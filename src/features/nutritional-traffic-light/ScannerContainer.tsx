@@ -24,7 +24,8 @@ export function ScannerContainer() {
     const food = selected!
     setResult(classifyFoodWithReasons(food))
     setSafetyAlerts(checkSafetyAlerts(food))
-    evaluateAndEnqueue()
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guarded by UI (button disabled when null)
+    evaluateAndEnqueue(selected!)
   }
 
   const handleAddToLog = () => {

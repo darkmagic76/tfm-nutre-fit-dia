@@ -18,7 +18,7 @@ export interface SafetyRule extends NudgeRule {
   severity: NotificationSeverity
   condition: (ctx: NudgeContext) => boolean
   title: string
-  body: string
+  body: string | ((ctx: NudgeContext) => string)
 }
 
 export interface NudgeContext {
@@ -52,6 +52,12 @@ export interface NudgeContext {
   weeklyActivityMinutes: number
   /** Day of week (0=Sun, 6=Sat) */
   dayOfWeek: number
+
+  // M2: smart substitution
+  /** Environmental sustainability score (0–100), null when food not provided */
+  environmentalScore: number | null
+  /** Sustainable alternatives names, null when food not provided */
+  alternatives: string[] | null
 }
 
 export interface NudgeEvaluation {

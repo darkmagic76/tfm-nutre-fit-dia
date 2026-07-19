@@ -1,5 +1,5 @@
 import { CATEGORY_DISPLAY_NAMES } from '@shared/domain'
-import type { CulturalMetadata } from '@shared/domain'
+import type { CulturalMetadata, Food } from '@shared/domain'
 import { Card, PrimaryButton, ViolationList, LegalDisclaimer } from '@shared/ui'
 import type { WeeklyPlan } from './services/planGenerator'
 
@@ -32,6 +32,15 @@ interface PlanViewProps {
   weeklyPlan: WeeklyPlan | null
   onToggleRestriction: (active: boolean) => void
   onGeneratePlan: () => void
+}
+
+function ZeroWasteBadges({ food }: { food: Food }) {
+  return (
+    <span className="inline-flex gap-1 ml-1">
+      {food.isZeroWaste && <span title="Zero Waste" aria-label="Zero Waste">♻️</span>}
+      {food.isUglyProduce && <span title="KM0 / Defectos estéticos" aria-label="KM0">🥕</span>}
+    </span>
+  )
 }
 
 export function PlanView({
@@ -108,6 +117,7 @@ export function PlanView({
                         <span>
                           {e.rations}× {e.food.name}
                           {e.food.culturalMetadata && <CulturalBadges meta={e.food.culturalMetadata} />}
+                          <ZeroWasteBadges food={e.food} />
                         </span>
                         <span className="text-stone-400">{CATEGORY_DISPLAY_NAMES[e.food.category]}</span>
                       </li>
