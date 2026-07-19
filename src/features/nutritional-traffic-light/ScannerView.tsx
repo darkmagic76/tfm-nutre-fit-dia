@@ -1,7 +1,9 @@
 import { TrafficLightColor, CATEGORY_DISPLAY_NAMES } from '@shared/domain'
 import type { Food } from '@shared/domain'
-import { Card, SelectField, PrimaryButton } from '@shared/ui'
+import { Card, SelectField, PrimaryButton, SafetyAlertDisplay } from '@shared/ui'
 import type { ClassificationResult } from './services/classificationService'
+import type { SafetyAlert } from '@shared/services/rationValidator'
+import { useT } from '@shared/i18n'
 
 const TRAFFIC_COLORS: Record<string, string> = {
   [TrafficLightColor.GREEN]: 'bg-emerald-500',
@@ -20,9 +22,11 @@ interface ScannerViewProps {
   options: Array<{ value: string; label: string }>
   selected: Food | null
   result: ClassificationResult | null
+  safetyAlerts: SafetyAlert[]
   onSelect: (id: string) => void
   onClassify: () => void
   onAddToLog: () => void
+  onAcknowledgeAlert: (index: number) => void
 }
 
 export function ScannerView({
@@ -30,19 +34,23 @@ export function ScannerView({
   options,
   selected,
   result,
+  safetyAlerts,
   onSelect,
   onClassify,
   onAddToLog,
+  onAcknowledgeAlert,
 }: ScannerViewProps) {
+  const t = useT()
+
   return (
-    <Card title="🔍 Semáforo Nutricional" description="Modelo Hospital Rey Juan Carlos. Azúcares ocultos o grasas trans → ROJO automático.">
+    <Card title={t['scanner.title']} description={t['scanner.description']}>
       <SelectField
         id="food-select"
-        label="Seleccionar alimento"
+        label={t['ui.selectFood']}
         value={selectedId}
         onChange={v => onSelect(v)}
         options={options}
-        placeholder="— Seleccionar alimento —"
+        placeholder={t['scanner.emptySelection']}
       />
 
       {selected && (
@@ -57,16 +65,16 @@ export function ScannerView({
 
       <div className="flex gap-2">
         <PrimaryButton onClick={onClassify} disabled={!selectedId}>
-          Clasificar
+          {t['ui.classify']}
         </PrimaryButton>
-        <button
+        <PrimaryButton
           onClick={onAddToLog}
           disabled={!selectedId}
-          className="flex-1 min-h-[44px] bg-amber-600 text-white py-2 rounded-lg text-sm font-medium disabled:opacity-40 hover:bg-amber-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 transition"
-          aria-label="Añadir alimento al registro del día"
+          className="bg-amber-600 hover:bg-amber-700 focus-visible:outline-amber-600"
+          aria-label={t['ui.addToLog']}
         >
-          + Añadir al día
-        </button>
+          + {t['tab.log']}
+        </PrimaryButton>
       </div>
 
       {result && (
@@ -82,6 +90,8 @@ export function ScannerView({
           ))}
         </div>
       )}
+
+      <SafetyAlertDisplay alerts={safetyAlerts} onAcknowledge={onAcknowledgeAlert} />
     </Card>
   )
 }

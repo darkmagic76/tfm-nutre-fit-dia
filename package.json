@@ -12,8 +12,11 @@
     "test:run": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "quality": "pnpm lint && pnpm typecheck && pnpm test:run",
-    "verify": "pnpm quality && pnpm build"
+    "verify": "pnpm quality && pnpm build",
+    "prepare": "husky"
   },
   "dependencies": {
     "react": "^19.2.7",
@@ -22,6 +25,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/vite": "^4.3.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -30,6 +34,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "@vitest/coverage-v8": "^4.1.10",
+    "husky": "^9.1.7",
     "jsdom": "^29.1.1",
     "oxlint": "^1.71.0",
     "tailwindcss": "^4.3.2",

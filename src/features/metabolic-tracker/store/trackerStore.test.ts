@@ -1,14 +1,21 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useTrackerStore } from './trackerStore'
 import { ValidationError } from '@shared/errors'
 import * as utils from '@shared/utils'
+import { resetBiomarkerHistory } from '../services/biomarkerTrackingService'
 
 describe('trackerStore', () => {
+  beforeEach(() => {
+    resetBiomarkerHistory()
+  })
   it('has default values', () => {
     const state = useTrackerStore.getState()
     expect(state.weight).toBe('80')
     expect(state.height).toBe('170')
     expect(state.age).toBe('55')
+    expect(state.diagnosisAge).toBe('55')
+    expect(state.glucose).toBe('')
+    expect(state.glucoseContext).toBe('fasting')
     expect(state.gender).toBe('male')
     expect(state.paf).toBe('1.2')
     expect(state.caloricTarget).toBeNull()
@@ -35,6 +42,21 @@ describe('trackerStore', () => {
     it('updates paf', () => {
       useTrackerStore.getState().setPaf('1.725')
       expect(useTrackerStore.getState().paf).toBe('1.725')
+    })
+
+    it('updates diagnosisAge', () => {
+      useTrackerStore.getState().setDiagnosisAge('45')
+      expect(useTrackerStore.getState().diagnosisAge).toBe('45')
+    })
+
+    it('updates glucose', () => {
+      useTrackerStore.getState().setGlucose('120')
+      expect(useTrackerStore.getState().glucose).toBe('120')
+    })
+
+    it('updates glucoseContext', () => {
+      useTrackerStore.getState().setGlucoseContext('postprandial')
+      expect(useTrackerStore.getState().glucoseContext).toBe('postprandial')
     })
 
     it('accepts valid gender', () => {
@@ -114,6 +136,28 @@ describe('trackerStore', () => {
       const state = useTrackerStore.getState()
       expect(state.profileError).toBeInstanceOf(ValidationError)
       expect(state.profileError!.message).toContain('Error al procesar')
+    })
+
+    it('rejects diagnosisAge greater than current age', () => {
+      useTrackerStore.getState().setWeight('80')
+      useTrackerStore.getState().setHeight('170')
+      useTrackerStore.getState().setAge('40')
+      useTrackerStore.getState().setDiagnosisAge('45')
+      useTrackerStore.getState().calculateTarget()
+      const state = useTrackerStore.getState()
+      expect(state.profileError).toBeInstanceOf(ValidationError)
+      expect(state.profileError!.message).toContain('edad de diagnóstico')
+    })
+
+    it('accepts diagnosisAge equal to current age', () => {
+      useTrackerStore.getState().setWeight('80')
+      useTrackerStore.getState().setHeight('170')
+      useTrackerStore.getState().setAge('50')
+      useTrackerStore.getState().setDiagnosisAge('50')
+      useTrackerStore.getState().calculateTarget()
+      const state = useTrackerStore.getState()
+      expect(state.caloricTarget).not.toBeNull()
+      expect(state.profileError).toBeNull()
     })
   })
 })
