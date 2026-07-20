@@ -55,52 +55,59 @@ pnpm verify          # quality + build
 ```text
 src/
 ├── features/
-│   ├── nutritional-traffic-light/
+│   ├── nutritional-traffic-light/       # Semáforo Nutricional + Dual Scan (H4)
 │   │   ├── ScannerContainer.tsx          # Lógica: estado, store, handlers
 │   │   ├── ScannerView.tsx               # UI puro: props, sin store
 │   │   ├── store/scannerStore.ts         # Historial de escaneos (Zustand)
-│   │   └── services/                     # classificationService, occultSugarDetector
-│   ├── metabolic-tracker/
+│   │   └── services/                     # classificationService, occultSugarDetector, safetyCheck
+│   ├── metabolic-tracker/               # Perfil fenotípico + biomarcadores
 │   │   ├── MetabolicTrackerContainer.tsx # Lógica: perfil metabólico
 │   │   ├── MetabolicTrackerView.tsx      # UI: formulario + resultados
-│   │   ├── store/trackerStore.ts         # Perfil + objetivo calórico + restrictionActive
-│   │   └── services/                     # caloricTargetService
-│   ├── med-diet-validator/
+│   │   ├── components/                   # ProfileForm, ProfileResults, ProfileError
+│   │   ├── store/trackerStore.ts         # Perfil + objetivo calórico (Zustand)
+│   │   └── services/                     # caloricTargetService, biomarkerTrackingService
+│   ├── med-diet-validator/              # Validación AESAN 2022
 │   │   ├── DailyLogContainer.tsx         # Lógica: registro diario
 │   │   ├── DailyLogView.tsx              # UI: lista alimentos + validación
+│   │   ├── components/                   # FoodList, DailyViolations, CaloricSummary
 │   │   └── store/logStore.ts             # todayLog + validación (Zustand)
-│   ├── recipe-engine/
+│   ├── recipe-engine/                   # Plan semanal erMedDiet + fraccionamiento M7
 │   │   ├── PlanContainer.tsx             # Lógica: plan semanal
 │   │   ├── PlanView.tsx                  # UI: checkbox + plan generado
 │   │   ├── store/planStore.ts            # weeklyPlan (Zustand)
 │   │   └── services/                     # planGenerator
-│   ├── activity-tracker/                 # ADR-006 — Activity Goal Tracker V1 ✅
-│   │   ├── ActivityTrackerContainer.tsx    # Lógica: compliance + streak
-│   │   ├── ActivityTrackerView.tsx         # UI: metas OMS + formulario
-│   │   ├── hooks/useActivityTracker.ts     # Hook: compliance %, streak, weeklyGoal
-│   │   ├── store/activityStore.ts          # weeklyMinutes + entries (Zustand)
-│   │   └── types.ts                        # ActivityEntry, WeeklyGoal, ComplianceReport
-│   ├── nudge-engine/                      # ADR-008 — Nudge Engine ✅ (14 reglas completas)
-│   │   ├── engine.ts                       # buildNudgeContext + evaluateRules (puro)
-│   │   ├── rules.ts                        # SafetyAlert rules (CEREALS, FRUITS, VEGETABLES)
-│   │   ├── cooldownTracker.ts             # CooldownTracker (in-memory)
-│   │   ├── store/nudgeStore.ts            # pending + history (Zustand)
-│   │   └── types.ts                       # NudgeRule, NudgeContext, SafetyRule
-│   │   ├── types.ts                      # ActivityEntry, WeeklyGoal
-│   │   └── store/activityStore.ts        # weeklyMinutes, strengthSessions
-│   └── nudge-engine/                     # [scaffolded] ADR-008
-│       ├── types.ts                      # NudgeRule, NudgeContext
-│       └── store/nudgeStore.ts           # pending nudges queue
+│   ├── activity-tracker/                # WHO/OMS 150-300 min + fuerza (ADR-006) ✅
+│   │   ├── ActivityTrackerContainer.tsx  # Lógica: compliance + streak
+│   │   ├── ActivityTrackerView.tsx       # UI: metas OMS + formulario
+│   │   ├── hooks/useActivityTracker.ts   # Hook: compliance %, streak, weeklyGoal
+│   │   ├── store/activityStore.ts        # weeklyMinutes + entries (Zustand)
+│   │   └── types.ts                      # ActivityEntry, WeeklyGoal, ComplianceReport
+│   ├── nudge-engine/                    # 15 reglas + panel UI (ADR-008) ✅
+│   │   ├── NudgePanelContainer.tsx       # Lógica: nudges pendientes + historial
+│   │   ├── NudgePanelView.tsx            # UI: lista + dismiss + badge contador
+│   │   ├── engine.ts                     # buildNudgeContext + evaluateRules (puro)
+│   │   ├── rules.ts                      # SafetyAlert + BehavioralNudge + SystemAction
+│   │   ├── cooldownTracker.ts            # CooldownTracker (in-memory)
+│   │   ├── store/nudgeStore.ts           # pending + history (Zustand)
+│   │   └── types.ts                      # NudgeRule, NudgeContext, SafetyRule
+│   └── sustainability/                  # Dashboard Eco + scoring (ADR-007) ✅
+│       ├── SustainabilityContainer.tsx   # Lógica: scoring + zero-waste + emisiones
+│       └── SustainabilityView.tsx        # UI: tabs de sostenibilidad
 ├── shared/
-│   ├── domain/                           # FoodCategory, TrafficLight, Notification, Zod schemas
-│   ├── data/foods.ts                     # Catálogo 34 alimentos
-│   ├── services/rationValidator.ts       # Validación diaria/semanal (cross-feature)
-│   ├── sustainability/                   # ADR-007 ✅ — EnvironmentalScore, Seasonality, Proximity
-│   ├── ui/primitives.tsx                 # Card, SelectField, TabButton, StatCard
-│   └── utils/                            # sanitizeNumeric, computeIMC
+│   ├── data/foods.ts                     # Catálogo 34 alimentos AESAN
+│   ├── domain/                           # FoodCategory, Food (Zod), TrafficLight, Notification
+│   ├── errors.ts                         # DomainError, ValidationError, NotFoundError
+│   ├── hooks/                            # Hooks cross-feature
+│   ├── i18n/                             # ES/EN (useT, I18nProvider, 80+ keys)
+│   ├── services/rationValidator.ts       # Validación diaria/semanal
+│   ├── sustainability/                   # EnvironmentalScore, substitutionService, constants
+│   ├── ui/                               # Card, SelectField, TabButton, StatCard, LegalDisclaimer, etc.
+│   └── utils/                            # sanitize, imc, enum helpers
 ├── infrastructure/
-│   └── ml/                               # ADR-003 — ScannerAdapter + MockScannerAdapter
-└── test/setup.ts                         # Testing Library + jsdom
+│   └── ml/                               # ScannerAdapter + MockScannerAdapter (ADR-003)
+└── test/
+    ├── setup.ts                          # Testing Library + jsdom
+    └── fixtures.ts                       # makeFood factory
 ```
 
 ## Funcionalidades principales
@@ -209,61 +216,7 @@ Cada objeto `Recipe` en nuestra base de datos debe cumplir con un esquema de met
 4. **Fase 4: Tests & Error Handling** ✅ — 387 tests (38 unitarios + 3 E2E). Cero errores silenciosos. `ValidationError` y `NotFoundError` tipados.
 5. **Fase 5: E2E & Accesibilidad** ✅ — Playwright smoke tests (scan→classify→plan). WCAG 2.1 AA: roles ARIA, aria-labels, keyboard nav, skip links.
 
-## Estructura de Proyecto (Scope Rule & Colocation)
-
-```text
-src/
-├── features/
-│   ├── nutritional-traffic-light/
-│   │   ├── ScannerContainer.tsx          # Lógica: estado, store, handlers
-│   │   ├── ScannerView.tsx               # UI puro: props, sin store
-│   │   ├── store/scannerStore.ts         # Historial de escaneos (Zustand)
-│   │   └── services/                     # classificationService, occultSugarDetector
-│   ├── metabolic-tracker/
-│   │   ├── MetabolicTrackerContainer.tsx # Lógica: perfil metabólico
-│   │   ├── MetabolicTrackerView.tsx      # UI: formulario + resultados
-│   │   ├── store/trackerStore.ts         # Perfil + objetivo calórico + restrictionActive
-│   │   └── services/                     # caloricTargetService
-│   ├── med-diet-validator/
-│   │   ├── DailyLogContainer.tsx         # Lógica: registro diario
-│   │   ├── DailyLogView.tsx              # UI: lista alimentos + validación
-│   │   └── store/logStore.ts             # todayLog + validación (Zustand)
-│   ├── recipe-engine/
-│   │   ├── PlanContainer.tsx             # Lógica: plan semanal
-│   │   ├── PlanView.tsx                  # UI: checkbox + plan generado
-│   │   ├── store/planStore.ts            # weeklyPlan (Zustand)
-│   │   └── services/                     # planGenerator
-│   ├── activity-tracker/                 # ADR-006 — Activity Goal Tracker V1 ✅
-│   │   ├── ActivityTrackerContainer.tsx    # Lógica: compliance + streak
-│   │   ├── ActivityTrackerView.tsx         # UI: metas OMS + formulario
-│   │   ├── hooks/useActivityTracker.ts     # Hook: compliance %, streak, weeklyGoal
-│   │   ├── store/activityStore.ts          # weeklyMinutes + entries (Zustand)
-│   │   └── types.ts                        # ActivityEntry, WeeklyGoal, ComplianceReport
-│   ├── nudge-engine/                      # ADR-008 — Nudge Engine ✅ (14 reglas completas)
-│   │   ├── engine.ts                       # buildNudgeContext + evaluateRules (puro)
-│   │   ├── rules.ts                        # SafetyAlert rules (CEREALS, FRUITS, VEGETABLES)
-│   │   ├── cooldownTracker.ts             # CooldownTracker (in-memory)
-│   │   ├── store/nudgeStore.ts            # pending + history (Zustand)
-│   │   └── types.ts                       # NudgeRule, NudgeContext, SafetyRule
-│   │   ├── types.ts                      # ActivityEntry, WeeklyGoal
-│   │   └── store/activityStore.ts        # weeklyMinutes, strengthSessions
-│   └── nudge-engine/                     # [scaffolded] ADR-008
-│       ├── types.ts                      # NudgeRule, NudgeContext
-│       └── store/nudgeStore.ts           # pending nudges queue
-├── shared/
-│   ├── domain/                           # FoodCategory, TrafficLight, Notification, Zod schemas
-│   ├── data/foods.ts                     # Catálogo 34 alimentos
-│   ├── errors.ts                         # DomainError, ValidationError, NotFoundError
-│   ├── services/rationValidator.ts       # Validación diaria/semanal (cross-feature)
-│   ├── sustainability/                   # ADR-007 ✅ — EnvironmentalScore, Seasonality, Proximity
-│   ├── ui/primitives.tsx                 # Card, SelectField, TabButton, StatCard
-│   └── utils/                            # parseNumeric, sanitizeNumeric, computeIMC
-├── infrastructure/
-│   └── ml/                               # ADR-003 — ScannerAdapter + MockScannerAdapter
-└── test/setup.ts                         # Testing Library + jsdom
-```
-
-### Componente Contenedor: ScannerContainer.tsx
+### Ejemplo: Patrón Contenedor/Presentacional
 
 ```typescript
 import { useState } from 'react'

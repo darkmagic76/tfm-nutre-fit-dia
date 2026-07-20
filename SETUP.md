@@ -120,7 +120,7 @@ Pipeline de calidad:
 pnpm quality
   ├── pnpm lint       → Oxlint (Rust, ultrarrápido)
   ├── pnpm typecheck  → TypeScript 6 (erasableSyntaxOnly)
-  └── pnpm test:run   → Vitest (383 tests)
+  └── pnpm test:run   → Vitest (387 tests)
 ```
 
 ---
