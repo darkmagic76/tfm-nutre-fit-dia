@@ -1,7 +1,6 @@
 import { Card, NumberField, PrimaryButton } from '@shared/ui'
 import type { WeeklyGoal } from './types'
 import type { FormEvent } from 'react'
-import { useState } from 'react'
 
 interface ActivityTrackerViewProps {
   weeklyMinutes: number
@@ -11,7 +10,10 @@ interface ActivityTrackerViewProps {
   meetsModerate: boolean
   meetsStrength: boolean
   weeklyGoal: WeeklyGoal
-  onAddEntry: (entry: { moderateMinutes: number; strengthSessions: number }) => void
+  minutes: string
+  sessions: string
+  onMinutesChange: (v: string) => void
+  onSessionsChange: (v: string) => void
   onSubmit: (e: FormEvent) => void
 }
 
@@ -23,24 +25,12 @@ export function ActivityTrackerView({
   meetsModerate,
   meetsStrength,
   weeklyGoal,
-  onAddEntry,
+  minutes,
+  sessions,
+  onMinutesChange,
+  onSessionsChange,
   onSubmit,
 }: ActivityTrackerViewProps) {
-  const [minutes, setMinutes] = useState('')
-  const [sessions, setSessions] = useState('')
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    const mm = Number(minutes) || 0
-    const ss = Number(sessions) || 0
-    if (mm > 0 || ss > 0) {
-      onAddEntry({ moderateMinutes: mm, strengthSessions: ss })
-      setMinutes('')
-      setSessions('')
-    }
-    onSubmit(e)
-  }
-
   const complianceColor = compliance === 100 ? 'text-emerald-600'
     : compliance === 50 ? 'text-amber-600'
     : 'text-red-600'
@@ -73,10 +63,10 @@ export function ActivityTrackerView({
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3" aria-label="Registro de actividad física" noValidate>
+      <form onSubmit={onSubmit} className="space-y-3" aria-label="Registro de actividad física" noValidate>
         <div className="grid grid-cols-2 gap-3">
-          <NumberField id="minutes" label="Minutos moderados" value={minutes} onChange={setMinutes} min={0} />
-          <NumberField id="sessions" label="Sesiones fuerza" value={sessions} onChange={setSessions} min={0} />
+          <NumberField id="minutes" label="Minutos moderados" value={minutes} onChange={onMinutesChange} min={0} />
+          <NumberField id="sessions" label="Sesiones fuerza" value={sessions} onChange={onSessionsChange} min={0} />
         </div>
         <PrimaryButton type="submit">
           Registrar actividad
