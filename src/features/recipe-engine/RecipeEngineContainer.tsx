@@ -1,7 +1,7 @@
 import { usePlanStore, useTrackerStore } from '@shared/stores'
 import { PlanView } from './PlanView'
 
-export function PlanContainer() {
+export function RecipeEngineContainer() {
   const { weeklyPlan, generatePlan } = usePlanStore()
   const { restrictionActive, setRestrictionActive, caloricTarget } = useTrackerStore()
 

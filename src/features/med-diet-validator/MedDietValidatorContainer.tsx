@@ -1,7 +1,7 @@
 import { useLogStore, useTrackerStore } from '@shared/stores'
 import { DailyLogView } from './DailyLogView'
 
-export function DailyLogContainer() {
+export function MedDietValidatorContainer() {
   const { todayLog, todayValidation, removeFoodFromLog } = useLogStore()
   const caloricTarget = useTrackerStore(s => s.caloricTarget)
 

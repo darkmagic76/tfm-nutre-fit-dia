@@ -3,12 +3,12 @@ import { useTabNavigation, TAB_IDS, TAB_ICONS, type Tab } from '@shared/hooks/us
 import { useT, useLocale } from '@shared/i18n'
 import { useTheme } from '@shared/theme'
 import { useInstallPrompt } from '@shared/hooks/useInstallPrompt'
-import { ScannerContainer } from '@features/nutritional-traffic-light/ScannerContainer'
-import { DailyLogContainer } from '@features/med-diet-validator/DailyLogContainer'
+import { NutritionalTrafficLightContainer } from '@features/nutritional-traffic-light/NutritionalTrafficLightContainer'
+import { MedDietValidatorContainer } from '@features/med-diet-validator/MedDietValidatorContainer'
 import { MetabolicTrackerContainer } from '@features/metabolic-tracker/MetabolicTrackerContainer'
-import { PlanContainer } from '@features/recipe-engine/PlanContainer'
+import { RecipeEngineContainer } from '@features/recipe-engine/RecipeEngineContainer'
 import { ActivityTrackerContainer } from '@features/activity-tracker'
-import { NudgePanelContainer } from '@features/nudge-engine/NudgePanelContainer'
+import { NudgeEngineContainer } from '@features/nudge-engine/NudgeEngineContainer'
 import { SustainabilityContainer } from '@features/sustainability/SustainabilityContainer'
 
 const TAB_LABEL_KEYS: Record<Tab, keyof ReturnType<typeof useT>> = {
@@ -72,22 +72,22 @@ export default function App() {
         <LegalDisclaimer text={t['legal.disclaimer']} />
         <div className="h-2" />
         <div role="tabpanel" id="panel-scanner" hidden={tab !== 'scanner'} aria-label={t['tab.scanner']}>
-          {tab === 'scanner' && <ScannerContainer />}
+          {tab === 'scanner' && <NutritionalTrafficLightContainer />}
         </div>
         <div role="tabpanel" id="panel-log" hidden={tab !== 'log'} aria-label={t['tab.log']}>
-          {tab === 'log' && <DailyLogContainer />}
+          {tab === 'log' && <MedDietValidatorContainer />}
         </div>
         <div role="tabpanel" id="panel-metabolic" hidden={tab !== 'metabolic'} aria-label={t['tab.metabolic']}>
           {tab === 'metabolic' && <MetabolicTrackerContainer />}
         </div>
         <div role="tabpanel" id="panel-plan" hidden={tab !== 'plan'} aria-label={t['tab.plan']}>
-          {tab === 'plan' && <PlanContainer />}
+          {tab === 'plan' && <RecipeEngineContainer />}
         </div>
         <div role="tabpanel" id="panel-activity" hidden={tab !== 'activity'} aria-label={t['tab.activity']}>
           {tab === 'activity' && <ActivityTrackerContainer />}
         </div>
         <div role="tabpanel" id="panel-nudges" hidden={tab !== 'nudges'} aria-label={t['tab.nudges']}>
-          {tab === 'nudges' && <NudgePanelContainer />}
+          {tab === 'nudges' && <NudgeEngineContainer />}
         </div>
         <div role="tabpanel" id="panel-sustainability" hidden={tab !== 'sustainability'} aria-label={t['tab.sustainability']}>
           {tab === 'sustainability' && <SustainabilityContainer />}

@@ -7,7 +7,7 @@ import { evaluateAndEnqueue } from '@features/nudge-engine'
 import { ScannerView } from './ScannerView'
 import type { SafetyAlert } from '@shared/services/rationValidator'
 
-export function ScannerContainer() {
+export function NutritionalTrafficLightContainer() {
   const [selectedId, setSelectedId] = useState('')
   const [result, setResult] = useState<ReturnType<typeof classifyFoodWithReasons> | null>(null)
   const [safetyAlerts, setSafetyAlerts] = useState<SafetyAlert[]>([])

@@ -112,7 +112,7 @@ const cooldownTracker = new CooldownTracker()
 /**
  * Full pipeline: build context → evaluate rules → enqueue notifications → register cooldowns.
  *
- * This is the integration point called by UI components (ScannerContainer, DailyLogContainer)
+ * This is the integration point called by UI components (NutritionalTrafficLightContainer, MedDietValidatorContainer)
  * whenever a user action might trigger nudges.
  */
 export function evaluateAndEnqueue(food?: Food): void {
