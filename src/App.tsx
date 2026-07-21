@@ -1,14 +1,20 @@
-import { TabButton, LegalDisclaimer, InstallPrompt, ErrorBoundary, ErrorFallback } from '@shared/ui'
-import { useTabNavigation, TAB_IDS, TAB_ICONS, type Tab } from '@shared/hooks/useTabNavigation'
-import { useT, useLocale } from '@shared/i18n'
-import { useInstallPrompt } from '@shared/hooks/useInstallPrompt'
-import { NutritionalTrafficLightContainer } from '@features/nutritional-traffic-light/NutritionalTrafficLightContainer'
-import { MedDietValidatorContainer } from '@features/med-diet-validator/MedDietValidatorContainer'
-import { MetabolicTrackerContainer } from '@features/metabolic-tracker/MetabolicTrackerContainer'
-import { RecipeEngineContainer } from '@features/recipe-engine/RecipeEngineContainer'
-import { ActivityTrackerContainer } from '@features/activity-tracker'
-import { NudgeEngineContainer } from '@features/nudge-engine/NudgeEngineContainer'
-import { SustainabilityContainer } from '@features/sustainability/SustainabilityContainer'
+import {
+  TabButton,
+  LegalDisclaimer,
+  InstallPrompt,
+  ErrorBoundary,
+  ErrorFallback,
+} from '@shared/ui';
+import { useTabNavigation, TAB_IDS, TAB_ICONS, type Tab } from '@shared/hooks/useTabNavigation';
+import { useT, useLocale } from '@shared/i18n';
+import { useInstallPrompt } from '@shared/hooks/useInstallPrompt';
+import { NutritionalTrafficLightContainer } from '@features/nutritional-traffic-light/NutritionalTrafficLightContainer';
+import { MedDietValidatorContainer } from '@features/med-diet-validator/MedDietValidatorContainer';
+import { MetabolicTrackerContainer } from '@features/metabolic-tracker/MetabolicTrackerContainer';
+import { RecipeEngineContainer } from '@features/recipe-engine/RecipeEngineContainer';
+import { ActivityTrackerContainer } from '@features/activity-tracker';
+import { NudgeEngineContainer } from '@features/nudge-engine/NudgeEngineContainer';
+import { SustainabilityContainer } from '@features/sustainability/SustainabilityContainer';
 
 const TAB_LABEL_KEYS: Record<Tab, keyof ReturnType<typeof useT>> = {
   scanner: 'tab.scanner',
@@ -18,21 +24,19 @@ const TAB_LABEL_KEYS: Record<Tab, keyof ReturnType<typeof useT>> = {
   activity: 'tab.activity',
   nudges: 'tab.nudges',
   sustainability: 'tab.sustainability',
-}
+};
 
 export default function App() {
-  const { tab, setTab } = useTabNavigation()
-  const t = useT()
-  const { locale, setLocale } = useLocale()
-  const { isInstallable, install, dismiss } = useInstallPrompt()
+  const { tab, setTab } = useTabNavigation();
+  const t = useT();
+  const { locale, setLocale } = useLocale();
+  const { isInstallable, install, dismiss } = useInstallPrompt();
 
   return (
     <div className="min-h-screen bg-stone-100 text-stone-900 dark:bg-stone-900 dark:text-stone-100">
       <header className="bg-emerald-800 text-white p-4 sm:p-6" role="banner">
         <h1 className="text-2xl sm:text-3xl font-bold text-center">{t['app.title']}</h1>
-        <p className="text-center text-emerald-200 text-xs sm:text-sm mt-1">
-          {t['app.subtitle']}
-        </p>
+        <p className="text-center text-emerald-200 text-xs sm:text-sm mt-1">{t['app.subtitle']}</p>
         <div className="flex gap-2 justify-center mt-2">
           <button
             onClick={() => setLocale(locale === 'es' ? 'en' : 'es')}
@@ -41,34 +45,48 @@ export default function App() {
           >
             {locale === 'es' ? '🇬🇧 EN' : '🇪🇸 ES'}
           </button>
-          {isInstallable && <InstallPrompt isInstallable={isInstallable} onInstall={install} onDismiss={dismiss} t={t} />}
+          {isInstallable && (
+            <InstallPrompt
+              isInstallable={isInstallable}
+              onInstall={install}
+              onDismiss={dismiss}
+              t={t}
+            />
+          )}
         </div>
         <nav
           className="flex justify-center gap-1 sm:gap-2 mt-4 flex-wrap overflow-x-auto px-2"
           role="tablist"
           aria-label={t['app.title']}
         >
-          {TAB_IDS.map(id => (
+          {TAB_IDS.map((id) => (
             <TabButton
               key={id}
               active={tab === id}
               onClick={() => setTab(id)}
               aria-controls={`panel-${id}`}
             >
-              <span className="sm:hidden" aria-hidden="true">{TAB_ICONS[id]}</span>
-              <span className="hidden sm:inline">{TAB_ICONS[id]} {t[TAB_LABEL_KEYS[id]]}</span>
+              <span className="sm:hidden" aria-hidden="true">
+                {TAB_ICONS[id]}
+              </span>
+              <span className="hidden sm:inline">
+                {TAB_ICONS[id]} {t[TAB_LABEL_KEYS[id]]}
+              </span>
             </TabButton>
           ))}
         </nav>
-        <p className="text-center text-emerald-300 text-[10px] mt-2">
-          {t['app.keyboardHint']}
-        </p>
+        <p className="text-center text-emerald-300 text-[10px] mt-2">{t['app.keyboardHint']}</p>
       </header>
 
       <main className="max-w-3xl mx-auto p-3 sm:p-6" id="main-content">
         <LegalDisclaimer text={t['legal.disclaimer']} />
         <div className="h-2" />
-        <div role="tabpanel" id="panel-scanner" hidden={tab !== 'scanner'} aria-label={t['tab.scanner']}>
+        <div
+          role="tabpanel"
+          id="panel-scanner"
+          hidden={tab !== 'scanner'}
+          aria-label={t['tab.scanner']}
+        >
           {tab === 'scanner' && (
             <ErrorBoundary
               fallback={(retry) => (
@@ -100,7 +118,12 @@ export default function App() {
             </ErrorBoundary>
           )}
         </div>
-        <div role="tabpanel" id="panel-metabolic" hidden={tab !== 'metabolic'} aria-label={t['tab.metabolic']}>
+        <div
+          role="tabpanel"
+          id="panel-metabolic"
+          hidden={tab !== 'metabolic'}
+          aria-label={t['tab.metabolic']}
+        >
           {tab === 'metabolic' && (
             <ErrorBoundary
               fallback={(retry) => (
@@ -132,7 +155,12 @@ export default function App() {
             </ErrorBoundary>
           )}
         </div>
-        <div role="tabpanel" id="panel-activity" hidden={tab !== 'activity'} aria-label={t['tab.activity']}>
+        <div
+          role="tabpanel"
+          id="panel-activity"
+          hidden={tab !== 'activity'}
+          aria-label={t['tab.activity']}
+        >
           {tab === 'activity' && (
             <ErrorBoundary
               fallback={(retry) => (
@@ -148,7 +176,12 @@ export default function App() {
             </ErrorBoundary>
           )}
         </div>
-        <div role="tabpanel" id="panel-nudges" hidden={tab !== 'nudges'} aria-label={t['tab.nudges']}>
+        <div
+          role="tabpanel"
+          id="panel-nudges"
+          hidden={tab !== 'nudges'}
+          aria-label={t['tab.nudges']}
+        >
           {tab === 'nudges' && (
             <ErrorBoundary
               fallback={(retry) => (
@@ -164,7 +197,12 @@ export default function App() {
             </ErrorBoundary>
           )}
         </div>
-        <div role="tabpanel" id="panel-sustainability" hidden={tab !== 'sustainability'} aria-label={t['tab.sustainability']}>
+        <div
+          role="tabpanel"
+          id="panel-sustainability"
+          hidden={tab !== 'sustainability'}
+          aria-label={t['tab.sustainability']}
+        >
           {tab === 'sustainability' && (
             <ErrorBoundary
               fallback={(retry) => (
@@ -182,13 +220,18 @@ export default function App() {
         </div>
       </main>
 
-      <footer className="text-center text-stone-400 text-xs p-4 border-t border-stone-200" role="contentinfo">
+      <footer
+        className="text-center text-stone-400 text-xs p-4 border-t border-stone-200"
+        role="contentinfo"
+      >
         <p>{t['app.footer.tfm']}</p>
         <p className="mt-1">{t['app.footer.disclaimer']}</p>
         <p className="mt-1">
-          <a href="/.well-known/security.txt" className="underline hover:text-stone-600">{t['app.footer.security']}</a>
+          <a href="/.well-known/security.txt" className="underline hover:text-stone-600">
+            {t['app.footer.security']}
+          </a>
         </p>
       </footer>
     </div>
-  )
+  );
 }

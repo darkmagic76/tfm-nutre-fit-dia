@@ -2,23 +2,23 @@
 
 export interface ActivityEntry {
   /** ISO date string (YYYY-MM-DD) */
-  date: string
+  date: string;
   /** Minutes of moderate-intensity activity */
-  moderateMinutes: number
+  moderateMinutes: number;
   /** Number of strength training sessions */
-  strengthSessions: number
+  strengthSessions: number;
 }
 
 export interface WeeklyGoal {
   /** WHO/OMS: 150–300 min/week of moderate activity */
-  moderateMinutesMin: 150
-  moderateMinutesMax: 300
+  moderateMinutesMin: 150;
+  moderateMinutesMax: 300;
   /** WHO/OMS: at least 2 days/week of strength training */
-  strengthSessionsMin: 2
+  strengthSessionsMin: 2;
 }
 
 export const DEFAULT_WEEKLY_GOAL = {
   moderateMinutesMin: 150,
   moderateMinutesMax: 300,
   strengthSessionsMin: 2,
-} as const satisfies WeeklyGoal
+} as const satisfies WeeklyGoal;

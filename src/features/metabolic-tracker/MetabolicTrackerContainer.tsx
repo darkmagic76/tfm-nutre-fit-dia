@@ -1,24 +1,58 @@
-import { useTrackerStore } from '@shared/stores'
-import { MetabolicTrackerView } from './MetabolicTrackerView'
-import type { FormEvent } from 'react'
+import { useTrackerStore } from '@shared/stores';
+import { MetabolicTrackerView } from './MetabolicTrackerView';
+import type { FormEvent } from 'react';
 
 export function MetabolicTrackerContainer() {
   const {
-    weight, height, age, diagnosisAge, gender, paf, glucose, glucoseContext, caloricTarget, profileError,
-    setWeight, setHeight, setAge, setDiagnosisAge, setGender, setPaf, setGlucose, setGlucoseContext, calculateTarget,
-  } = useTrackerStore()
+    weight,
+    height,
+    age,
+    diagnosisAge,
+    gender,
+    paf,
+    glucose,
+    glucoseContext,
+    caloricTarget,
+    profileError,
+    setWeight,
+    setHeight,
+    setAge,
+    setDiagnosisAge,
+    setGender,
+    setPaf,
+    setGlucose,
+    setGlucoseContext,
+    calculateTarget,
+  } = useTrackerStore();
 
   const handleCalculate = (e: FormEvent) => {
-    e.preventDefault()
-    calculateTarget()
-  }
+    e.preventDefault();
+    calculateTarget();
+  };
 
   return (
     <MetabolicTrackerView
-      form={{ weight, height, age, diagnosisAge, gender, paf, glucose, glucoseContext, setWeight, setHeight, setAge, setDiagnosisAge, setGender, setPaf, setGlucose, setGlucoseContext }}
+      form={{
+        weight,
+        height,
+        age,
+        diagnosisAge,
+        gender,
+        paf,
+        glucose,
+        glucoseContext,
+        setWeight,
+        setHeight,
+        setAge,
+        setDiagnosisAge,
+        setGender,
+        setPaf,
+        setGlucose,
+        setGlucoseContext,
+      }}
       caloricTarget={caloricTarget}
       profileError={profileError}
       onCalculate={handleCalculate}
     />
-  )
+  );
 }

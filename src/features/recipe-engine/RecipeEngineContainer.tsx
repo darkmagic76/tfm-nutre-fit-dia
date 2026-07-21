@@ -1,10 +1,10 @@
-import { usePlanStore } from './planStore'
-import { useTrackerStore } from '@shared/stores'
-import { PlanView } from './PlanView'
+import { usePlanStore } from './planStore';
+import { useTrackerStore } from '@shared/stores';
+import { PlanView } from './PlanView';
 
 export function RecipeEngineContainer() {
-  const { weeklyPlan, generatePlan } = usePlanStore()
-  const { restrictionActive, setRestrictionActive, caloricTarget } = useTrackerStore()
+  const { weeklyPlan, generatePlan } = usePlanStore();
+  const { restrictionActive, setRestrictionActive, caloricTarget } = useTrackerStore();
 
   return (
     <PlanView
@@ -14,5 +14,5 @@ export function RecipeEngineContainer() {
       onToggleRestriction={setRestrictionActive}
       onGeneratePlan={generatePlan}
     />
-  )
+  );
 }

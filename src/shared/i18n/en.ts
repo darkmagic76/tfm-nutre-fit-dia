@@ -1,11 +1,12 @@
-import type { Translations } from './types'
+import type { Translations } from './types';
 
 export const en: Translations = {
   'app.title': 'NutreFitDia',
   'app.subtitle': 'Comprehensive Self-Care Ecosystem for Type 2 Diabetes',
   'app.keyboardHint': 'Use ← → to navigate between tabs',
   'app.footer.tfm': 'TFM · NutreFitDia · erMedDiet + AESAN 2022',
-  'app.footer.disclaimer': '⚕️ All recommendations must be validated by a registered dietitian-nutritionist',
+  'app.footer.disclaimer':
+    '⚕️ All recommendations must be validated by a registered dietitian-nutritionist',
   'app.footer.security': 'Security',
 
   'tab.scanner': 'Traffic Light',
@@ -90,7 +91,8 @@ export const en: Translations = {
   'install.title': 'Install app',
   'install.dismiss': 'Dismiss',
 
-  'legal.disclaimer': '⚕️ All recommendations, quantities and nutritional plans must be validated by a registered dietitian-nutritionist.',
+  'legal.disclaimer':
+    '⚕️ All recommendations, quantities and nutritional plans must be validated by a registered dietitian-nutritionist.',
 
   'error.boundary.title': 'Something went wrong',
   'error.boundary.description': 'An unexpected error occurred while rendering this section.',
@@ -117,4 +119,4 @@ export const en: Translations = {
 
   'cultural.socialEating': 'Ideal for sharing',
   'cultural.preparation': 'Preparation',
-}
+};

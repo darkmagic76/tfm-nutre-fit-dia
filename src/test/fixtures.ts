@@ -1,8 +1,8 @@
-import { FoodCategory } from '@shared/domain'
-import type { Food } from '@shared/domain'
-import type { CaloricTargetOutput } from '@shared/services/caloricTargetService'
-import type { UserMetricsFormState } from '@shared/domain/metrics'
-import type { ValidationResult, RationViolation } from '@shared/services/rationValidator'
+import { FoodCategory } from '@shared/domain';
+import type { Food } from '@shared/domain';
+import type { CaloricTargetOutput } from '@shared/services/caloricTargetService';
+import type { UserMetricsFormState } from '@shared/domain/metrics';
+import type { ValidationResult, RationViolation } from '@shared/services/rationValidator';
 
 // ---------------------------------------------------------------------------
 // Food fixtures
@@ -26,7 +26,7 @@ export function makeFood(overrides: Partial<Food> = {}): Food {
     isProcessed: false,
     isSeasonal: false,
     ...overrides,
-  }
+  };
 }
 
 export function makeEntries(category: FoodCategory, times = 1): Food[] {
@@ -36,7 +36,7 @@ export function makeEntries(category: FoodCategory, times = 1): Food[] {
       name: `Test ${category}`,
       category,
     }),
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -44,7 +44,9 @@ export function makeEntries(category: FoodCategory, times = 1): Food[] {
 // ---------------------------------------------------------------------------
 
 /** Mifflin-St Jeor defaults: female, 70kg, 165cm, 45yo, sedentary → BMR ~1400, TDEE ~1680 */
-export function makeCaloricTargetOutput(overrides: Partial<CaloricTargetOutput> = {}): CaloricTargetOutput {
+export function makeCaloricTargetOutput(
+  overrides: Partial<CaloricTargetOutput> = {},
+): CaloricTargetOutput {
   return {
     bmr: 1400,
     tdee: 1680,
@@ -52,16 +54,18 @@ export function makeCaloricTargetOutput(overrides: Partial<CaloricTargetOutput> 
     target: 1680,
     restrictionActive: true,
     ...overrides,
-  }
+  };
 }
 
 // ---------------------------------------------------------------------------
 // Metrics form state fixture
 // ---------------------------------------------------------------------------
 
-const noop = () => {}
+const noop = () => {};
 
-export function makeMetricsFormState(overrides: Partial<UserMetricsFormState> = {}): UserMetricsFormState {
+export function makeMetricsFormState(
+  overrides: Partial<UserMetricsFormState> = {},
+): UserMetricsFormState {
   return {
     weight: '70',
     height: '165',
@@ -80,7 +84,7 @@ export function makeMetricsFormState(overrides: Partial<UserMetricsFormState> = 
     setGlucose: noop,
     setGlucoseContext: noop,
     ...overrides,
-  }
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -96,7 +100,7 @@ export function makeViolation(overrides: Partial<RationViolation> = {}): RationV
     unit: 'day',
     message: 'Test violation',
     ...overrides,
-  }
+  };
 }
 
 export function makeValidationResult(overrides: Partial<ValidationResult> = {}): ValidationResult {
@@ -105,5 +109,5 @@ export function makeValidationResult(overrides: Partial<ValidationResult> = {}):
     violations: [],
     animalProteinCount: 0,
     ...overrides,
-  }
+  };
 }

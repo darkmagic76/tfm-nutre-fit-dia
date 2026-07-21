@@ -1,14 +1,14 @@
-import type { Translations } from '@shared/i18n/types'
+import type { Translations } from '@shared/i18n/types';
 
 interface InstallPromptProps {
-  isInstallable: boolean
-  onInstall: () => void
-  onDismiss: () => void
-  t: Translations
+  isInstallable: boolean;
+  onInstall: () => void;
+  onDismiss: () => void;
+  t: Translations;
 }
 
 export function InstallPrompt({ isInstallable, onInstall, onDismiss, t }: InstallPromptProps) {
-  if (!isInstallable) return null
+  if (!isInstallable) return null;
 
   return (
     <div data-testid="install-prompt" className="flex gap-1">
@@ -29,5 +29,5 @@ export function InstallPrompt({ isInstallable, onInstall, onDismiss, t }: Instal
         ✖ {t['install.dismiss']}
       </button>
     </div>
-  )
+  );
 }

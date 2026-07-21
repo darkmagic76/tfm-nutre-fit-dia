@@ -1,28 +1,31 @@
-import { Card } from '@shared/ui'
-import { PROTEIN_EMISSION_RATIOS, SCORING_WEIGHTS } from '@shared/sustainability'
-import { useT } from '@shared/i18n'
+import { Card } from '@shared/ui';
+import { PROTEIN_EMISSION_RATIOS, SCORING_WEIGHTS } from '@shared/sustainability';
+import { useT } from '@shared/i18n';
 
 interface SustainabilityViewProps {
-  zeroWasteCount: number
-  totalFoods: number
+  zeroWasteCount: number;
+  totalFoods: number;
 }
 
 export function SustainabilityView({ zeroWasteCount, totalFoods }: SustainabilityViewProps) {
-  const t = useT()
+  const t = useT();
 
   return (
-    <Card
-      title={t['sustainability.title']}
-      description={t['sustainability.description']}
-    >
+    <Card title={t['sustainability.title']} description={t['sustainability.description']}>
       <div className="space-y-4 text-sm" role="region" aria-label={t['sustainability.title']}>
         <section>
           <h3 className="font-semibold text-emerald-700 mb-1">{t['sustainability.scoring']}</h3>
           <p className="text-stone-600">{t['sustainability.scoringDesc']}</p>
           <ul className="list-disc list-inside ml-2 mt-1 text-stone-500 space-y-0.5">
-            <li>{t['sustainability.carbon']} — {SCORING_WEIGHTS.carbon * 100}%</li>
-            <li>{t['sustainability.seasonality']} — {SCORING_WEIGHTS.seasonality * 100}%</li>
-            <li>{t['sustainability.proximity']} — {SCORING_WEIGHTS.proximity * 100}%</li>
+            <li>
+              {t['sustainability.carbon']} — {SCORING_WEIGHTS.carbon * 100}%
+            </li>
+            <li>
+              {t['sustainability.seasonality']} — {SCORING_WEIGHTS.seasonality * 100}%
+            </li>
+            <li>
+              {t['sustainability.proximity']} — {SCORING_WEIGHTS.proximity * 100}%
+            </li>
           </ul>
         </section>
 
@@ -50,5 +53,5 @@ export function SustainabilityView({ zeroWasteCount, totalFoods }: Sustainabilit
         </section>
       </div>
     </Card>
-  )
+  );
 }

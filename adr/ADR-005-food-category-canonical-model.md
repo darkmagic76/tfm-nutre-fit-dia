@@ -8,11 +8,11 @@
 
 Three specification documents define food groups at different granularity levels:
 
-| Source | Groups | Purpose |
-|---|---|---|
-| `INFORME_ADR.md` (FR-2) | 11 | Especificación funcional original — reglas clínicas detalladas por grupo |
-| `SPECS_RF.md` | 5 | Vista condensada para UI de requisitos — omite lácteos, huevos, carnes blancas, agua, y fusiona hortalizas+frutas |
-| `SPECS_TECH.md` (§5) | ~7 | Recupera agua y frutas separadas, pero no huevos, lácteos ni carnes blancas |
+| Source                  | Groups | Purpose                                                                                                           |
+| ----------------------- | ------ | ----------------------------------------------------------------------------------------------------------------- |
+| `INFORME_ADR.md` (FR-2) | 11     | Especificación funcional original — reglas clínicas detalladas por grupo                                          |
+| `SPECS_RF.md`           | 5      | Vista condensada para UI de requisitos — omite lácteos, huevos, carnes blancas, agua, y fusiona hortalizas+frutas |
+| `SPECS_TECH.md` (§5)    | ~7     | Recupera agua y frutas separadas, pero no huevos, lácteos ni carnes blancas                                       |
 
 ADR-002 already established that `FoodCategory` must be a Zod-validated const object, but **never specified which model it encodes**. The `classificationService.ts` and `ErMedDietValidator` cannot be built correctly until this canonical model is fixed.
 
@@ -24,39 +24,39 @@ ADR-002 already established that `FoodCategory` must be a Zod-validated const ob
 
 ```ts
 export const FoodCategory = {
-  CEREALS:           'cereals',
-  VEGETABLES:        'vegetables',
-  FRUITS:            'fruits',
-  OLIVE_OIL:         'olive_oil',
-  DAIRY:             'dairy',
-  LEGUMES:           'legumes',
-  FISH:              'fish',
-  EGGS:              'eggs',
-  WHITE_MEAT:        'white_meat',
-  RED_MEAT:          'red_meat',
-  WATER:             'water',
-} as const
+  CEREALS: 'cereals',
+  VEGETABLES: 'vegetables',
+  FRUITS: 'fruits',
+  OLIVE_OIL: 'olive_oil',
+  DAIRY: 'dairy',
+  LEGUMES: 'legumes',
+  FISH: 'fish',
+  EGGS: 'eggs',
+  WHITE_MEAT: 'white_meat',
+  RED_MEAT: 'red_meat',
+  WATER: 'water',
+} as const;
 
-export type FoodCategory = (typeof FoodCategory)[keyof typeof FoodCategory]
+export type FoodCategory = (typeof FoodCategory)[keyof typeof FoodCategory];
 ```
 
 ### Justification — Clinical Rules per Group
 
 Each group carries **irreducible clinical constraints** from INFORME_ADR that a collapsed model cannot enforce:
 
-| Group | Constraint | Why it can't be collapsed |
-|---|---|---|
-| `CEREALS` | 3-6/día (máx 4 en restricción calórica) | Único grupo con regla condicional por IMC |
-| `VEGETABLES` | ≥ 3/día + alerta 20:00h si deficitario | Regla temporal propia |
-| `FRUITS` | 2-3/día + alerta por alta carga glucémica (uvas, higos, dátiles) | Regla de exclusión específica de especie |
-| `OLIVE_OIL` | 3-6/día + tagging obligatorio en cada comida principal | Única grasa con requisito de tagging |
-| `DAIRY` | Máx 3/día + nudge si Animal_Protein > 2 | Vinculado a contador de proteína animal |
-| `LEGUMES` | 4/semana a diario + requisito base para control glucémico | Rol dual: proteína + fibra; pérdida clínica si se fusiona con proteína animal |
-| `FISH` | ≥ 3/semana, alternar blanco/azul | Subclasificación por perfil lipídico (Omega-3) |
-| `EGGS` | Máx 4/semana + alternativa preferente a carnes rojas | Frecuencia semanal distinta a carnes blancas |
-| `WHITE_MEAT` | Máx 3/semana + limit si pescado excedido | Regla cruzada con `FISH` |
-| `RED_MEAT` | Máx 3/semana (EAT-Lancet 2019: ≤ 98g/sem carne roja; 0g/sem carne procesada). Sin mínimo — nunca requerido | Separado de WHITE_MEAT por distinto perfil de emisiones (27× carnes blancas) y recomendaciones clínicas divergentes |
-| `WATER` | 1.5-2L/día + nudge cada 3 horas | Grupo no calórico con tracking propio |
+| Group        | Constraint                                                                                                 | Why it can't be collapsed                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `CEREALS`    | 3-6/día (máx 4 en restricción calórica)                                                                    | Único grupo con regla condicional por IMC                                                                           |
+| `VEGETABLES` | ≥ 3/día + alerta 20:00h si deficitario                                                                     | Regla temporal propia                                                                                               |
+| `FRUITS`     | 2-3/día + alerta por alta carga glucémica (uvas, higos, dátiles)                                           | Regla de exclusión específica de especie                                                                            |
+| `OLIVE_OIL`  | 3-6/día + tagging obligatorio en cada comida principal                                                     | Única grasa con requisito de tagging                                                                                |
+| `DAIRY`      | Máx 3/día + nudge si Animal_Protein > 2                                                                    | Vinculado a contador de proteína animal                                                                             |
+| `LEGUMES`    | 4/semana a diario + requisito base para control glucémico                                                  | Rol dual: proteína + fibra; pérdida clínica si se fusiona con proteína animal                                       |
+| `FISH`       | ≥ 3/semana, alternar blanco/azul                                                                           | Subclasificación por perfil lipídico (Omega-3)                                                                      |
+| `EGGS`       | Máx 4/semana + alternativa preferente a carnes rojas                                                       | Frecuencia semanal distinta a carnes blancas                                                                        |
+| `WHITE_MEAT` | Máx 3/semana + limit si pescado excedido                                                                   | Regla cruzada con `FISH`                                                                                            |
+| `RED_MEAT`   | Máx 3/semana (EAT-Lancet 2019: ≤ 98g/sem carne roja; 0g/sem carne procesada). Sin mínimo — nunca requerido | Separado de WHITE_MEAT por distinto perfil de emisiones (27× carnes blancas) y recomendaciones clínicas divergentes |
+| `WATER`      | 1.5-2L/día + nudge cada 3 horas                                                                            | Grupo no calórico con tracking propio                                                                               |
 
 ### Relationship to SPECS_RF (5-group model)
 
@@ -84,6 +84,7 @@ SPECS_TECH §5 recovers `WATER` and separates `FRUITS` from `VEGETABLES`, confir
 ### AOVE — Dual Nature
 
 `OLIVE_OIL` has **two conceptual roles** in the domain:
+
 1. **Food group** (3-6 raciones/día): participates in ration counting
 2. **Ingredient/tag** (obligatorio en cada comida principal): metadata on recipes
 

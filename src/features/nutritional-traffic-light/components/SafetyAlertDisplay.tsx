@@ -1,22 +1,22 @@
-import type { SafetyAlert } from '@shared/services/rationValidator'
+import type { SafetyAlert } from '@shared/services/rationValidator';
 
 interface SafetyAlertDisplayProps {
-  alerts: SafetyAlert[]
-  onAcknowledge?: (index: number) => void
+  alerts: SafetyAlert[];
+  onAcknowledge?: (index: number) => void;
 }
 
 const SEVERITY_STYLES = {
   critical: 'bg-red-50 border-red-400 text-red-900',
   warning: 'bg-amber-50 border-amber-400 text-amber-900',
-} as const
+} as const;
 
 const SEVERITY_LABELS = {
   critical: 'Crítico',
   warning: 'Advertencia',
-} as const
+} as const;
 
 export function SafetyAlertDisplay({ alerts, onAcknowledge }: SafetyAlertDisplayProps) {
-  if (alerts.length === 0) return null
+  if (alerts.length === 0) return null;
 
   return (
     <div className="space-y-2" role="alert" aria-label="Alertas de seguridad clínica">
@@ -41,5 +41,5 @@ export function SafetyAlertDisplay({ alerts, onAcknowledge }: SafetyAlertDisplay
         </div>
       ))}
     </div>
-  )
+  );
 }

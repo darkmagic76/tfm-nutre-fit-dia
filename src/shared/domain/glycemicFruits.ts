@@ -9,9 +9,9 @@
  * MUST normalize via `.toLowerCase()` before checking membership.
  */
 export const HIGH_GLYCEMIC_FRUIT_NAMES: ReadonlySet<string> = new Set([
-  'uvas',           // Uvas — catalog entry fruit-uvas
-  'dátiles',         // Dátiles — high glycemic, per INFORME_ADR §2
-  'higos',           // Higos — high glycemic, per INFORME_ADR §2
-  'uvas pasas',      // Pasas — concentrated sugar
-  'plátano maduro',  // Ripe banana — high GI, clinical concern
-])
+  'uvas', // Uvas — catalog entry fruit-uvas
+  'dátiles', // Dátiles — high glycemic, per INFORME_ADR §2
+  'higos', // Higos — high glycemic, per INFORME_ADR §2
+  'uvas pasas', // Pasas — concentrated sugar
+  'plátano maduro', // Ripe banana — high GI, clinical concern
+]);

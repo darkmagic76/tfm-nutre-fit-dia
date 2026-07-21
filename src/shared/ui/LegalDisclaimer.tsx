@@ -5,7 +5,7 @@
 export function LegalDisclaimer({
   text = '⚕️ Aviso legal: Este plan debe ser validado por un dietista-nutricionista colegiado.',
 }: {
-  text?: string
+  text?: string;
 }) {
   return (
     <div
@@ -15,5 +15,5 @@ export function LegalDisclaimer({
     >
       {text}
     </div>
-  )
+  );
 }

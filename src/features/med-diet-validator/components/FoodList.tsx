@@ -1,14 +1,14 @@
-import { CATEGORY_DISPLAY_NAMES } from '@shared/domain'
-import type { Food } from '@shared/domain'
+import { CATEGORY_DISPLAY_NAMES } from '@shared/domain';
+import type { Food } from '@shared/domain';
 
 interface FoodListProps {
-  foods: Food[]
-  onRemove: (index: number) => void
+  foods: Food[];
+  onRemove: (index: number) => void;
 }
 
 export function FoodList({ foods, onRemove }: FoodListProps) {
   if (foods.length === 0) {
-    return <p className="text-stone-400 text-sm">Sin alimentos registrados.</p>
+    return <p className="text-stone-400 text-sm">Sin alimentos registrados.</p>;
   }
 
   return (
@@ -29,5 +29,5 @@ export function FoodList({ foods, onRemove }: FoodListProps) {
         </li>
       ))}
     </ul>
-  )
+  );
 }

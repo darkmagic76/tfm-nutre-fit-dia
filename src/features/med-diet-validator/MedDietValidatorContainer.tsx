@@ -1,11 +1,11 @@
-import { useLogStore, useTrackerStore } from '@shared/stores'
-import { DailyLogView } from './DailyLogView'
+import { useLogStore, useTrackerStore } from '@shared/stores';
+import { DailyLogView } from './DailyLogView';
 
 export function MedDietValidatorContainer() {
-  const { todayLog, todayValidation, removeFoodFromLog } = useLogStore()
-  const caloricTarget = useTrackerStore(s => s.caloricTarget)
+  const { todayLog, todayValidation, removeFoodFromLog } = useLogStore();
+  const caloricTarget = useTrackerStore((s) => s.caloricTarget);
 
-  const totalKcal = todayLog.reduce((sum, f) => sum + f.kcalPer100g * (f.gramsPerRation / 100), 0)
+  const totalKcal = todayLog.reduce((sum, f) => sum + f.kcalPer100g * (f.gramsPerRation / 100), 0);
 
   return (
     <DailyLogView
@@ -15,5 +15,5 @@ export function MedDietValidatorContainer() {
       totalKcal={totalKcal}
       onRemoveFood={removeFoodFromLog}
     />
-  )
+  );
 }

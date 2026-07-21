@@ -1,10 +1,10 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from 'react';
 
 export interface ErrorFallbackProps {
-  title: string
-  description: string
-  buttonLabel: string
-  onRetry: () => void
+  title: string;
+  description: string;
+  buttonLabel: string;
+  onRetry: () => void;
 }
 
 export function ErrorFallback({
@@ -14,7 +14,10 @@ export function ErrorFallback({
   onRetry,
 }: ErrorFallbackProps): ReactNode {
   return (
-    <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-6 text-center dark:border-red-800 dark:bg-red-950">
+    <div
+      role="alert"
+      className="rounded-lg border border-red-200 bg-red-50 p-6 text-center dark:border-red-800 dark:bg-red-950"
+    >
       <div className="mb-2 text-red-600 dark:text-red-400 text-lg font-semibold" aria-hidden="true">
         !
       </div>
@@ -27,5 +30,5 @@ export function ErrorFallback({
         {buttonLabel}
       </button>
     </div>
-  )
+  );
 }

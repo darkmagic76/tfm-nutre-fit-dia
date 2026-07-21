@@ -1,2 +1,2 @@
-export { useTrackerStore } from './trackerStore'
-export { useLogStore } from './logStore'
+export { useTrackerStore } from './trackerStore';
+export { useLogStore } from './logStore';

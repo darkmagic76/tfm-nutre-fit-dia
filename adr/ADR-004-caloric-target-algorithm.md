@@ -16,12 +16,12 @@ The original decision applied the 600 kcal deficit unconditionally. Traceability
 
 FR-4.1 phenotypic filtering requires scaling caloric restriction aggressiveness by `diagnosisAge` (age at which Type 2 Diabetes was first diagnosed). Three clinical brackets modulate the 600 kcal PREDIMED-Plus base deficit:
 
-| Bracket | diagnosisAge | Modifier | Adjusted Deficit | Clinical Rationale |
-|---------|-------------|----------|-----------------|-------------------|
-| Early onset | `< 40` | `1.0` | 600 kcal | Younger patients tolerate full aggressive restriction |
-| Standard onset | `40–60` | `0.85` | 510 kcal | Moderate restriction appropriate for mid-life diagnosis |
-| Late onset | `> 60` | `0.7` | 420 kcal | Conservative restriction for older patients with frailty risk |
-| Default (empty/zero/NaN) | `≤ 0` or `NaN` | `0.85` | 510 kcal | Conservative default when diagnosis age is unknown |
+| Bracket                  | diagnosisAge   | Modifier | Adjusted Deficit | Clinical Rationale                                            |
+| ------------------------ | -------------- | -------- | ---------------- | ------------------------------------------------------------- |
+| Early onset              | `< 40`         | `1.0`    | 600 kcal         | Younger patients tolerate full aggressive restriction         |
+| Standard onset           | `40–60`        | `0.85`   | 510 kcal         | Moderate restriction appropriate for mid-life diagnosis       |
+| Late onset               | `> 60`         | `0.7`    | 420 kcal         | Conservative restriction for older patients with frailty risk |
+| Default (empty/zero/NaN) | `≤ 0` or `NaN` | `0.85`   | 510 kcal         | Conservative default when diagnosis age is unknown            |
 
 The modifier is applied **before** the 30% TDEE safety cap to preserve clinical intent — capping after modifier ensures both the clinical aggressiveness AND safety guardrail are respected.
 
@@ -83,33 +83,33 @@ All values rounded to nearest integer (decimal precision has no clinical value f
 
 ```ts
 interface CaloricTargetInput {
-  weight: number          // kg
-  height: number          // cm
-  age: number             // years
-  gender: 'male' | 'female'
-  physicalActivityFactor: number  // 1.2–1.9
-  imc: number             // kg/m², pre-computed by caller
-  diagnosisAge: number    // years, age at T2D diagnosis (FR-4.1 phenotypic filtering)
+  weight: number; // kg
+  height: number; // cm
+  age: number; // years
+  gender: 'male' | 'female';
+  physicalActivityFactor: number; // 1.2–1.9
+  imc: number; // kg/m², pre-computed by caller
+  diagnosisAge: number; // years, age at T2D diagnosis (FR-4.1 phenotypic filtering)
 }
 
 interface CaloricTargetOutput {
-  bmr: number             // kcal/day
-  tdee: number            // kcal/day
-  deficit: number         // kcal/day (0 if imc ≤ 25)
-  target: number          // kcal/day (≥ 1200)
-  restrictionActive: boolean  // true when deficit > 0
+  bmr: number; // kcal/day
+  tdee: number; // kcal/day
+  deficit: number; // kcal/day (0 if imc ≤ 25)
+  target: number; // kcal/day (≥ 1200)
+  restrictionActive: boolean; // true when deficit > 0
 }
 
-function computeCaloricTarget(input: CaloricTargetInput): CaloricTargetOutput
+function computeCaloricTarget(input: CaloricTargetInput): CaloricTargetOutput;
 
 // FR-4.1 diagnosis-age modifier constants and pure function
-const DIAGNOSIS_AGE_EARLY_THRESHOLD = 40
-const DIAGNOSIS_AGE_LATE_THRESHOLD = 60
-const DEFICIT_MODIFIER_EARLY = 1.0    // < 40 years
-const DEFICIT_MODIFIER_STANDARD = 0.85 // 40–60 years
-const DEFICIT_MODIFIER_LATE = 0.7     // > 60 years
+const DIAGNOSIS_AGE_EARLY_THRESHOLD = 40;
+const DIAGNOSIS_AGE_LATE_THRESHOLD = 60;
+const DEFICIT_MODIFIER_EARLY = 1.0; // < 40 years
+const DEFICIT_MODIFIER_STANDARD = 0.85; // 40–60 years
+const DEFICIT_MODIFIER_LATE = 0.7; // > 60 years
 
-function getDiagnosisModifier(diagnosisAge: number): number
+function getDiagnosisModifier(diagnosisAge: number): number;
 // Returns: 1.0 (early), 0.85 (standard/default), 0.7 (late)
 // NaN and ≤ 0 default to 0.85 (conservative)
 ```

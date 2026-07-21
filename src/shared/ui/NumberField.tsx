@@ -1,12 +1,12 @@
-import { formInputBase } from './formStyles'
+import { formInputBase } from './formStyles';
 
 interface NumberFieldProps {
-  label: string
-  value: string
-  onChange: (value: string) => void
-  id: string
-  min?: number
-  step?: string
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  id: string;
+  min?: number;
+  step?: string;
 }
 
 export function NumberField({ label, value, onChange, id, min, step }: NumberFieldProps) {
@@ -19,7 +19,7 @@ export function NumberField({ label, value, onChange, id, min, step }: NumberFie
         id={id}
         type="number"
         value={value}
-        onChange={e => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value)}
         min={min}
         step={step}
         className={formInputBase}
@@ -27,5 +27,5 @@ export function NumberField({ label, value, onChange, id, min, step }: NumberFie
         inputMode="decimal"
       />
     </div>
-  )
+  );
 }

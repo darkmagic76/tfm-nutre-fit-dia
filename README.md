@@ -10,23 +10,23 @@ Este proyecto se basa en **la Nutrición mediante la Dieta Mediterránea (DM) y 
 
 ## Stack tecnológico utilizado
 
-| Tecnología | Versión | Propósito |
-|---|---|---|
-| React | 19.2.7 | Componentes de UI (Container/Presentational) |
-| TypeScript | 6.0.2 | Type safety, erasableSyntaxOnly |
-| Vite | 8.1.1 | Servidor de desarrollo y builds |
-| Tailwind CSS | 4.3.2 | CSS utility-first (Vite plugin) |
-| Zod | 4.4.3 | Validación runtime con inferencia de tipos |
-| Zustand | 5.0.8 | State management — una store por feature |
-| Supabase JS | 2.87.3 | BaaS: PostgreSQL, Auth, Storage (V1) |
-| Vitest | 4.1.10 | Test runner unitario y de componentes |
-| Testing Library React | 16.3.2 | Testing conductual de componentes |
-| Oxlint | 1.71.0 | Linting basado en Rust |
-| jsdom | 29.1.1 | Entorno browser para tests |
-| Playwright | 1.61.1 | Tests E2E — flujo completo de usuario |
-| PWA | Manifest | Instalable como app en móvil (offline-ready) |
-| GitHub Actions | CI/CD | Lint → Typecheck → Tests → Build → E2E → Deploy |
-| pnpm | — | Gestor de paquetes rápido y eficiente en disco |
+| Tecnología            | Versión  | Propósito                                       |
+| --------------------- | -------- | ----------------------------------------------- |
+| React                 | 19.2.7   | Componentes de UI (Container/Presentational)    |
+| TypeScript            | 6.0.2    | Type safety, erasableSyntaxOnly                 |
+| Vite                  | 8.1.1    | Servidor de desarrollo y builds                 |
+| Tailwind CSS          | 4.3.2    | CSS utility-first (Vite plugin)                 |
+| Zod                   | 4.4.3    | Validación runtime con inferencia de tipos      |
+| Zustand               | 5.0.8    | State management — una store por feature        |
+| Supabase JS           | 2.87.3   | BaaS: PostgreSQL, Auth, Storage (V1)            |
+| Vitest                | 4.1.10   | Test runner unitario y de componentes           |
+| Testing Library React | 16.3.2   | Testing conductual de componentes               |
+| Oxlint                | 1.71.0   | Linting basado en Rust                          |
+| jsdom                 | 29.1.1   | Entorno browser para tests                      |
+| Playwright            | 1.61.1   | Tests E2E — flujo completo de usuario           |
+| PWA                   | Manifest | Instalable como app en móvil (offline-ready)    |
+| GitHub Actions        | CI/CD    | Lint → Typecheck → Tests → Build → E2E → Deploy |
+| pnpm                  | —        | Gestor de paquetes rápido y eficiente en disco  |
 
 ## Información sobre su instalación y ejecución
 
@@ -138,7 +138,7 @@ Como líderes técnicos, rechazamos las estructuras genéricas. Adoptamos **Scre
 
 ### Mandatos de Diseño Estructural
 
-1. **Directorio** `features/`: Cada carpeta debe representar una capacidad funcional única del ecosistema DT2. Es **obligatorio** que los `services`, `hooks` y `logic-utils` específicos de una funcionalidad estén **colocados (colocation)** dentro de su respectiva carpeta de funcionalidad. ***Prohibimos la fuga de lógica metabólica a carpetas globales***.
+1. **Directorio** `features/`: Cada carpeta debe representar una capacidad funcional única del ecosistema DT2. Es **obligatorio** que los `services`, `hooks` y `logic-utils` específicos de una funcionalidad estén **colocados (colocation)** dentro de su respectiva carpeta de funcionalidad. _**Prohibimos la fuga de lógica metabólica a carpetas globales**_.
 2. **Directorio** `shared/`: Reservado exclusivamente para componentes transversales (UI primitiva, wrappers de red) que sean utilizados por **dos o más** funcionalidades. Si una lógica metabólica se repite, no se mueve a `shared/` sin una refactorización previa en un `shared/metabolic-utils` bajo aprobación de arquitectura.
 
 ### Justificación de Funcionalidades
@@ -174,11 +174,11 @@ La personalización no es una opción estética; es una necesidad fenotípica. E
 
 ### Algoritmo de Semáforo Nutricional (Modelo Hospital Rey Juan Carlos)
 
-|Color|Criterios de Alimento (Input)|Acción del Sistema (Output)|
-|---|---|---|
-|**Verde**|Cereales integrales, legumbres, pescado (Bacalao), AOVE.|Promoción activa en planes de comida.|
-|**Naranja**|Arroz/pasta blanca, patatas, carnes magras.|Restricción de porción y advertencia de frecuencia.|
-|**Rojo**|Azúcares añadidos, harinas refinadas, grasas trans, refrescos.|Alerta de bloqueo y sugerencia de sustitución.|
+| Color       | Criterios de Alimento (Input)                                  | Acción del Sistema (Output)                         |
+| ----------- | -------------------------------------------------------------- | --------------------------------------------------- |
+| **Verde**   | Cereales integrales, legumbres, pescado (Bacalao), AOVE.       | Promoción activa en planes de comida.               |
+| **Naranja** | Arroz/pasta blanca, patatas, carnes magras.                    | Restricción de porción y advertencia de frecuencia. |
+| **Rojo**    | Azúcares añadidos, harinas refinadas, grasas trans, refrescos. | Alerta de bloqueo y sugerencia de sustitución.      |
 
 ### Detección de "Ocultos"
 
@@ -268,9 +268,9 @@ export function ScannerContainer() {
 
 ## 8. Conclusión Técnica y Sostenibilidad de la App
 
-Este ***Ecosistema de Autocuidado Integral para la DT2 y Salud Sostenible***, NO es una simple aplicación de bienestar; **es una herramienta de ingeniería médica de alta precisión**. La adopción de **Screaming Architecture** y la **Regla del Alcance** garantiza que ***la lógica de la Dieta Mediterránea y las restricciones de la AESAN 2022 sean inalterables y mantenibles***.
+Este _**Ecosistema de Autocuidado Integral para la DT2 y Salud Sostenible**_, NO es una simple aplicación de bienestar; **es una herramienta de ingeniería médica de alta precisión**. La adopción de **Screaming Architecture** y la **Regla del Alcance** garantiza que _**la lógica de la Dieta Mediterránea y las restricciones de la AESAN 2022 sean inalterables y mantenibles**_.
 
-Al implementar **un motor que penaliza los azúcares ocultos y restringe los cereales integrales a 4 raciones bajo régimen erMedDiet**, aseguramos ***la fidelidad absoluta a la evidencia científica***. Esta arquitectura no solo optimiza la eficiencia del desarrollo, sino que **posiciona al sistema como un estándar en la reducción de la HbA1c y la promoción de una salud sostenible tanto para el paciente como para el planeta**.
+Al implementar **un motor que penaliza los azúcares ocultos y restringe los cereales integrales a 4 raciones bajo régimen erMedDiet**, aseguramos _**la fidelidad absoluta a la evidencia científica**_. Esta arquitectura no solo optimiza la eficiencia del desarrollo, sino que **posiciona al sistema como un estándar en la reducción de la HbA1c y la promoción de una salud sostenible tanto para el paciente como para el planeta**.
 
 ## 9. PWA — Instalación en Dispositivos Móviles
 
@@ -298,17 +298,17 @@ Push/PR → 🔒 Security Audit → ✅ Quality Gate → 🎭 E2E → 🚀 Deplo
 
 ## 11. Seguridad OWASP 2025
 
-| Control | Implementación |
-|---------|---------------|
+| Control                       | Implementación                                                   |
+| ----------------------------- | ---------------------------------------------------------------- |
 | CSP (Content-Security-Policy) | `default-src 'self'`, sin inline scripts, frame-ancestors 'none' |
-| X-Content-Type-Options | `nosniff` — previene MIME sniffing |
-| Referrer-Policy | `strict-origin-when-cross-origin` |
-| Permissions-Policy | Cámara, geolocalización, micrófono deshabilitados |
-| Base-uri | `'self'` — previene <base> injection |
-| Form-action | `'self'` — previene form hijacking |
-| Dependency audit | `pnpm audit --audit-level=high` en CI |
-| Secret scanning | Gitleaks en CI |
-| Security.txt | `/.well-known/security.txt` (RFC 9116) |
-| Runtime validation | Zod schemas en todas las entradas |
-| HTML sanitation | Sin `dangerouslySetInnerHTML`, sin `eval()` |
-| HTTPS | Requerido por CSP + PWA |
+| X-Content-Type-Options        | `nosniff` — previene MIME sniffing                               |
+| Referrer-Policy               | `strict-origin-when-cross-origin`                                |
+| Permissions-Policy            | Cámara, geolocalización, micrófono deshabilitados                |
+| Base-uri                      | `'self'` — previene <base> injection                             |
+| Form-action                   | `'self'` — previene form hijacking                               |
+| Dependency audit              | `pnpm audit --audit-level=high` en CI                            |
+| Secret scanning               | Gitleaks en CI                                                   |
+| Security.txt                  | `/.well-known/security.txt` (RFC 9116)                           |
+| Runtime validation            | Zod schemas en todas las entradas                                |
+| HTML sanitation               | Sin `dangerouslySetInnerHTML`, sin `eval()`                      |
+| HTTPS                         | Requerido por CSP + PWA                                          |

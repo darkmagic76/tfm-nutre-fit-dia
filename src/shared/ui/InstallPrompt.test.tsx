@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { InstallPrompt } from './InstallPrompt'
-import type { Translations } from '@shared/i18n/types'
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { InstallPrompt } from './InstallPrompt';
+import type { Translations } from '@shared/i18n/types';
 
 const baseT: Translations = {
   'app.title': '',
@@ -101,46 +101,31 @@ const baseT: Translations = {
   'form.glucoseContext': '',
   'form.glucoseFasting': '',
   'form.glucosePostprandial': '',
-}
+};
 
 describe('InstallPrompt', () => {
   it('renders install button when isInstallable=true', () => {
     render(
-      <InstallPrompt
-        isInstallable={true}
-        onInstall={() => {}}
-        onDismiss={() => {}}
-        t={baseT}
-      />
-    )
-    expect(screen.getByTestId('install-prompt')).toBeInTheDocument()
-    expect(screen.getByTestId('install-button')).toBeInTheDocument()
-    expect(screen.getByTestId('dismiss-button')).toBeInTheDocument()
-  })
+      <InstallPrompt isInstallable={true} onInstall={() => {}} onDismiss={() => {}} t={baseT} />,
+    );
+    expect(screen.getByTestId('install-prompt')).toBeInTheDocument();
+    expect(screen.getByTestId('install-button')).toBeInTheDocument();
+    expect(screen.getByTestId('dismiss-button')).toBeInTheDocument();
+  });
 
   it('does not render when isInstallable=false', () => {
     render(
-      <InstallPrompt
-        isInstallable={false}
-        onInstall={() => {}}
-        onDismiss={() => {}}
-        t={baseT}
-      />
-    )
-    expect(screen.queryByTestId('install-prompt')).not.toBeInTheDocument()
-  })
+      <InstallPrompt isInstallable={false} onInstall={() => {}} onDismiss={() => {}} t={baseT} />,
+    );
+    expect(screen.queryByTestId('install-prompt')).not.toBeInTheDocument();
+  });
 
   it('click dismiss calls onDismiss', () => {
-    const onDismiss = vi.fn()
+    const onDismiss = vi.fn();
     render(
-      <InstallPrompt
-        isInstallable={true}
-        onInstall={() => {}}
-        onDismiss={onDismiss}
-        t={baseT}
-      />
-    )
-    fireEvent.click(screen.getByTestId('dismiss-button'))
-    expect(onDismiss).toHaveBeenCalledTimes(1)
-  })
-})
+      <InstallPrompt isInstallable={true} onInstall={() => {}} onDismiss={onDismiss} t={baseT} />,
+    );
+    fireEvent.click(screen.getByTestId('dismiss-button'));
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+  });
+});

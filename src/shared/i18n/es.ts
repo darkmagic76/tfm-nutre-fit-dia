@@ -1,11 +1,12 @@
-import type { Translations } from './types'
+import type { Translations } from './types';
 
 export const es: Translations = {
   'app.title': 'NutreFitDia',
   'app.subtitle': 'Ecosistema de Autocuidado Integral para Diabetes Tipo 2',
   'app.keyboardHint': 'Usá ← → para navegar entre pestañas',
   'app.footer.tfm': 'TFM · NutreFitDia · erMedDiet + AESAN 2022',
-  'app.footer.disclaimer': '⚕️ Toda recomendación debe ser validada por un dietista-nutricionista colegiado',
+  'app.footer.disclaimer':
+    '⚕️ Toda recomendación debe ser validada por un dietista-nutricionista colegiado',
   'app.footer.security': 'Seguridad',
 
   'tab.scanner': 'Semáforo',
@@ -82,7 +83,8 @@ export const es: Translations = {
   'sustainability.seasonality': 'Temporalidad (producto de temporada)',
   'sustainability.proximity': 'Proximidad (origen local/KM0)',
   'sustainability.zeroWaste': 'Zero-Waste',
-  'sustainability.zeroWasteDesc': 'Productos con defectos estéticos pero perfectamente comestibles:',
+  'sustainability.zeroWasteDesc':
+    'Productos con defectos estéticos pero perfectamente comestibles:',
   'sustainability.zeroWasteFooter': '♻️ Zero-Waste · 🥕 KM0 / Defectos estéticos',
   'sustainability.emissions': 'Emisiones Comparativas',
   'sustainability.emissionsDesc': 'kg CO₂eq por kg de alimento (EAT-Lancet)',
@@ -90,7 +92,8 @@ export const es: Translations = {
   'install.title': 'Instalar app',
   'install.dismiss': 'Cerrar',
 
-  'legal.disclaimer': '⚕️ Toda recomendación, cantidad y plan nutricional debe ser validado por un dietista-nutricionista colegiado.',
+  'legal.disclaimer':
+    '⚕️ Toda recomendación, cantidad y plan nutricional debe ser validado por un dietista-nutricionista colegiado.',
 
   'error.boundary.title': 'Algo salió mal',
   'error.boundary.description': 'Ocurrió un error inesperado al renderizar esta sección.',
@@ -117,4 +120,4 @@ export const es: Translations = {
 
   'cultural.socialEating': 'Ideal para comer en compañía',
   'cultural.preparation': 'Preparación',
-}
+};

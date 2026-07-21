@@ -15,6 +15,7 @@ The `beforeinstallprompt` event allows PWA installation on Chromium-based browse
 ### PWA Install: `beforeinstallprompt` Event Capture
 
 The `useInstallPrompt` hook:
+
 1. Listens for `beforeinstallprompt` on `window` (once, in useEffect)
 2. Stores the deferred `BeforeInstallPromptEvent` in a ref
 3. Returns `{ isInstallable: boolean, install: () => Promise<void>, dismiss: () => void }`
@@ -33,9 +34,9 @@ The cooldown is read on mount — if 7 days have not passed since dismissal, `is
 
 ## Traceability
 
-| Requirement | Covered by |
-|---|---|
-| Spec: beforeinstallprompt capture | useInstallPrompt hook |
-| Spec: InstallPrompt conditional render | App.tsx renders when isInstallable=true |
-| Spec: 7-day dismiss cooldown | localStorage nutrefitdia-install-dismissed |
-| Design: Non-blocking install | Deferred prompt, user initiates |
+| Requirement                            | Covered by                                 |
+| -------------------------------------- | ------------------------------------------ |
+| Spec: beforeinstallprompt capture      | useInstallPrompt hook                      |
+| Spec: InstallPrompt conditional render | App.tsx renders when isInstallable=true    |
+| Spec: 7-day dismiss cooldown           | localStorage nutrefitdia-install-dismissed |
+| Design: Non-blocking install           | Deferred prompt, user initiates            |

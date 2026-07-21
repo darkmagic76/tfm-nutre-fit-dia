@@ -19,7 +19,10 @@
       "adr": "ADR-002",
       "title": "Domain Model with Zod + TypeScript 6 Const Objects",
       "decision": "Use Zod 4 for runtime validation and type inference. Replace enums with const objects (as const + union type). Use factory functions to fill Zod .default() fields. Zero TS6 enum errors.",
-      "requirements_covered": ["FR-3.1 (semáforo — type safety for classifications)", "FR-3.2 (occult sugar — runtime validation for scanner)"],
+      "requirements_covered": [
+        "FR-3.1 (semáforo — type safety for classifications)",
+        "FR-3.2 (occult sugar — runtime validation for scanner)"
+      ],
       "resolves_findings": [
         "Finding #2 (strict mode not enabled): DOES NOT RESOLVE. ADR-002 focuses on runtime validation (Zod) and TS6 enum avoidance, but never mandates 'strict': true in tsconfig. This is a gap in the ADR — it should have addressed strict mode."
       ],
@@ -31,7 +34,10 @@
       "adr": "ADR-003",
       "title": "ML Pipeline Abstraction — ScannerAdapter",
       "decision": "Define ScannerAdapter interface in infrastructure/ml/types.ts with scan(), isAvailable(), getModelInfo(). MockScannerAdapter for TFM (300ms simulated). OnnxScannerAdapter and TfLiteScannerAdapter deferred post-TFM. UI decoupled from implementation.",
-      "requirements_covered": ["FR-3.1 (semáforo — scanner input)", "FR-3.2 (occult sugar — scanner ingredient detection)"],
+      "requirements_covered": [
+        "FR-3.1 (semáforo — scanner input)",
+        "FR-3.2 (occult sugar — scanner ingredient detection)"
+      ],
       "resolves_findings": [
         "Finding #13 (duplicate sugar lists — occultSugarDetector + MockScannerAdapter): PARTIALLY MITIGATES. MockScannerAdapter.extractAddedSugars uses a separate sugar list from occultSugarDetector.ts OCCULT_SUGAR_PATTERNS. ADR-003 defines MockScannerAdapter as a TFM-only mock that will be replaced post-TFM, so this duplication is temporary. However, ADR-003 does not mandate deduplication of sugar aliases — this is an accidental implementation gap, not a design decision."
       ],
@@ -43,7 +49,12 @@
       "adr": "ADR-004",
       "title": "Caloric Target Algorithm (Mifflin-St Jeor + PREDIMED-Plus)",
       "decision": "Use Mifflin-St Jeor for BMR. TDEE = BMR × PAF (1.2-1.9). Conditional deficit: if IMC > 25, min(600 kcal, TDEE × 0.3); else 0. Safety floor at 1200 kcal/day. Amendment 2026-07-15 made deficit conditional on IMC > 25 per SPECS_RF RF-02.",
-      "requirements_covered": ["FR-4.1 (fenotípico — IMC-dependent filtering)", "FR-4.2 (déficit 600 kcal + conditional)", "RF-02 (déficit conditional on IMC > 25)", "SPECS_TECH §2"],
+      "requirements_covered": [
+        "FR-4.1 (fenotípico — IMC-dependent filtering)",
+        "FR-4.2 (déficit 600 kcal + conditional)",
+        "RF-02 (déficit conditional on IMC > 25)",
+        "SPECS_TECH §2"
+      ],
       "resolves_findings": [
         "Finding #7 (diagnosisAge collected but never used): EXPLAINED. ADR-004 §11 explicitly states: 'diagnosisAge is stored for downstream phenotypic filtering (FR-4.1). It does not alter the MSJ formula itself.' This is by design — diagnosisAge is collected for FR-4.1 phenotypic filtering but does NOT affect the Mifflin-St Jeor BMR formula. The implementation matches the ADR. However, the question remains: WHERE is the downstream phenotypic filtering? FR-4.1's filter logic is not yet implemented.",
         "Finding #8 (only Mifflin-St Jeor, no Harris-Benedict): EXPLAINED. ADR-004 §87 states 'Mifflin-St Jeor is the clinical standard' and the algorithm section ONLY specifies Mifflin-St Jeor. The ADR chose ONE formula (not both) because it's more accurate per clinical literature. SPECS_TECH §17 says 'Harris-Benedict o Mifflin-St Jeor' as alternatives, and ADR-004 made a deliberate choice to implement only Mifflin-St Jeor. This is an architectural decision that reduces scope, not an implementation gap."
@@ -57,7 +68,12 @@
       "adr": "ADR-005",
       "title": "Canonical FoodCategory — 10-Group Model",
       "decision": "Adopt INFORME_ADR 10-group model as canonical: CEREALS, VEGETABLES, FRUITS, OLIVE_OIL, DAIRY, LEGUMES, FISH, EGGS, WHITE_MEAT, WATER. SPECS_RF (5-group) and SPECS_TECH (~7-group) are derived UI views. Subclassification (whole_grain/refined, fish white/blue, high_gi/low_gi) is future work.",
-      "requirements_covered": ["FR-2 (all sub-requirements — clinical rules per group)", "FR-2.1 (cereal limits)", "SPECS_RF RF-01 (raciones gramadas)", "SPECS_TECH §5"],
+      "requirements_covered": [
+        "FR-2 (all sub-requirements — clinical rules per group)",
+        "FR-2.1 (cereal limits)",
+        "SPECS_RF RF-01 (raciones gramadas)",
+        "SPECS_TECH §5"
+      ],
       "resolves_findings": [
         "Finding #1 (cereales integrales ORANGE instead of GREEN): EXPLAINED and MITIGATED. ADR-005 §91-96 explicitly marks CEREALS → { whole_grain, refined } subclassification as FUTURE. The classificationService defaults CEREALS to ORANGE with a comment 'whole-grain override below' but no override exists because the subclassification to distinguish whole-grain from refined cereals is not yet implemented per ADR-005. The comment was placed as a TODO marker, not as completed code. STATUS: design decision, but the marker-comment-without-implementation is confusing.",
         "Finding #6 (SPECS_TECH §4 says substitute RED_MEAT but code uses WHITE_MEAT: no RED_MEAT category): CONFIRMED and EXPLAINED. ADR-005's canonical model explicitly OMITS RED_MEAT — only WHITE_MEAT exists. The 10-group model from INFORME_ADR never included RED_MEAT. SPECS_TECH §4's 'IF Red Meat THEN Suggest' trigger references a category that does not exist in the canonical domain model. The code's rules.ts substitutes WHITE_MEAT for the red meat logic, which is a semantic mismatch.",
@@ -73,7 +89,11 @@
       "adr": "ADR-006",
       "title": "Activity Tracking Strategy — Goal Tracker vs Budget Adjuster",
       "decision": "Separate physical activity into 3 concerns: BasalPAF (static, done — ADR-004), ActivityGoalTracker (V1 — weekly target compliance per SPECS_RF/SPECS_TECH), ActivityBudgetAdjuster (V2 — real-time caloric budget via Google Fit/Apple Health, deferred). V1 uses manual entry, no native health APIs.",
-      "requirements_covered": ["FR-4.3 (activity tracking — V1 scope only)", "RF-03 (150-300 min + 2d fuerza)", "SPECS_TECH §6 (activity monitoring)"],
+      "requirements_covered": [
+        "FR-4.3 (activity tracking — V1 scope only)",
+        "RF-03 (150-300 min + 2d fuerza)",
+        "SPECS_TECH §6 (activity monitoring)"
+      ],
       "resolves_findings": [
         "Finding #9 (no Google Fit/Apple Health): EXPLAINED and explicitly DEFERRED. ADR-006 §55-63 clearly states ActivityBudgetAdjuster with Google Fit/Apple Health is V2 (post-TFM). The rationale includes OAuth complexity, real-time plan recalculation, clinical safety validation, and the fact that no refined specification (SPECS_RF, SPECS_TECH) requires it. Finding #9 is by design — not an oversight.",
         "FR-4.3 (activity tracking) is marked ✅ in FR-MATRIX but only V1 scope is implemented. This is correct per ADR-006 — the matrix should be interpreted as 'V1 scope complete'."
@@ -86,7 +106,15 @@
       "adr": "ADR-007",
       "title": "Sustainability Scoring — Domain Model and Feature Placement",
       "decision": "Place sustainability scoring in src/shared/sustainability/ as a domain module (not a feature). EnvironmentalScore includes carbonFootprint, seasonality, proximity, packagingLevel. Dual qualification with ScanResult.environmentalScore?. Configurable scoring weights. V1: static AESAN 2022 data. V2: dynamic lifecycle assessment APIs.",
-      "requirements_covered": ["FR-1.1 (ODS 2030 alignment)", "FR-2.2 (environmental weight)", "FR-5.2 (seasonality/proximity)", "SPECS_RF Calificación Dual", "SPECS_RF RNF-03", "SPECS_TECH §4 (sustainability ranking)", "SPECS_TECH §7 (emission comparisons)"],
+      "requirements_covered": [
+        "FR-1.1 (ODS 2030 alignment)",
+        "FR-2.2 (environmental weight)",
+        "FR-5.2 (seasonality/proximity)",
+        "SPECS_RF Calificación Dual",
+        "SPECS_RF RNF-03",
+        "SPECS_TECH §4 (sustainability ranking)",
+        "SPECS_TECH §7 (emission comparisons)"
+      ],
       "resolves_findings": [
         "Finding #13 (magic numbers, specifically emission ratios): RESOLVED. ADR-007 §84-95 explicitly encodes emission ratios as auditable constants (PROTEIN_EMISSION_RATIOS) in constants.ts, not hardcoded in scoring logic. ADR-007 §136-137 also states: 'Weights are initial defaults, not hardcoded magic numbers — they come from a configurable WEIGHTS constant.'",
         "Finding #12 (magic numbers): PARTIALLY RESOLVED for sustainability domain. The ADR-007 design prevents magic numbers in sustainability, but magic numbers still exist in planGenerator.ts (CEREAL_DAILY_NORMAL = 5, CEREAL_DAILY_RESTRICTED = 4) and engine.ts per the audit."
@@ -99,10 +127,11 @@
       "adr": "ADR-008",
       "title": "Nudge Taxonomy — Unified Notification Model",
       "decision": "Three notification types: SafetyAlert (clinical risk, blocks/warns), SystemAction (automatic, invisible), BehavioralNudge (user-facing, non-blocking). Maps all 17 INFORME_ADR rules + SPECS_TECH nudges. Single evaluateRules() entry point for NudgeEngine. Cooldown mechanism per rule.",
-      "requirements_covered": ["FR-2 (per-group alertas de sistema)", "SPECS_TECH (hiperglucemia nudge, HC inactivity adjust)"],
-      "resolves_findings": [
-        "No audit finding directly resolved by this ADR."
+      "requirements_covered": [
+        "FR-2 (per-group alertas de sistema)",
+        "SPECS_TECH (hiperglucemia nudge, HC inactivity adjust)"
       ],
+      "resolves_findings": ["No audit finding directly resolved by this ADR."],
       "new_issues": [
         "Hardcoded Spanish strings in rules.ts (e.g., 'Has superado las 4 raciones', 'Proteína animal elevada', 'Considera fuentes de calcio vegetal') — these are domain TEXT that should be i18n-ized. While finding #17 flags hardcoded Spanish in 'violation components', the same pattern exists in nudge rules. ADR-008 does not mandate i18n for notification text."
       ]
@@ -111,7 +140,14 @@
       "adr": "ADR-009",
       "title": "Technology Stack — SPA + Supabase + PWA",
       "decision": "SPA + BaaS architecture: React 19 + Vite 8 + TypeScript 6 + Zod 4 + Tailwind 4 + Vitest 4. Backend: Supabase (PostgreSQL, Auth, RLS, Storage). State: Zustand (one store per feature). Mobile: PWA V1 (no React Native). Static food catalog for TFM (~100 foods). CI/CD: GitHub Actions + Vercel.",
-      "requirements_covered": ["ADR-001 (stores per feature via Zustand)", "ADR-002 (Zod + TS6 ratified)", "ADR-003 (PWA camera)", "ADR-006 (V1 manual entry, no native APIs)", "SPECS_TECH §5 (Human-in-the-loop via Supabase Auth)", "RNF-01 (professional validation)"],
+      "requirements_covered": [
+        "ADR-001 (stores per feature via Zustand)",
+        "ADR-002 (Zod + TS6 ratified)",
+        "ADR-003 (PWA camera)",
+        "ADR-006 (V1 manual entry, no native APIs)",
+        "SPECS_TECH §5 (Human-in-the-loop via Supabase Auth)",
+        "RNF-01 (professional validation)"
+      ],
       "resolves_findings": [
         "Finding #2 (strict mode not enabled): NOT RESOLVED. ADR-009 §37-48 lists the frontend stack but never mentions enabling 'strict': true. This is a gap in the ADR's coverage of TypeScript configuration.",
         "Finding #10 (no formatter configured): CONFIRMED as gap. ADR-009 lists Oxlint for linting but does NOT mention any formatter (Prettier, dprint, Biome). This is consistent with the audit finding.",

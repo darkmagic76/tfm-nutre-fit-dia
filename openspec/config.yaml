@@ -50,4 +50,4 @@ testing:
   quality:
     linter: oxlint (pnpm lint)
     type_checker: tsc -b --noEmit (pnpm typecheck)
-    formatter: null
+    formatter: prettier

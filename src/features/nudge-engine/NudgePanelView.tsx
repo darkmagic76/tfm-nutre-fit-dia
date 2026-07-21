@@ -1,22 +1,21 @@
-import type { SystemNotification } from '@shared/domain'
+import type { SystemNotification } from '@shared/domain';
 
 interface NudgePanelViewProps {
-  pending: SystemNotification[]
-  history: SystemNotification[]
-  onDismiss: (id: string) => void
+  pending: SystemNotification[];
+  history: SystemNotification[];
+  onDismiss: (id: string) => void;
 }
 
-export function NudgePanelView({
-  pending,
-  history,
-  onDismiss,
-}: NudgePanelViewProps) {
+export function NudgePanelView({ pending, history, onDismiss }: NudgePanelViewProps) {
   return (
     <div className="space-y-3" aria-label="Panel de nudges">
       {/* Badge counter */}
       {pending.length > 0 && (
         <div className="flex items-center gap-2">
-          <span className="bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full" aria-label="Nudges pendientes">
+          <span
+            className="bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full"
+            aria-label="Nudges pendientes"
+          >
             {pending.length}
           </span>
           <span className="text-sm text-stone-600">nudges activos</span>
@@ -24,12 +23,10 @@ export function NudgePanelView({
       )}
 
       {/* Empty state */}
-      {pending.length === 0 && (
-        <p className="text-sm text-stone-400 italic">Sin nudges activos</p>
-      )}
+      {pending.length === 0 && <p className="text-sm text-stone-400 italic">Sin nudges activos</p>}
 
       {/* Pending nudges list */}
-      {pending.map(nudge => (
+      {pending.map((nudge) => (
         <div
           key={nudge.id}
           className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex justify-between items-start gap-2"
@@ -59,17 +56,18 @@ export function NudgePanelView({
             </span>
           </summary>
           <ul className="mt-2 space-y-1 ml-2">
-            {history.map(entry => (
-              <li key={entry.id} className="text-xs text-stone-400 border-l-2 border-stone-200 pl-2">
+            {history.map((entry) => (
+              <li
+                key={entry.id}
+                className="text-xs text-stone-400 border-l-2 border-stone-200 pl-2"
+              >
                 <span className="text-stone-500">{entry.title}</span>
-                <span className="ml-1">
-                  {entry.dismissedAt ? '— descartado' : '— reconocido'}
-                </span>
+                <span className="ml-1">{entry.dismissedAt ? '— descartado' : '— reconocido'}</span>
               </li>
             ))}
           </ul>
         </details>
       )}
     </div>
-  )
+  );
 }

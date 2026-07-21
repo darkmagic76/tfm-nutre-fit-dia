@@ -1,21 +1,18 @@
-import { create } from 'zustand'
-import { useTrackerStore } from '@shared/stores/trackerStore'
-import {
-  generateWeeklyPlan,
-  type WeeklyPlan,
-} from './services/planGenerator'
+import { create } from 'zustand';
+import { useTrackerStore } from '@shared/stores/trackerStore';
+import { generateWeeklyPlan, type WeeklyPlan } from './services/planGenerator';
 
 interface PlanState {
-  weeklyPlan: WeeklyPlan | null
+  weeklyPlan: WeeklyPlan | null;
 
-  generatePlan: () => void
+  generatePlan: () => void;
 }
 
-export const usePlanStore = create<PlanState>(set => ({
+export const usePlanStore = create<PlanState>((set) => ({
   weeklyPlan: null,
 
   generatePlan: () => {
-    const { restrictionActive } = useTrackerStore.getState()
-    set({ weeklyPlan: generateWeeklyPlan(restrictionActive) })
+    const { restrictionActive } = useTrackerStore.getState();
+    set({ weeklyPlan: generateWeeklyPlan(restrictionActive) });
   },
-}))
+}));

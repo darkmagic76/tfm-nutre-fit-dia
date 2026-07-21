@@ -1,6 +1,6 @@
-import { z } from 'zod'
-import { defineEnum } from '@shared/utils'
-import type { ValuesOf } from '@shared/utils'
+import { z } from 'zod';
+import { defineEnum } from '@shared/utils';
+import type { ValuesOf } from '@shared/utils';
 
 /**
  * Canonical food categories per ADR-005 (10 groups from INFORME_ADR).
@@ -18,9 +18,9 @@ export const FoodCategory = defineEnum({
   WHITE_MEAT: 'white_meat',
   RED_MEAT: 'red_meat',
   WATER: 'water',
-})
+});
 
-export type FoodCategory = ValuesOf<typeof FoodCategory>
+export type FoodCategory = ValuesOf<typeof FoodCategory>;
 
 export const FoodCategorySchema = z.enum([
   'cereals',
@@ -34,7 +34,7 @@ export const FoodCategorySchema = z.enum([
   'white_meat',
   'red_meat',
   'water',
-])
+]);
 
 /** Display names in Spanish for UI rendering */
 export const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
@@ -49,7 +49,7 @@ export const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
   [FoodCategory.WHITE_MEAT]: 'Carne blanca',
   [FoodCategory.RED_MEAT]: 'Carne roja',
   [FoodCategory.WATER]: 'Agua',
-}
+};
 
 /** Groups that count toward animal protein (for NudgeEngine: "si Animal_Protein > 2, sugerir calcio vegetal") */
 export const ANIMAL_PROTEIN_CATEGORIES: FoodCategory[] = [
@@ -58,4 +58,4 @@ export const ANIMAL_PROTEIN_CATEGORIES: FoodCategory[] = [
   FoodCategory.EGGS,
   FoodCategory.WHITE_MEAT,
   FoodCategory.RED_MEAT,
-]
+];

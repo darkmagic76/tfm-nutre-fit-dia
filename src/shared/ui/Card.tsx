@@ -1,9 +1,9 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from 'react';
 
 interface CardProps {
-  children: ReactNode
-  title: string
-  description?: string
+  children: ReactNode;
+  title: string;
+  description?: string;
 }
 
 export function Card({ children, title, description }: CardProps) {
@@ -19,11 +19,9 @@ export function Card({ children, title, description }: CardProps) {
         >
           {title}
         </h2>
-        {description && (
-          <p className="text-stone-500 text-sm mt-1">{description}</p>
-        )}
+        {description && <p className="text-stone-500 text-sm mt-1">{description}</p>}
       </header>
       {children}
     </section>
-  )
+  );
 }

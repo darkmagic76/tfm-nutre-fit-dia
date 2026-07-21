@@ -1,20 +1,20 @@
-import { Card, NumberField, PrimaryButton } from '@shared/ui'
-import type { WeeklyGoal } from './types'
-import type { FormEvent } from 'react'
+import { Card, NumberField, PrimaryButton } from '@shared/ui';
+import type { WeeklyGoal } from './types';
+import type { FormEvent } from 'react';
 
 interface ActivityTrackerViewProps {
-  weeklyMinutes: number
-  strengthSessions: number
-  compliance: number
-  streak: number
-  meetsModerate: boolean
-  meetsStrength: boolean
-  weeklyGoal: WeeklyGoal
-  minutes: string
-  sessions: string
-  onMinutesChange: (v: string) => void
-  onSessionsChange: (v: string) => void
-  onSubmit: (e: FormEvent) => void
+  weeklyMinutes: number;
+  strengthSessions: number;
+  compliance: number;
+  streak: number;
+  meetsModerate: boolean;
+  meetsStrength: boolean;
+  weeklyGoal: WeeklyGoal;
+  minutes: string;
+  sessions: string;
+  onMinutesChange: (v: string) => void;
+  onSessionsChange: (v: string) => void;
+  onSubmit: (e: FormEvent) => void;
 }
 
 export function ActivityTrackerView({
@@ -31,9 +31,8 @@ export function ActivityTrackerView({
   onSessionsChange,
   onSubmit,
 }: ActivityTrackerViewProps) {
-  const complianceColor = compliance === 100 ? 'text-emerald-600'
-    : compliance === 50 ? 'text-amber-600'
-    : 'text-red-600'
+  const complianceColor =
+    compliance === 100 ? 'text-emerald-600' : compliance === 50 ? 'text-amber-600' : 'text-red-600';
 
   return (
     <Card
@@ -57,21 +56,39 @@ export function ActivityTrackerView({
         <span className={`text-lg font-bold ${complianceColor}`}>{compliance}%</span>
         <span className="text-sm text-stone-500">cumplimiento</span>
         {streak > 0 && (
-          <span className="text-sm text-amber-600 ml-auto" aria-label={`Racha de ${streak} semanas`}>
+          <span
+            className="text-sm text-amber-600 ml-auto"
+            aria-label={`Racha de ${streak} semanas`}
+          >
             <span aria-hidden="true">🔥</span> {streak} sem
           </span>
         )}
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-3" aria-label="Registro de actividad física" noValidate>
+      <form
+        onSubmit={onSubmit}
+        className="space-y-3"
+        aria-label="Registro de actividad física"
+        noValidate
+      >
         <div className="grid grid-cols-2 gap-3">
-          <NumberField id="minutes" label="Minutos moderados" value={minutes} onChange={onMinutesChange} min={0} />
-          <NumberField id="sessions" label="Sesiones fuerza" value={sessions} onChange={onSessionsChange} min={0} />
+          <NumberField
+            id="minutes"
+            label="Minutos moderados"
+            value={minutes}
+            onChange={onMinutesChange}
+            min={0}
+          />
+          <NumberField
+            id="sessions"
+            label="Sesiones fuerza"
+            value={sessions}
+            onChange={onSessionsChange}
+            min={0}
+          />
         </div>
-        <PrimaryButton type="submit">
-          Registrar actividad
-        </PrimaryButton>
+        <PrimaryButton type="submit">Registrar actividad</PrimaryButton>
       </form>
     </Card>
-  )
+  );
 }
