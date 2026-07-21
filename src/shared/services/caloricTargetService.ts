@@ -14,6 +14,20 @@ import { isRestrictionCandidate } from '@shared/utils'
 
 export type CaloricTargetInput = UserMetrics
 
+// Diagnosis-age modifier brackets per FR-4.1 phenotypic filtering
+const DIAGNOSIS_AGE_EARLY_THRESHOLD = 40
+const DIAGNOSIS_AGE_LATE_THRESHOLD = 60
+const DEFICIT_MODIFIER_EARLY = 1.0
+const DEFICIT_MODIFIER_STANDARD = 0.85
+const DEFICIT_MODIFIER_LATE = 0.7
+
+export function getDiagnosisModifier(diagnosisAge: number): number {
+  if (diagnosisAge <= 0 || Number.isNaN(diagnosisAge)) return DEFICIT_MODIFIER_STANDARD
+  if (diagnosisAge < DIAGNOSIS_AGE_EARLY_THRESHOLD) return DEFICIT_MODIFIER_EARLY
+  if (diagnosisAge <= DIAGNOSIS_AGE_LATE_THRESHOLD) return DEFICIT_MODIFIER_STANDARD
+  return DEFICIT_MODIFIER_LATE
+}
+
 export interface CaloricTargetOutput {
   bmr: number               // kcal/day
   tdee: number              // kcal/day
@@ -48,9 +62,13 @@ export function computeCaloricTarget(input: CaloricTargetInput): CaloricTargetOu
   // SPECS_RF RF-02: deficit ONLY when IMC > 25 (via isRestrictionCandidate)
   const restrictionActive = isRestrictionCandidate(imc)
 
-  // PREDIMED-Plus: 600 kcal deficit, capped at 30% of TDEE for safety
+  // FR-4.1 phenotypic filtering: scale deficit by diagnosis-age aggressiveness
+  const modifier = getDiagnosisModifier(input.diagnosisAge)
+  const adjustedDeficit = Math.round(PREDIMED_PLUS_DEFICIT_KCAL * modifier)
+
+  // PREDIMED-Plus: 600 kcal deficit (modifier-scaled), capped at 30% of TDEE for safety
   const rawDeficit = restrictionActive
-    ? Math.min(PREDIMED_PLUS_DEFICIT_KCAL, Math.round(tdee * DEFICIT_CAP_RATIO))
+    ? Math.min(adjustedDeficit, Math.round(tdee * DEFICIT_CAP_RATIO))
     : 0
 
   const rawTarget = tdee - rawDeficit
