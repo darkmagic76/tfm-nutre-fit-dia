@@ -1,6 +1,6 @@
 # TASKS.md — Nutri-Fit-Día: Features por Criticidad Funcional
 
-Generado: 2026-07-17 | Actualizado: 2026-07-19 | Rama: `develop` | Tests: 387 ✅ | Lint: 0 | Typecheck: limpio
+Generado: 2026-07-17 | Actualizado: 2026-07-21 | Rama: `develop` | Tests: 510 ✅ | Lint: 0 | Typecheck: limpio | Coverage: 93.16% | Formatter: Prettier
 
 ---
 
