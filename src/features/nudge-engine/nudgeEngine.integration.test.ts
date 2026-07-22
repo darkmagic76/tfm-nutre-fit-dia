@@ -142,7 +142,6 @@ describe('Nudge Engine Integration', () => {
       useLogStore.setState({ todayLog: [] });
       evaluateAndEnqueue();
 
-      const afterTrigger = useNudgeStore.getState();
       // VEGETABLES_DEFICIT only fires after 20h — we test at integration level
       // so it may not fire here. Let's test that when it DOES fire, it clears after correction.
 
