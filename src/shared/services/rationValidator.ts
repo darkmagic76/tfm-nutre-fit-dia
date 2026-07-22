@@ -1,4 +1,4 @@
-import { FoodCategory, ANIMAL_PROTEIN_CATEGORIES } from '@shared/domain';
+import { FoodCategory, ANIMAL_PROTEIN_CATEGORIES, CATEGORY_DISPLAY_NAMES } from '@shared/domain';
 import { CEREAL_RESTRICTED_MAX } from '@shared/constants/clinical';
 import type { FoodCategory as FoodCategoryType } from '@shared/domain';
 import type { Food } from '@shared/domain';
@@ -136,6 +136,7 @@ function checkCategoryLimits(
   const unit = limit.unit;
   const suffix = unit === 'day' ? 'día' : 'semana';
   const effectiveMax = options?.effectiveMax ?? limit.max;
+  const displayName = CATEGORY_DISPLAY_NAMES[category] ?? category;
 
   if (effectiveMax !== undefined && current > effectiveMax) {
     violations.push({
@@ -144,7 +145,7 @@ function checkCategoryLimits(
       limit: effectiveMax,
       direction: 'over',
       unit,
-      message: `${category}: ${current} raciones (máx ${effectiveMax}/${suffix})`,
+      message: `${displayName}: ${current} raciones (máx ${effectiveMax}/${suffix})`,
     });
   }
 
@@ -155,7 +156,7 @@ function checkCategoryLimits(
       limit: limit.min,
       direction: 'under',
       unit,
-      message: `${category}: ${current} raciones (mín ${limit.min}/${suffix})`,
+      message: `${displayName}: ${current} raciones (mín ${limit.min}/${suffix})`,
     });
   }
 
