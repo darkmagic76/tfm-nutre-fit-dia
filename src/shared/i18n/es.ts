@@ -72,8 +72,15 @@ export const es: Translations = {
 
   'nudges.title': '🔔 Nudges',
   'nudges.description': 'Notificaciones y recomendaciones personalizadas',
-  'nudges.empty': 'No hay nudges pendientes',
+  'nudges.empty': 'Sin nudges activos',
   'nudges.dismiss': 'Descartar',
+  'nudges.active': 'nudges activos',
+  'nudges.panelLabel': 'Panel de nudges',
+  'nudges.pendingLabel': 'Nudges pendientes',
+  'nudges.history': 'Historial de engagement',
+  'nudges.dismissed': 'descartado',
+  'nudges.acknowledged': 'reconocido',
+  'nudges.dismissAria': 'Descartar: {title}',
 
   'sustainability.title': '🌍 Sostenibilidad',
   'sustainability.description': 'Impacto ambiental según AESAN 2022 y ODS 2030',

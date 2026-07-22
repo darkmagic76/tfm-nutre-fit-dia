@@ -100,6 +100,13 @@ export interface Translations {
   'nudges.description': string;
   'nudges.empty': string;
   'nudges.dismiss': string;
+  'nudges.active': string;
+  'nudges.panelLabel': string;
+  'nudges.pendingLabel': string;
+  'nudges.history': string;
+  'nudges.dismissed': string;
+  'nudges.acknowledged': string;
+  'nudges.dismissAria': string;
 
   // Sustainability
   'sustainability.title': string;
