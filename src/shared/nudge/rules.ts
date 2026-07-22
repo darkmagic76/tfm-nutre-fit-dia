@@ -13,10 +13,14 @@ import type { SafetyRule } from './types';
 
 // ─── Threshold constants ───
 
+/** Cereal minimum rations before deficit nudge triggers */
+const CEREAL_MIN_RATIONS = 3;
 /** Minimum vegetable rations before nudge triggers */
 const VEGETABLE_MIN_RATIONS = 3;
-/** Evening hour after which vegetable deficit nudge fires (8PM) */
-const VEGETABLE_NUDGE_HOUR_THRESHOLD = 20;
+/** Afternoon hour after which vegetable deficit nudge fires (2PM — allows time to correct) */
+const VEGETABLE_NUDGE_HOUR_THRESHOLD = 14;
+/** Fruit minimum rations before deficit nudge triggers */
+const FRUIT_MIN_RATIONS = 2;
 /** Animal protein rations above this triggers dairy/calcium nudge */
 const ANIMAL_PROTEIN_NUDGE_THRESHOLD = 2;
 /** Minimum water rations before hydration nudge fires */
@@ -49,6 +53,15 @@ export const NUDGE_RULES: SafetyRule[] = [
       ctx.restrictionActive && ctx.counts[FoodCategory.CEREALS] > CEREAL_RESTRICTED_MAX,
   },
   {
+    id: 'CEREALS_DEFICIT',
+    type: NotificationType.BEHAVIORAL_NUDGE,
+    severity: NotificationSeverity.INFO,
+    cooldown: COOLDOWN_6H,
+    title: 'Cereales insuficientes',
+    body: 'Llevas menos de 3 raciones de cereales hoy. Los cereales integrales son la base energética de la dieta mediterránea.',
+    condition: (ctx) => ctx.counts[FoodCategory.CEREALS] < CEREAL_MIN_RATIONS,
+  },
+  {
     id: 'FRUITS_GLYCEMIC_ALERT',
     type: NotificationType.SAFETY_ALERT,
     severity: NotificationSeverity.SOFT_WARN,
@@ -56,6 +69,15 @@ export const NUDGE_RULES: SafetyRule[] = [
     title: 'Fruta de alto índice glucémico',
     body: 'Has registrado una fruta con alto índice glucémico. Considera alternativas como manzana o pera.',
     condition: (ctx) => ctx.containsHighGlycemicFruit,
+  },
+  {
+    id: 'FRUITS_DEFICIT',
+    type: NotificationType.BEHAVIORAL_NUDGE,
+    severity: NotificationSeverity.INFO,
+    cooldown: COOLDOWN_6H,
+    title: 'Frutas insuficientes',
+    body: 'Llevas menos de 2 raciones de fruta hoy. La fruta fresca aporta fibra y antioxidantes esenciales.',
+    condition: (ctx) => ctx.counts[FoodCategory.FRUITS] < FRUIT_MIN_RATIONS,
   },
   {
     id: 'VEGETABLES_DEFICIT',
