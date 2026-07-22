@@ -154,7 +154,7 @@ export const en: Translations = {
   'category.cereals': 'Cereals',
   'category.vegetables': 'Vegetables',
   'category.fruits': 'Fruits',
-  'category.olive_oil': 'Olive Oil',
+  'category.olive_oil': 'AOVE',
   'category.dairy': 'Dairy',
   'category.legumes': 'Legumes',
   'category.fish': 'Fish',
