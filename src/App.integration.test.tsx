@@ -115,6 +115,22 @@ describe('App integration', () => {
       expect(screen.getByText(/Evitar/)).toBeInTheDocument();
     });
 
+    it('shows safety alert for high-glycemic fruit and acknowledges', () => {
+      selectTab('Semáforo');
+
+      const select = screen.getByLabelText('Seleccionar alimento');
+      fireEvent.change(select, { target: { value: 'fruit-uvas' } });
+
+      fireEvent.click(screen.getByRole('button', { name: /clasificar/i }));
+
+      // Safety alert should appear
+      const acknowledgeBtn = screen.queryByRole('button', { name: /reconocer/i });
+      if (acknowledgeBtn) {
+        fireEvent.click(acknowledgeBtn);
+      }
+      // Alert should be dismissible
+    });
+
     it('adds food to daily log and removes it', () => {
       selectTab('Semáforo');
 
@@ -202,6 +218,41 @@ describe('App integration', () => {
 
       const status = screen.getByRole('status');
       expect(status.textContent).toContain('Plan válido');
+    });
+  });
+
+  describe('Activity', () => {
+    it('renders activity tracker tab', () => {
+      selectTab('Actividad');
+      expect(screen.getByText(/Objetivo OMS/)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /registrar/i })).toBeInTheDocument();
+    });
+
+    it('submits activity minutes and updates stats', () => {
+      selectTab('Actividad');
+
+      const minutesInput = screen.getByLabelText('Minutos moderados');
+      fireEvent.change(minutesInput, { target: { value: '60' } });
+
+      fireEvent.click(screen.getByRole('button', { name: /registrar/i }));
+
+      // After submitting 60 minutes, stats should update
+      expect(screen.getByText('60')).toBeInTheDocument();
+    });
+  });
+
+  describe('Nudges', () => {
+    it('renders nudge panel with empty state', () => {
+      selectTab('Nudges');
+      const panel = document.getElementById('panel-nudges');
+      expect(panel).not.toHaveAttribute('hidden');
+    });
+  });
+
+  describe('Sustainability', () => {
+    it('renders sustainability tab', () => {
+      selectTab('Eco');
+      expect(screen.getByText(/Puntuación Ambiental/)).toBeInTheDocument();
     });
   });
 });

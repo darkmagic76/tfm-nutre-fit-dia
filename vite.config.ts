@@ -22,10 +22,20 @@ export default defineConfig({
     exclude: ['e2e/**', 'node_modules/**'],
     coverage: {
       provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/test/**',
+        'src/main.tsx',
+        'src/**/*.test.ts',
+        'src/**/*.test.tsx',
+        'src/**/*.spec.ts',
+        'src/**/*.spec.tsx',
+        'src/vite-env.d.ts',
+      ],
       thresholds: {
         statements: 80,
         branches: 80,
-        functions: 80,
+        functions: 100,
         lines: 80,
       },
     },
