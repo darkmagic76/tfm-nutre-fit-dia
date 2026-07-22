@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithI18n } from '@/test/i18n-test-utils';
 import { DailyViolations } from './DailyViolations';
 import { makeValidationResult, makeViolation } from '@/test/fixtures';
 
@@ -7,7 +8,7 @@ describe('DailyViolations', () => {
   it('shows green success message when valid and has foods', () => {
     const validation = makeValidationResult({ valid: true, animalProteinCount: 1 });
 
-    render(<DailyViolations validation={validation} hasFoods={true} />);
+    renderWithI18n(<DailyViolations validation={validation} hasFoods={true} />);
 
     const success = screen.getByRole('status');
     expect(success).toHaveTextContent(/El registro de hoy cumple con los límites diarios/i);
@@ -20,7 +21,7 @@ describe('DailyViolations', () => {
       animalProteinCount: 1,
     });
 
-    render(<DailyViolations validation={validation} hasFoods={false} />);
+    renderWithI18n(<DailyViolations validation={validation} hasFoods={false} />);
 
     expect(screen.getByRole('alert')).toBeInTheDocument();
     expect(screen.getByText('Demasiados cereales')).toBeInTheDocument();
@@ -29,7 +30,7 @@ describe('DailyViolations', () => {
   it('shows animal protein warning when count exceeds 2', () => {
     const validation = makeValidationResult({ valid: true, animalProteinCount: 3 });
 
-    render(<DailyViolations validation={validation} hasFoods={true} />);
+    renderWithI18n(<DailyViolations validation={validation} hasFoods={true} />);
 
     expect(screen.getByText(/Proteína animal: 3\/día/)).toBeInTheDocument();
   });
@@ -41,7 +42,7 @@ describe('DailyViolations', () => {
       animalProteinCount: 4,
     });
 
-    render(<DailyViolations validation={validation} hasFoods={false} />);
+    renderWithI18n(<DailyViolations validation={validation} hasFoods={false} />);
 
     // Both error and warning ViolationList render with role="alert"
     const alerts = screen.getAllByRole('alert');
@@ -57,7 +58,9 @@ describe('DailyViolations', () => {
   it('renders nothing visible when valid but has no foods', () => {
     const validation = makeValidationResult({ valid: true, animalProteinCount: 1 });
 
-    const { container } = render(<DailyViolations validation={validation} hasFoods={false} />);
+    const { container } = renderWithI18n(
+      <DailyViolations validation={validation} hasFoods={false} />,
+    );
 
     // Success message only renders when hasFoods is true
     expect(screen.queryByRole('status')).not.toBeInTheDocument();

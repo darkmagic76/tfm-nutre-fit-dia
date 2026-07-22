@@ -105,6 +105,7 @@ describe('evaluateRules', () => {
       dayOfWeek: 3,
       environmentalScore: null,
       alternatives: null,
+      now: 0,
     };
 
     const results = evaluateRules(ctx, NUDGE_RULES, cooldown);
@@ -136,6 +137,7 @@ describe('evaluateRules', () => {
       dayOfWeek: 3,
       environmentalScore: null,
       alternatives: null,
+      now: 0,
     };
 
     const results = evaluateRules(ctx, NUDGE_RULES, cooldown);
@@ -160,6 +162,7 @@ describe('evaluateRules', () => {
       dayOfWeek: 3,
       environmentalScore: null,
       alternatives: null,
+      now: 0,
     };
 
     const results = evaluateRules(ctx, NUDGE_RULES, cooldown);
@@ -184,6 +187,7 @@ describe('evaluateRules', () => {
       dayOfWeek: 3,
       environmentalScore: null,
       alternatives: null,
+      now: 0,
     };
 
     const results = evaluateRules(ctx, [], cooldown);
@@ -208,6 +212,7 @@ describe('evaluateRules', () => {
       dayOfWeek: 3,
       environmentalScore: null,
       alternatives: null,
+      now: 0,
     };
     const rulesCount = NUDGE_RULES.length;
 
@@ -237,6 +242,7 @@ describe('evaluateRules', () => {
       dayOfWeek: 3,
       environmentalScore: null,
       alternatives: null,
+      now: 0,
     };
 
     const results = evaluateRules(ctx, NUDGE_RULES, cooldown);

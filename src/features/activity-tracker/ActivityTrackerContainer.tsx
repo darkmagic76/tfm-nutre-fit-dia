@@ -11,7 +11,6 @@ export function ActivityTrackerContainer() {
     streak,
     meetsModerate,
     meetsStrength,
-    weeklyGoal,
     addEntry,
   } = useActivityTracker();
 
@@ -37,7 +36,6 @@ export function ActivityTrackerContainer() {
       streak={streak}
       meetsModerate={meetsModerate}
       meetsStrength={meetsStrength}
-      weeklyGoal={weeklyGoal}
       minutes={minutes}
       sessions={sessions}
       onMinutesChange={setMinutes}

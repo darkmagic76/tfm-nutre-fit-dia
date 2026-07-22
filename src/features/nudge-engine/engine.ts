@@ -1,5 +1,4 @@
-import { useTrackerStore, useLogStore } from '@shared/stores';
-import { useActivityStore } from '@features/activity-tracker/activityStore';
+import { useTrackerStore, useLogStore, useActivityStore } from '@shared/stores';
 import { countRations } from '@shared/services/rationValidator';
 import {
   FoodCategory,
@@ -46,6 +45,7 @@ export function buildNudgeContext(food?: Food): NudgeContext {
   const now = new Date();
   const currentHour = now.getHours();
   const dayOfWeek = now.getDay();
+  const nowTimestamp = now.getTime();
 
   // M2: smart substitution — compute from optional scanned food
   let environmentalScore: number | null = null;
@@ -74,6 +74,7 @@ export function buildNudgeContext(food?: Food): NudgeContext {
     dayOfWeek,
     environmentalScore,
     alternatives,
+    now: nowTimestamp,
   };
 }
 

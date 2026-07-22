@@ -55,6 +55,7 @@ export interface Translations {
   // Metabolic
   'metabolic.title': string;
   'metabolic.description': string;
+  'metabolic.descriptionDetail': string;
   'metabolic.bmr': string;
   'metabolic.tdee': string;
   'metabolic.deficit': string;
@@ -67,14 +68,32 @@ export interface Translations {
   'plan.title': string;
   'plan.description': string;
 
+  // Meal labels
+  'meal.breakfast': string;
+  'meal.lunch': string;
+  'meal.dinner': string;
+  'meal.snack': string;
+
+  // Cooking techniques
+  'cooking.stew': string;
+  'cooking.steam': string;
+  'cooking.boiled': string;
+  'cooking.grilled': string;
+  'cooking.raw': string;
+
   // Activity
   'activity.title': string;
   'activity.description': string;
+  'activity.goalDescription': string;
   'activity.minutes': string;
   'activity.strength': string;
   'activity.compliance': string;
   'activity.streak': string;
   'activity.objectiveMet': string;
+  'activity.formMinutes': string;
+  'activity.formSessions': string;
+  'activity.formLabel': string;
+  'activity.registerButton': string;
 
   // Nudges
   'nudges.title': string;
@@ -99,6 +118,21 @@ export interface Translations {
   // Cultural / UNESCO
   'cultural.socialEating': string;
   'cultural.preparation': string;
+  'cultural.traditionalCuisine': string;
+  'cultural.socialEatingBadge': string;
+
+  // Alerts / Safety
+  'alert.severityCritical': string;
+  'alert.severityWarning': string;
+  'alert.acknowledge': string;
+  'alert.safetyLabel': string;
+  'alert.understood': string;
+
+  // Validation
+  'validation.allClear': string;
+
+  // Caloric summary
+  'caloric.dailyObjective': string;
 
   // Error boundary
   'error.boundary.title': string;

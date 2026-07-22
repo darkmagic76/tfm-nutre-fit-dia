@@ -1,3 +1,4 @@
+import { useT } from '@shared/i18n';
 import type { CaloricTargetOutput } from '@shared/services/caloricTargetService';
 import { Card } from '@shared/ui';
 import type { ValidationError } from '@shared/errors';
@@ -20,11 +21,9 @@ export function MetabolicTrackerView({
   profileError,
   onCalculate,
 }: MetabolicTrackerViewProps) {
+  const t = useT();
   return (
-    <Card
-      title="📊 Perfil Metabólico"
-      description="Protocolo erMedDiet (PREDIMED-Plus). Déficit de 600 kcal solo si IMC > 25 (cap 30%)."
-    >
+    <Card title={t['metabolic.title']} description={t['metabolic.descriptionDetail']}>
       <ProfileForm form={form} onSubmit={onCalculate} />
       <ProfileError error={profileError} />
       {caloricTarget && <ProfileResults caloricTarget={caloricTarget} />}

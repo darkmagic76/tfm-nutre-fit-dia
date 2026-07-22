@@ -118,6 +118,37 @@ export const es: Translations = {
   'form.glucoseFasting': 'Ayunas',
   'form.glucosePostprandial': 'Postprandial',
 
+  // Actividad — extendido
+  'activity.goalDescription': 'Objetivo OMS: 150–300 min/semana actividad moderada + 2 días fuerza',
+  'activity.formMinutes': 'Minutos moderados',
+  'activity.formSessions': 'Sesiones fuerza',
+  'activity.formLabel': 'Registro de actividad física',
+  'activity.registerButton': 'Registrar actividad',
+
   'cultural.socialEating': 'Ideal para comer en compañía',
   'cultural.preparation': 'Preparación',
+  'cultural.traditionalCuisine': 'Cocina tradicional',
+  'cultural.socialEatingBadge': 'Comida en compañía',
+
+  'meal.breakfast': 'Desayuno',
+  'meal.lunch': 'Almuerzo',
+  'meal.dinner': 'Cena',
+  'meal.snack': 'Snack',
+
+  'cooking.stew': 'guiso tradicional',
+  'cooking.steam': 'al vapor',
+  'cooking.boiled': 'hervido',
+  'cooking.grilled': 'a la plancha',
+  'cooking.raw': 'en crudo',
+
+  'alert.severityCritical': 'Crítico',
+  'alert.severityWarning': 'Advertencia',
+  'alert.acknowledge': 'Reconocer alerta',
+  'alert.safetyLabel': 'Alertas de seguridad clínica',
+  'alert.understood': 'Entendido',
+
+  'validation.allClear': '✅ El registro de hoy cumple con los límites diarios.',
+  'caloric.dailyObjective': 'Objetivo diario',
+  'metabolic.descriptionDetail':
+    'Protocolo erMedDiet (PREDIMED-Plus): déficit condicional de 600 kcal si IMC > 25. Fórmula Mifflin-St Jeor.',
 };

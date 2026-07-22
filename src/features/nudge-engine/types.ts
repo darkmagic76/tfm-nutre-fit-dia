@@ -49,6 +49,10 @@ export interface NudgeContext {
   /** Day of week (0=Sun, 6=Sat) */
   dayOfWeek: number;
 
+  // C4 fix: inject current timestamp for deterministic testing
+  /** Current timestamp (ms since epoch), injected for test determinism */
+  now: number;
+
   // M2: smart substitution
   /** Environmental sustainability score (0–100), null when food not provided */
   environmentalScore: number | null;

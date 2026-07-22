@@ -22,6 +22,7 @@ function makeContext(overrides: Partial<NudgeContext> = {}): NudgeContext {
     dayOfWeek: 3,
     environmentalScore: null,
     alternatives: null,
+    now: 0,
     ...overrides,
   };
 }
@@ -157,14 +158,26 @@ describe('ADHERENCE_GLUCOSE', () => {
     expect(rule!.condition(makeContext({ lastGlucoseTimestamp: null }))).toBe(true);
   });
   it('does not fire when glucose was recorded recently', () => {
-    expect(rule!.condition(makeContext({ lastGlucoseTimestamp: Date.now() }))).toBe(false);
+    // now=0, lastGlucoseTimestamp=0 → diff=0 &lt; 4h → no nudge
+    expect(rule!.condition(makeContext({ lastGlucoseTimestamp: 0, now: 0 }))).toBe(false);
   });
 });
 
 describe('ADHERENCE_WEIGHT', () => {
   const rule = NUDGE_RULES.find((r) => r.id === 'ADHERENCE_WEIGHT');
+  const FOUR_HOURS_MS = 4 * 60 * 60 * 1000;
   it('fires when lastWeightTimestamp is null', () => {
     expect(rule!.condition(makeContext({ lastWeightTimestamp: null }))).toBe(true);
+  });
+  it('fires when weight was recorded >4h ago', () => {
+    // now=FOUR_HOURS_MS+1, lastWeightTimestamp=0 → diff > 4h → fire
+    expect(rule!.condition(makeContext({ lastWeightTimestamp: 0, now: FOUR_HOURS_MS + 1 }))).toBe(
+      true,
+    );
+  });
+  it('does not fire when weight was recorded recently', () => {
+    // now=0, lastWeightTimestamp=0 → diff=0 < 4h → no nudge
+    expect(rule!.condition(makeContext({ lastWeightTimestamp: 0, now: 0 }))).toBe(false);
   });
 });
 

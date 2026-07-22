@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithI18n } from '@/test/i18n-test-utils';
 import { CaloricSummary } from './CaloricSummary';
 import { makeCaloricTargetOutput } from '@/test/fixtures';
 
@@ -7,7 +8,7 @@ describe('CaloricSummary', () => {
   it('renders target and ingested values when restriction is active', () => {
     const caloricTarget = makeCaloricTargetOutput({ target: 1680, restrictionActive: true });
 
-    render(<CaloricSummary caloricTarget={caloricTarget} totalKcal={1200} />);
+    renderWithI18n(<CaloricSummary caloricTarget={caloricTarget} totalKcal={1200} />);
 
     expect(screen.getByText('Objetivo diario')).toBeInTheDocument();
     expect(screen.getByText('1680 kcal')).toBeInTheDocument();
@@ -18,7 +19,7 @@ describe('CaloricSummary', () => {
   it('renders target and ingested values when restriction is inactive', () => {
     const caloricTarget = makeCaloricTargetOutput({ target: 1680, restrictionActive: false });
 
-    render(<CaloricSummary caloricTarget={caloricTarget} totalKcal={1200} />);
+    renderWithI18n(<CaloricSummary caloricTarget={caloricTarget} totalKcal={1200} />);
 
     expect(screen.getByText('Objetivo diario')).toBeInTheDocument();
     expect(screen.getByText('1680 kcal')).toBeInTheDocument();
@@ -29,7 +30,7 @@ describe('CaloricSummary', () => {
   it('uses danger variant when ingested exceeds target', () => {
     const caloricTarget = makeCaloricTargetOutput({ target: 1500 });
 
-    render(<CaloricSummary caloricTarget={caloricTarget} totalKcal={1800} />);
+    renderWithI18n(<CaloricSummary caloricTarget={caloricTarget} totalKcal={1800} />);
 
     const dangerCard = screen.getByRole('status', { name: /Ingerido: 1800 kcal/ });
     expect(dangerCard).toBeInTheDocument();
@@ -39,7 +40,7 @@ describe('CaloricSummary', () => {
   it('uses default variant when ingested does not exceed target', () => {
     const caloricTarget = makeCaloricTargetOutput({ target: 1500 });
 
-    render(<CaloricSummary caloricTarget={caloricTarget} totalKcal={1200} />);
+    renderWithI18n(<CaloricSummary caloricTarget={caloricTarget} totalKcal={1200} />);
 
     const defaultCard = screen.getByRole('status', { name: /Ingerido: 1200 kcal/ });
     expect(defaultCard).toBeInTheDocument();

@@ -109,7 +109,7 @@ export const NUDGE_RULES: SafetyRule[] = [
     body: 'No has registrado tu glucosa en las últimas 4 horas. Mantener el registro ayuda a tu control metabólico.',
     condition: (ctx) => {
       if (ctx.lastGlucoseTimestamp === null) return true;
-      return Date.now() - ctx.lastGlucoseTimestamp > COOLDOWN_4H * 60 * 1000;
+      return ctx.now - ctx.lastGlucoseTimestamp > COOLDOWN_4H * 60 * 1000;
     },
   },
   {
@@ -121,7 +121,7 @@ export const NUDGE_RULES: SafetyRule[] = [
     body: 'No has registrado tu peso en las últimas 4 horas. El seguimiento regular permite ajustar tu plan.',
     condition: (ctx) => {
       if (ctx.lastWeightTimestamp === null) return true;
-      return Date.now() - ctx.lastWeightTimestamp > COOLDOWN_4H * 60 * 1000;
+      return ctx.now - ctx.lastWeightTimestamp > COOLDOWN_4H * 60 * 1000;
     },
   },
 

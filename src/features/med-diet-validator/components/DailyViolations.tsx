@@ -1,3 +1,4 @@
+import { useT } from '@shared/i18n';
 import { ViolationList } from '@shared/ui';
 import type { ValidationResult } from '@shared/services/rationValidator';
 
@@ -7,13 +8,15 @@ interface DailyViolationsProps {
 }
 
 export function DailyViolations({ validation, hasFoods }: DailyViolationsProps) {
+  const t = useT();
+
   return (
     <>
       {!validation.valid && <ViolationList violations={validation.violations} />}
 
       {validation.valid && hasFoods && (
         <p className="text-emerald-600 text-sm font-medium" role="status">
-          ✅ El registro de hoy cumple con los límites diarios.
+          {t['validation.allClear']}
         </p>
       )}
 

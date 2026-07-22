@@ -18,20 +18,21 @@ const MEAL_ORDER: MealType[] = [
   MealType.SNACK,
 ];
 
-const MEAL_LABELS: Record<MealType, string> = {
-  [MealType.BREAKFAST]: 'Desayuno',
-  [MealType.LUNCH]: 'Almuerzo',
-  [MealType.DINNER]: 'Cena',
-  [MealType.SNACK]: 'Snack',
+const COOKING_TECHNIQUE_I18N: Record<string, string> = {
+  stew: 'cooking.stew',
+  steam: 'cooking.steam',
+  boiled: 'cooking.boiled',
+  grilled: 'cooking.grilled',
+  raw: 'cooking.raw',
 };
 
-const COOKING_LABELS: Record<string, string> = {
-  stew: 'guiso tradicional',
-  steam: 'al vapor',
-  boiled: 'hervido',
-  grilled: 'a la plancha',
-  raw: 'en crudo',
-};
+const MEAL_I18N: Record<MealType, 'meal.breakfast' | 'meal.lunch' | 'meal.dinner' | 'meal.snack'> =
+  {
+    [MealType.BREAKFAST]: 'meal.breakfast',
+    [MealType.LUNCH]: 'meal.lunch',
+    [MealType.DINNER]: 'meal.dinner',
+    [MealType.SNACK]: 'meal.snack',
+  };
 
 function CulturalBadges({ meta }: { meta: CulturalMetadata }) {
   const t = useT();
@@ -39,12 +40,18 @@ function CulturalBadges({ meta }: { meta: CulturalMetadata }) {
     <>
       <span className="inline-flex gap-1 ml-1" aria-label="Metadata cultural UNESCO">
         {meta.traditionalCuisine && (
-          <span title="Cocina tradicional" aria-label="Cocina tradicional">
+          <span
+            title={t['cultural.traditionalCuisine']}
+            aria-label={t['cultural.traditionalCuisine']}
+          >
             <span aria-hidden="true">🏺</span>
           </span>
         )}
         {meta.socialEating && (
-          <span title="Comida en compañía" aria-label="Comida en compañía">
+          <span
+            title={t['cultural.socialEatingBadge']}
+            aria-label={t['cultural.socialEatingBadge']}
+          >
             <span aria-hidden="true">👥</span>
           </span>
         )}
@@ -57,9 +64,10 @@ function CulturalBadges({ meta }: { meta: CulturalMetadata }) {
       {meta.socialEating && (
         <span className="text-xs text-emerald-700 ml-1">{t['cultural.socialEating']}</span>
       )}
-      {meta.cookingTechnique && COOKING_LABELS[meta.cookingTechnique] && (
+      {meta.cookingTechnique && COOKING_TECHNIQUE_I18N[meta.cookingTechnique] && (
         <span className="text-xs text-stone-500 ml-1">
-          {t['cultural.preparation']}: {COOKING_LABELS[meta.cookingTechnique]}
+          {t['cultural.preparation']}:{' '}
+          {t[COOKING_TECHNIQUE_I18N[meta.cookingTechnique] as keyof typeof t]}
         </span>
       )}
     </>
@@ -191,7 +199,7 @@ export function PlanView({
                       return (
                         <div key={meal}>
                           <h3 className="font-semibold text-stone-700 mb-1">
-                            {MEAL_LABELS[meal]} ({kcalText})
+                            {t[MEAL_I18N[meal]]} ({kcalText})
                           </h3>
                           <ul className="space-y-1">
                             {entries.map((e, i) => (

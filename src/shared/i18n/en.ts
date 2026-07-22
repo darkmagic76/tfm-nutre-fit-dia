@@ -117,6 +117,37 @@ export const en: Translations = {
   'form.glucoseFasting': 'Fasting',
   'form.glucosePostprandial': 'Postprandial',
 
+  // Activity — extended
+  'activity.goalDescription': 'WHO target: 150–300 min/week moderate activity + 2 strength days',
+  'activity.formMinutes': 'Moderate minutes',
+  'activity.formSessions': 'Strength sessions',
+  'activity.formLabel': 'Physical activity log',
+  'activity.registerButton': 'Log activity',
+
   'cultural.socialEating': 'Ideal for sharing',
   'cultural.preparation': 'Preparation',
+  'cultural.traditionalCuisine': 'Traditional cuisine',
+  'cultural.socialEatingBadge': 'Shared meal',
+
+  'meal.breakfast': 'Breakfast',
+  'meal.lunch': 'Lunch',
+  'meal.dinner': 'Dinner',
+  'meal.snack': 'Snack',
+
+  'cooking.stew': 'traditional stew',
+  'cooking.steam': 'steamed',
+  'cooking.boiled': 'boiled',
+  'cooking.grilled': 'grilled',
+  'cooking.raw': 'raw',
+
+  'alert.severityCritical': 'Critical',
+  'alert.severityWarning': 'Warning',
+  'alert.acknowledge': 'Acknowledge alert',
+  'alert.safetyLabel': 'Clinical safety alerts',
+  'alert.understood': 'Understood',
+
+  'validation.allClear': "✅ Today's log meets all daily limits.",
+  'caloric.dailyObjective': 'Daily objective',
+  'metabolic.descriptionDetail':
+    'erMedDiet protocol (PREDIMED-Plus): conditional 600 kcal deficit for IMC > 25. Mifflin-St Jeor formula.',
 };

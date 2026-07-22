@@ -24,3 +24,5 @@ export type {
 } from './metrics';
 export { UserProfileSchema } from './metrics';
 export { HIGH_GLYCEMIC_FRUIT_NAMES } from './glycemicFruits';
+export type { ActivityEntry, WeeklyGoal } from './activity';
+export { DEFAULT_WEEKLY_GOAL } from './activity';

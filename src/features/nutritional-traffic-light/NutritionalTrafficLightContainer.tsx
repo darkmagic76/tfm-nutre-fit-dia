@@ -21,15 +21,15 @@ export function NutritionalTrafficLightContainer() {
   const selected = selectedId ? foodsById.get(selectedId) : null;
 
   const handleClassify = () => {
-    const food = selected!;
-    setResult(classifyFoodWithReasons(food));
-    setSafetyAlerts(checkSafetyAlerts(food));
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guarded by UI (button disabled when null)
-    evaluateAndEnqueue(selected!);
+    if (!selected) return;
+    setResult(classifyFoodWithReasons(selected));
+    setSafetyAlerts(checkSafetyAlerts(selected));
+    evaluateAndEnqueue(selected);
   };
 
   const handleAddToLog = () => {
-    addFoodToLog(selected!);
+    if (!selected) return;
+    addFoodToLog(selected);
     evaluateAndEnqueue();
   };
 
