@@ -16,6 +16,7 @@ interface ScannerViewProps {
   selectedId: string;
   options: Array<{ value: string; label: string }>;
   selected: Food | null;
+  selectedName?: string;
   result: ClassificationResult | null;
   safetyAlerts: SafetyAlert[];
   onSelect: (id: string) => void;
@@ -28,6 +29,7 @@ export function ScannerView({
   selectedId,
   options,
   selected,
+  selectedName,
   result,
   safetyAlerts,
   onSelect,
@@ -36,6 +38,7 @@ export function ScannerView({
   onAcknowledgeAlert,
 }: ScannerViewProps) {
   const t = useT();
+  const displayName = selectedName ?? selected?.name ?? '';
 
   const trafficLabel = (color: string) => {
     if (color === TrafficLightColor.GREEN) return t['scanner.trafficGreen'];
@@ -57,10 +60,10 @@ export function ScannerView({
       {selected && (
         <div
           className="p-3 bg-stone-50 rounded-lg text-sm space-y-1"
-          aria-label={`Detalles de ${selected.name}`}
+          aria-label={`Detalles de ${displayName}`}
         >
           <p>
-            <strong>{selected.name}</strong> — {CATEGORY_DISPLAY_NAMES[selected.category]}
+            <strong>{displayName}</strong> — {CATEGORY_DISPLAY_NAMES[selected.category]}
           </p>
           <p>
             {selected.kcalPer100g} kcal | {selected.proteinPer100g}g prot | {selected.carbsPer100g}g

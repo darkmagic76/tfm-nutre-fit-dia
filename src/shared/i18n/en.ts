@@ -46,6 +46,9 @@ export const en: Translations = {
   'log.title': '📝 Daily Log',
   'log.description': 'Ration validation per AESAN 2022',
   'log.emptyProfile': 'Set up your metabolic profile to see caloric target',
+  'log.emptyFoods': 'No foods registered.',
+  'log.foodListLabel': 'Foods registered today',
+  'log.removeAria': 'Remove {food} from log',
   'log.dailyObjective': 'Daily objective',
   'log.noRestriction': 'No restriction',
 

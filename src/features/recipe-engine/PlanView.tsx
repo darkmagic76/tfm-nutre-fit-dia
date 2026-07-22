@@ -1,8 +1,9 @@
+import { useT } from '@shared/i18n';
+import { useFoodName } from '@shared/hooks/useFoodName';
 import { CATEGORY_DISPLAY_NAMES } from '@shared/domain';
 import type { CulturalMetadata, Food } from '@shared/domain';
 import { Card, PrimaryButton, ViolationList, LegalDisclaimer } from '@shared/ui';
 import { MealType, type MealEntry, type WeeklyPlan } from './services/planGenerator';
-import { useT } from '@shared/i18n';
 import type { CaloricTargetOutput } from '@shared/services/caloricTargetService';
 
 function computeMealKcal(entries: MealEntry[]): number {
@@ -107,6 +108,7 @@ export function PlanView({
   onGeneratePlan,
 }: PlanViewProps) {
   const t = useT();
+  const getFoodName = useFoodName;
 
   return (
     <Card title={t['plan.title']} description={t['plan.description']}>
@@ -211,7 +213,7 @@ export function PlanView({
                                 className="flex justify-between py-1 border-t border-stone-200 dark:border-zinc-700"
                               >
                                 <span>
-                                  {e.rations}× {e.food.name}
+                                  {e.rations}× {getFoodName(e.food)}
                                   {e.food.culturalMetadata && (
                                     <CulturalBadges meta={e.food.culturalMetadata} />
                                   )}

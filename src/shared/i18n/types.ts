@@ -49,6 +49,9 @@ export interface Translations {
   'log.title': string;
   'log.description': string;
   'log.emptyProfile': string;
+  'log.emptyFoods': string;
+  'log.foodListLabel': string;
+  'log.removeAria': string;
   'log.dailyObjective': string;
   'log.noRestriction': string;
 

@@ -46,6 +46,9 @@ export const es: Translations = {
   'log.title': '📝 Registro Diario',
   'log.description': 'Validación de raciones según AESAN 2022',
   'log.emptyProfile': 'Configurá tu perfil metabólico para ver el objetivo calórico',
+  'log.emptyFoods': 'Sin alimentos registrados.',
+  'log.foodListLabel': 'Alimentos registrados hoy',
+  'log.removeAria': 'Eliminar {food} del registro',
   'log.dailyObjective': 'Objetivo diario',
   'log.noRestriction': 'Sin restricción',
 
