@@ -124,7 +124,8 @@ When analyzing component placement:
 
 1. **Count usage**: Identify exactly how many features use the component
 2. **Apply the rule**: 1 feature = local placement, 2+ features = shared/global
-3. **Validate**: Ensure the structure screams functionality 4.**Document decision**: Explain WHY the placement was chosen
+3. **Validate**: Ensure the structure screams functionality
+4. **Document decision**: Explain WHY the placement was chosen
    ``
 
 ## SMELLS DETECTION

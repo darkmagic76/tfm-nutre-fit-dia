@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { buildNudgeContext, evaluateRules } from './engine';
+import { buildNudgeContext, evaluateRules, evaluateAndEnqueue } from './engine';
 import { CooldownTracker } from './cooldownTracker';
 import { NUDGE_RULES } from './rules';
 import { useTrackerStore, useLogStore } from '@shared/stores';
-import { FoodCategory } from '@shared/domain';
+import { useNudgeStore } from './store';
+import { FoodCategory, NotificationType } from '@shared/domain';
 import { makeFood } from '@/test/fixtures';
 
 const cerealFood = makeFood({
@@ -28,6 +29,7 @@ describe('Nudge Engine Integration', () => {
   beforeEach(() => {
     useTrackerStore.setState({ restrictionActive: false });
     useLogStore.setState({ todayLog: [] });
+    useNudgeStore.setState({ pending: [], history: [] });
   });
 
   it('full pipeline: sets store state, builds context, evaluates rules, returns expected matches', () => {
@@ -105,5 +107,93 @@ describe('Nudge Engine Integration', () => {
     // ADHERENCE_GLUCOSE + ADHERENCE_WEIGHT + WATER_HYDRATION + AOVE_TAGGING
     // + LEGUMES_GLYCEMIC_BASE + HC_INACTIVITY_ADJUST
     expect(results).toHaveLength(6);
+  });
+
+  describe('auto-resolution', () => {
+    it('clears WATER_HYDRATION nudge when water rations reach minimum', () => {
+      // Given: only 2 water rations → WATER_HYDRATION triggers
+      useLogStore.setState({
+        todayLog: [makeFood({ id: 'w1', name: 'Agua', category: FoodCategory.WATER }), makeFood({ id: 'w2', name: 'Agua', category: FoodCategory.WATER })],
+      });
+      evaluateAndEnqueue();
+
+      const afterTrigger = useNudgeStore.getState();
+      const waterNudge = afterTrigger.pending.find((n) => n.ruleSource === 'WATER_HYDRATION');
+      expect(waterNudge).toBeDefined();
+
+      // When: user drinks 2 more water rations (now 4 total)
+      useLogStore.setState({
+        todayLog: [
+          makeFood({ id: 'w1', name: 'Agua', category: FoodCategory.WATER }),
+          makeFood({ id: 'w2', name: 'Agua', category: FoodCategory.WATER }),
+          makeFood({ id: 'w3', name: 'Agua', category: FoodCategory.WATER }),
+          makeFood({ id: 'w4', name: 'Agua', category: FoodCategory.WATER }),
+        ],
+      });
+      evaluateAndEnqueue();
+
+      // Then: water nudge should be auto-cleared
+      const afterResolution = useNudgeStore.getState();
+      expect(afterResolution.pending.find((n) => n.ruleSource === 'WATER_HYDRATION')).toBeUndefined();
+    });
+
+    it('clears VEGETABLES_DEFICIT nudge when vegetables reach minimum', () => {
+      // Given: 0 vegetables + evening → VEGETABLES_DEFICIT triggers
+      useLogStore.setState({ todayLog: [] });
+      evaluateAndEnqueue();
+
+      const afterTrigger = useNudgeStore.getState();
+      // VEGETABLES_DEFICIT only fires after 20h — we test at integration level
+      // so it may not fire here. Let's test that when it DOES fire, it clears after correction.
+
+      // Manually enqueue a vegetable nudge to simulate it
+      useNudgeStore.getState().enqueue({
+        id: 'veg-nudge-1',
+        type: NotificationType.BEHAVIORAL_NUDGE,
+        severity: 'info',
+        target: 'user',
+        title: 'Test',
+        body: 'Test',
+        ruleSource: 'VEGETABLES_DEFICIT',
+        triggeredAt: new Date(),
+      });
+
+      // When: user eats 3 vegetables
+      useLogStore.setState({
+        todayLog: [
+          makeFood({ id: 'v1', name: 'Brócoli', category: FoodCategory.VEGETABLES }),
+          makeFood({ id: 'v2', name: 'Espinaca', category: FoodCategory.VEGETABLES }),
+          makeFood({ id: 'v3', name: 'Tomate', category: FoodCategory.VEGETABLES }),
+        ],
+      });
+      evaluateAndEnqueue();
+
+      // Then: vegetable nudge should be auto-cleared
+      const afterResolution = useNudgeStore.getState();
+      expect(afterResolution.pending.find((n) => n.ruleSource === 'VEGETABLES_DEFICIT')).toBeUndefined();
+      expect(afterResolution.history).toHaveLength(1);
+    });
+
+    it('keeps SAFETY_ALERT nudges even when condition no longer met', () => {
+      // Given: a safety alert is pending
+      useNudgeStore.getState().enqueue({
+        id: 'safety-1',
+        type: NotificationType.SAFETY_ALERT,
+        severity: 'soft_warn',
+        target: 'user',
+        title: 'Test',
+        body: 'Test',
+        ruleSource: 'FRUITS_GLYCEMIC_ALERT',
+        triggeredAt: new Date(),
+      });
+
+      // When: no high-glycemic fruits in log
+      useLogStore.setState({ todayLog: [] });
+      evaluateAndEnqueue();
+
+      // Then: safety alert persists (not auto-cleared)
+      const state = useNudgeStore.getState();
+      expect(state.pending.find((n) => n.ruleSource === 'FRUITS_GLYCEMIC_ALERT')).toBeDefined();
+    });
   });
 });

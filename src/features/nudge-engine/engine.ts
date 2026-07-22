@@ -3,6 +3,7 @@ import { countRations } from '@shared/services/rationValidator';
 import {
   FoodCategory,
   ANIMAL_PROTEIN_CATEGORIES,
+  NotificationType,
   type Food,
   type SystemNotification,
 } from '@shared/domain';
@@ -115,16 +116,35 @@ export function evaluateRules(
 const cooldownTracker = new CooldownTracker();
 
 /**
- * Full pipeline: build context → evaluate rules → enqueue notifications → register cooldowns.
+ * Full pipeline: resolve stale nudges → build context → evaluate rules → enqueue notifications → register cooldowns.
  *
  * This is the integration point called by UI components (NutritionalTrafficLightContainer, MedDietValidatorContainer)
  * whenever a user action might trigger nudges.
+ *
+ * Auto-resolution: before enqueuing new nudges, any pending BEHAVIORAL_NUDGE or SYSTEM_ACTION
+ * whose rule condition is no longer met by the current context is automatically moved to history.
+ * This ensures nudges disappear when the user corrects the underlying condition
+ * (e.g., drinking enough water clears the hydration nudge, eating enough vegetables clears the vegetable nudge).
+ * SAFETY_ALERTs are excluded — they persist until explicitly acknowledged by the user.
  */
 export function evaluateAndEnqueue(food?: Food): void {
   const ctx = buildNudgeContext(food);
-  const results = evaluateRules(ctx, NUDGE_RULES, cooldownTracker);
-  const { enqueue } = useNudgeStore.getState();
+  const { enqueue, acknowledge, pending } = useNudgeStore.getState();
 
+  // 1. Auto-resolve stale nudges: any non-safety pending nudge whose rule condition is no longer met
+  for (const nudge of pending) {
+    if (nudge.type === NotificationType.SAFETY_ALERT) continue;
+
+    const rule = NUDGE_RULES.find((r) => r.id === nudge.ruleSource);
+    if (rule && !rule.condition(ctx)) {
+      acknowledge(nudge.id);
+    }
+  }
+
+  // 2. Evaluate rules against current context
+  const results = evaluateRules(ctx, NUDGE_RULES, cooldownTracker);
+
+  // 3. Enqueue new notifications
   for (const result of results) {
     enqueue(result.notification);
     cooldownTracker.register(result.rule.id);
