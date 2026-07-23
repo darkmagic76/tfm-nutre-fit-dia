@@ -1,4 +1,3 @@
-
 # Especificación Técnica: Ecosistema Digital de Nutrición Sostenible y Control de Diabetes Tipo 2 (erMedDiet)
 
 ## 1. Introducción y Marco de Referencia Estratégico
@@ -25,12 +24,12 @@ El escáner no se define como un simple lector de OCR/barras, sino como un **fil
 
 ### Clasificación por Semáforo Nutricional (Lógica Hospital Rey Juan Carlos)
 
-|   |   |   |
-|---|---|---|
-|Categoría|Alimentos Incluidos|Justificación Técnica|
-|**Verde (Recomendable)**|Cereales 100% integrales, legumbres, pescado blanco/azul, AOVE.|Alta densidad nutricional y fibra. El **bacalao** se clasifica aquí por ser "proteína pura" (**0,7% de contenido graso**).|
-|**Naranja (Moderación)**|Cereales refinados, patatas, carnes magras de cerdo, frutas de alta carga glucémica.|Carga glucémica intermedia; requiere control estricto de frecuencia y cantidad mediante lógica de **Nudges**.|
-|**Rojo (Evitar)**|Azúcares añadidos, grasas trans (margarinas), harinas refinadas, embutidos.|Productos con impacto directo en picos glucémicos y riesgo cardiovascular elevado.|
+|                          |                                                                                      |                                                                                                                            |
+| ------------------------ | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| Categoría                | Alimentos Incluidos                                                                  | Justificación Técnica                                                                                                      |
+| **Verde (Recomendable)** | Cereales 100% integrales, legumbres, pescado blanco/azul, AOVE.                      | Alta densidad nutricional y fibra. El **bacalao** se clasifica aquí por ser "proteína pura" (**0,7% de contenido graso**). |
+| **Naranja (Moderación)** | Cereales refinados, patatas, carnes magras de cerdo, frutas de alta carga glucémica. | Carga glucémica intermedia; requiere control estricto de frecuencia y cantidad mediante lógica de **Nudges**.              |
+| **Rojo (Evitar)**        | Azúcares añadidos, grasas trans (margarinas), harinas refinadas, embutidos.          | Productos con impacto directo en picos glucémicos y riesgo cardiovascular elevado.                                         |
 
 ### Algoritmo de Detección de "Ocultos"
 
@@ -42,7 +41,7 @@ Para mitigar la fatiga de decisión y optimizar los resultados clínicos, el sis
 
 - **Alertas de Carga Glucémica:** El sistema emitirá notificaciones proactivas ante la intención de consumo de frutas con alta densidad de azúcares (uvas, dátiles, higos), basándose en el historial de glucosa del usuario.
 - **Lógica de Sustitución Inteligente (API-driven Environmental Mapping):** Basado en las directrices de la **AESAN 2022**, el sistema implementa el siguiente trigger:
-    - `IF Scan_Result == 'Red Meat' AND User_Profile == 'erMedDiet' THEN Suggest(Alternative_Legume || Alternative_BlueFish)`.
+  - `IF Scan_Result == 'Red Meat' AND User_Profile == 'erMedDiet' THEN Suggest(Alternative_Legume || Alternative_BlueFish)`.
 - **Ranking de Sostenibilidad:** Las alternativas se priorizan según su **baja huella hídrica y de carbono**, permitiendo que el usuario optimice su salud y su impacto ambiental de forma simultánea.
 
 ## 5. Especificaciones de Menús y Control de Raciones (RF-01)
@@ -54,11 +53,11 @@ La estabilidad metabólica se garantiza mediante un control riguroso de la frecu
 - **Fraccionamiento Metabólico:** Distribución obligatoria en un plan de **3 a 6 tomas diarias**.
 - **Control de Gramajes:** El sistema debe definir porciones precisas por receta (ej. pan integral: **40-60g**).
 - **Frecuencias Semanales y Restricciones:**
-    - **Cereales:** 3-6 raciones/día (**MÁXIMO 4 raciones** si existe restricción energética erMedDiet), exclusivamente **100% integrales**.
-    - **Legumbres:** Mínimo 4 raciones/semana (prioridad proteica vegetal).
-    - **Pescado:** **3 a 4 raciones por semana**, alternando blanco y azul.
-    - **Hortalizas y Frutas:** Mínimo 3 raciones de hortalizas y 2-3 de frutas frescas (excluyendo desecadas/almíbar).
-    - **Hidratación:** El sistema debe monitorizar una ingesta de **1,5 a 2 litros de agua diarios** (4-8 vasos).
+  - **Cereales:** 3-6 raciones/día (**MÁXIMO 4 raciones** si existe restricción energética erMedDiet), exclusivamente **100% integrales**.
+  - **Legumbres:** Mínimo 4 raciones/semana (prioridad proteica vegetal).
+  - **Pescado:** **3 a 4 raciones por semana**, alternando blanco y azul.
+  - **Hortalizas y Frutas:** Mínimo 3 raciones de hortalizas y 2-3 de frutas frescas (excluyendo desecadas/almíbar).
+  - **Hidratación:** El sistema debe monitorizar una ingesta de **1,5 a 2 litros de agua diarios** (4-8 vasos).
 
 ## 6. Requisitos Funcionales de Estilo de Vida e IA
 
@@ -73,6 +72,7 @@ La IA debe actuar como un gestor integral del comportamiento humano, reconociend
 Dada la criticidad clínica de la DT2, la automatización opera bajo un marco de supervisión humana obligatoria para mitigar riesgos de salud.
 
 - **Aviso Legal de Seguridad (RNF-01):** El sistema debe desplegar un aviso legal mandatorio: **"Toda recomendación, cantidad y plan nutricional debe ser validado por un dietista-nutricionista colegiado"**.
+- **Seguridad de Transporte (RNF-04):** En cumplimiento de OWASP 2025, la PWA debe servirse exclusivamente sobre HTTPS. En desarrollo local se utilizarán certificados auto-firmados mediante `@vitejs/plugin-basic-ssl` (plugin oficial de Vite, generación in-process vía `node:crypto`, sin dependencia de CLI externa). El plugin se activa condicionalmente: `pnpm dev` arranca con HTTPS por defecto; `pnpm dev:http` (`NO_HTTPS=1`) omite el plugin para debug sin TLS. La CSP incluirá la directiva `upgrade-insecure-requests`. **Arquitectura:** la capa de transporte es infraestructura y debe ser transparente para el dominio. El core (features, servicios, stores) no debe acoplarse a ninguna plataforma de hosting. Si en el futuro se requiere Vercel, Supabase u otro backend, la migración debe ser pluggable sin modificar el contrato del dominio — hoy no hay plataforma externa porque no hay funcionalidad que lo justifique (sin auth, sin suscripciones, sin persistencia remota).
 - **Registro Metabólico y Feedback Loop:** Se establece un módulo técnico de registro para glucosa, peso e IMC. Estos datos alimentan un bucle de **reajuste dinámico de la IA**, permitiendo que las recomendaciones energéticas evolucionen junto con el progreso metabólico del usuario.
 
 Este mapa técnico asegura una solución de alta precisión clínica y conciencia ambiental, transformando la evidencia científica en una herramienta operativa de vanguardia.

@@ -61,6 +61,21 @@ In-memory `Map<ruleId, timestamp>`. Constructor accepts `now?: () => number` for
 - WHEN condition evaluated
 - THEN returns false (≤4 is within limit)
 
+### REQ-CEREALS-DEFICIT: Cereal deficit reminder
+
+**MUST** fire when `counts.CEREALS < 3`. Type `behavioral_nudge`, severity `info`, cooldown 6h.
+Added 2026-07-23 per INFORME_ADR FR-2 requirement (minimum 3 cereal rations/day).
+
+#### Scenario: Fires when below minimum
+- GIVEN `counts.CEREALS=2`
+- WHEN condition evaluated
+- THEN returns true
+
+#### Scenario: Does not fire at minimum
+- GIVEN `counts.CEREALS=3`
+- WHEN condition evaluated
+- THEN returns false
+
 ### REQ-FRUITS-GLYCEMIC: Warning on high-GI fruit
 
 **MUST** fire when `containsHighGlycemicFruit`. Glycemic set: `{uva, dátil, higo, pasa, plátano maduro}`. Severity `soft_warn`, cooldown 24h.
@@ -75,17 +90,33 @@ In-memory `Map<ruleId, timestamp>`. Constructor accepts `now?: () => number` for
 - WHEN condition(ctx)
 - THEN returns true, severity soft_warn
 
-### REQ-VEGETABLES-DEFICIT: Evening vegetable reminder
+### REQ-FRUITS-DEFICIT: Fruit deficit reminder
 
-**MUST** fire when `counts.VEGETABLES < 3 && currentHour >= 20`. Severity `soft_warn`, cooldown 6h.
+**MUST** fire when `counts.FRUITS < 2`. Type `behavioral_nudge`, severity `info`, cooldown 6h.
+Added 2026-07-23 per SPECS_RF / SPECS_TECH §5 requirement (minimum 2 fruit rations/day).
 
-#### Scenario: Time gate blocks before 20:00
+#### Scenario: Fires when below minimum
+- GIVEN `counts.FRUITS=1`
+- WHEN condition evaluated
+- THEN returns true
+
+#### Scenario: Does not fire at minimum
+- GIVEN `counts.FRUITS=2`
+- WHEN condition evaluated
+- THEN returns false
+
+### REQ-VEGETABLES-DEFICIT: Afternoon vegetable reminder
+
+**MUST** fire when `counts.VEGETABLES < 3 && currentHour >= 14`. Type `behavioral_nudge`, severity `info`, cooldown 6h.
+Updated 2026-07-23: threshold lowered from 20 (8PM) to 14 (2PM) for earlier intervention.
+
+#### Scenario: Time gate blocks before 14:00
 - GIVEN counts.VEGETABLES=2
-- WHEN currentHour=19 → false; currentHour=20 → true
-- THEN rule activates only from 20:00
+- WHEN currentHour=13 → false; currentHour=14 → true
+- THEN rule activates from 14:00 (afternoon window)
 
 #### Scenario: Sufficient vegetables
-- GIVEN `counts.VEGETABLES=3, currentHour=21`
+- GIVEN `counts.VEGETABLES=3, currentHour=15`
 - WHEN condition(ctx)
 - THEN returns false
 
@@ -130,6 +161,36 @@ In-memory `Map<ruleId, timestamp>`. Constructor accepts `now?: () => number` for
 - GIVEN `environmentalScore=12` (legumes CF=0.8) and `alternatives=null`
 - WHEN `condition(ctx)` is evaluated
 - THEN returns false
+
+### REQ-EGGS-RED-MEAT-ALT: Eggs as red meat alternative nudge
+
+The `EGGS_RED_MEAT_ALT` rule (id `'EGGS_RED_MEAT_ALT'`, type `SYSTEM_ACTION`) MUST fire when `counts[FoodCategory.RED_MEAT] > 0 && !ctx.hasEggs`. The condition MUST NOT check `WHITE_MEAT`.
+
+Body text MUST say "carnes rojas". Title "Huevos como alternativa".
+
+#### Scenario: Fires when red meat consumed without eggs
+
+- GIVEN `counts[RED_MEAT] = 1, hasEggs = false`
+- WHEN `condition(ctx)` is evaluated
+- THEN returns true
+
+#### Scenario: Does NOT fire on white meat alone
+
+- GIVEN `counts[WHITE_MEAT] = 1, counts[RED_MEAT] = 0, hasEggs = false`
+- WHEN `condition(ctx)` is evaluated
+- THEN returns false
+
+#### Scenario: Does NOT fire when eggs present
+
+- GIVEN `counts[RED_MEAT] = 1, hasEggs = true`
+- WHEN `condition(ctx)` is evaluated
+- THEN returns false
+
+#### Scenario: WHITE_MEAT_RESTRICT unchanged
+
+- GIVEN `counts[FISH] = 8, counts[WHITE_MEAT] = 1`
+- WHEN `condition(ctx)` is evaluated
+- THEN returns true (WHITE_MEAT_RESTRICT still guards WHITE_MEAT only)
 
 ## Non-Functional
 
