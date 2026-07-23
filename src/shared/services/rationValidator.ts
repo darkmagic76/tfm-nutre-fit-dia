@@ -1,5 +1,6 @@
 import { FoodCategory, ANIMAL_PROTEIN_CATEGORIES, CATEGORY_DISPLAY_NAMES } from '@shared/domain';
 import { CEREAL_RESTRICTED_MAX } from '@shared/constants/clinical';
+import { es } from '@shared/i18n/es';
 import type { FoodCategory as FoodCategoryType } from '@shared/domain';
 import type { Food } from '@shared/domain';
 
@@ -134,7 +135,7 @@ function checkCategoryLimits(
   const violations: RationViolation[] = [];
   const current = counts[category];
   const unit = limit.unit;
-  const suffix = unit === 'day' ? 'día' : 'semana';
+  const suffix = unit === 'day' ? es['validation.unitDay'] : es['validation.unitWeek'];
   const effectiveMax = options?.effectiveMax ?? limit.max;
   const displayName = CATEGORY_DISPLAY_NAMES[category] ?? category;
 

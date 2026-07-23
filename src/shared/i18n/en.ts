@@ -170,6 +170,8 @@ export const en: Translations = {
   'alert.understood': 'Understood',
 
   'validation.allClear': "✅ Today's log meets all daily limits.",
+  'validation.unitDay': 'day',
+  'validation.unitWeek': 'week',
   'caloric.dailyObjective': 'Daily objective',
   'caloric.ingested': 'Ingested',
   'metabolic.descriptionDetail':

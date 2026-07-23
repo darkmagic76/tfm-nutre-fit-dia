@@ -153,6 +153,8 @@ export interface Translations {
 
   // Validation
   'validation.allClear': string;
+  'validation.unitDay': string;
+  'validation.unitWeek': string;
 
   // Caloric summary
   'caloric.dailyObjective': string;

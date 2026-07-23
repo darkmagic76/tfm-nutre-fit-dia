@@ -171,6 +171,8 @@ export const es: Translations = {
   'alert.understood': 'Entendido',
 
   'validation.allClear': '✅ El registro de hoy cumple con los límites diarios.',
+  'validation.unitDay': 'día',
+  'validation.unitWeek': 'semana',
   'caloric.dailyObjective': 'Objetivo diario',
   'caloric.ingested': 'Ingerido',
   'metabolic.descriptionDetail':
