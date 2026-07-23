@@ -6,7 +6,11 @@ import basicSsl from '@vitejs/plugin-basic-ssl';
 import path from 'node:path';
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), basicSsl()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    ...(process.env.NO_HTTPS ? [] : [basicSsl({ name: 'localhost' })]),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

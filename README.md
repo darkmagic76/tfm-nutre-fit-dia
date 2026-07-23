@@ -38,7 +38,8 @@ cd nutre-fit-dia
 pnpm install
 
 # Desarrollo
-pnpm dev
+pnpm dev              # HTTPS (certificado auto-generado vía @vitejs/plugin-basic-ssl)
+pnpm dev:http          # HTTP sin certificado (solo para debug)
 
 # Tests (TDD)
 pnpm test:run        # Tests unitarios y de componentes
@@ -299,17 +300,17 @@ Push/PR → 🔒 Security Audit → ✅ Quality Gate → 🎭 E2E → 🚀 Deplo
 
 ## 11. Seguridad OWASP 2025
 
-| Control                       | Implementación                                                                               |
-| ----------------------------- | -------------------------------------------------------------------------------------------- |
-| CSP (Content-Security-Policy) | `default-src 'self'`, sin inline scripts, frame-ancestors 'none'                             |
-| X-Content-Type-Options        | `nosniff` — previene MIME sniffing                                                           |
-| Referrer-Policy               | `strict-origin-when-cross-origin`                                                            |
-| Permissions-Policy            | Cámara, geolocalización, micrófono deshabilitados                                            |
-| Base-uri                      | `'self'` — previene <base> injection                                                         |
-| Form-action                   | `'self'` — previene form hijacking                                                           |
-| Dependency audit              | `pnpm audit --audit-level=high` en CI                                                        |
-| Secret scanning               | Gitleaks en CI                                                                               |
-| Security.txt                  | `/.well-known/security.txt` (RFC 9116)                                                       |
-| Runtime validation            | Zod schemas en todas las entradas                                                            |
-| HTML sanitation               | Sin `dangerouslySetInnerHTML`, sin `eval()`                                                  |
-| HTTPS                         | `@vitejs/plugin-basic-ssl` (auto-generado vía node:crypto) + CSP `upgrade-insecure-requests` |
+| Control                       | Implementación                                                                                                              |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| CSP (Content-Security-Policy) | `default-src 'self'`, sin inline scripts, frame-ancestors 'none'                                                            |
+| X-Content-Type-Options        | `nosniff` — previene MIME sniffing                                                                                          |
+| Referrer-Policy               | `strict-origin-when-cross-origin`                                                                                           |
+| Permissions-Policy            | Cámara, geolocalización, micrófono deshabilitados                                                                           |
+| Base-uri                      | `'self'` — previene <base> injection                                                                                        |
+| Form-action                   | `'self'` — previene form hijacking                                                                                          |
+| Dependency audit              | `pnpm audit --audit-level=high` en CI                                                                                       |
+| Secret scanning               | Gitleaks en CI                                                                                                              |
+| Security.txt                  | `/.well-known/security.txt` (RFC 9116)                                                                                      |
+| Runtime validation            | Zod schemas en todas las entradas                                                                                           |
+| HTML sanitation               | Sin `dangerouslySetInnerHTML`, sin `eval()`                                                                                 |
+| HTTPS                         | `@vitejs/plugin-basic-ssl` (default, vía `pnpm dev`) + `pnpm dev:http` (fallback sin TLS) + CSP `upgrade-insecure-requests` |
