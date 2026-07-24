@@ -47,6 +47,12 @@ Generada: 2026-07-12 | Actualizada: 2026-07-24 | Rama: `develop` | Tests: 578 �
 | Scope Rule: nudge engine → shared/nudge/ (2026-07-23) | ✅     | Motor de reglas extraído a `src/shared/nudge/`                  |
 | i18n: 0 strings hardcodeados (2026-07-23)             | ✅     | 12 strings → claves i18n + categorías en ES/EN                  |
 | streakCount → Zustand (2026-07-23)                    | ✅     | Estado de racha movido a `activityStore`                        |
+| Nudge Hortalizas: UX time gate (2026-07-24)           | ✅     | DailyViolations informa time gate 14:00 (2 mensajes i18n)       |
+| Coverage: zombies eliminados (2026-07-24)             | ✅     | 4 zombies borrados, 5 imports corregidos, 3 Boy Scout tests     |
+| Coverage: vistas al 100% stmts (2026-07-24)           | ✅     | ErrorBoundary, ScannerView, Container + tests (556→561 tests)   |
+| Coverage: gaps fáciles (2026-07-24)                   | ✅     | installPrompt, rationValidator, planGenerator (561→578 tests)   |
+| i18n: violaciones ES/EN (2026-07-24)                  | ✅     | formatViolation(), 8 claves, CATEGORY_DISPLAY_NAMES deprecado   |
+| Coverage: 100% lines, 99.76% stmts (2026-07-24)      | ✅     | 578 tests (59 files), pipeline verde, Scope Rule 0 violaciones  |
 
 ## Leyenda
 

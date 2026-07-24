@@ -78,7 +78,7 @@ Generado: 2026-07-17 | Actualizado: 2026-07-24 | Rama: `develop` | Tests: 578 �
 | **L3** | **i18n ES/EN**              | —                  | ✅ **Completado** — Infraestructura i18n con React Context tipado (`useT()`). Archivos `es.ts` + `en.ts` con 60+ claves. App shell, PlanView, SustainabilityView, LegalDisclaimer y ViolationList traducidos. Nav responsive con labels i18n. 4 tests.                       | L        | Ninguna      |
 | **L4** | **E2E Smoke Tests**         | —                  | ✅ **Completado** — Playwright instalado + chromium. 3 smoke tests: flujo completo (scan→classify→log→plan), procesado ROJO, perfil metabólico. `playwright.config.ts` + `e2e/smoke.spec.ts`. Scripts: `test:e2e`, `test:e2e:ui`.                                            | M        | L2           |
 | **L5** | **A11y Audit**              | RNF-03             | ✅ **Completado** — Emojis decorativos con `aria-hidden`. Sin tabindex positivos. Heading hierarchy correcto (h1→h2→h3). Roles ARIA en tabs, alerts, status. Labels en botones y formularios. Min-height 44px en interactivos.                                               | M        | Ninguna      |
-| **L6** | **HTTPS Transport (OWASP)** | RNF-04, README §11 | ✅ **Completado** — `@vitejs/plugin-basic-ssl` v2.3.0 (certificados auto-generados vía `node:crypto`). CSP `upgrade-insecure-requests`. `pnpm dev` = HTTPS por defecto, `pnpm dev:http` = fallback HTTP. Infraestructura pluggable sin tocar dominio. 545 tests, 1 test CSP. | S        | Ninguna      |
+| **L6** | **HTTPS Transport (OWASP)** | RNF-04, README §11 | ✅ **Completado** — `@vitejs/plugin-basic-ssl` v2.3.0 (certificados auto-generados vía `node:crypto`). CSP `upgrade-insecure-requests`. `pnpm dev` = HTTPS por defecto, `pnpm dev:http` = fallback HTTP. Infraestructura pluggable sin tocar dominio. | S        | Ninguna      |
 
 ---
 
@@ -104,7 +104,7 @@ Fase 4 — Pulido (LOW)
 
 ## Notas
 
-- **545 tests verdes (56 files)**: cualquier feature nueva debe mantener el TDD estricto (RED → GREEN → TRIANGULATE → REFACTOR).
+- **578 tests verdes (59 files)**: cualquier feature nueva debe mantener el TDD estricto (RED → GREEN → TRIANGULATE → REFACTOR).
 - **Scope Rule**: código usado por 1 feature → dentro de esa feature. Usado por 2+ → `shared/` con estructura de domain module. Motor de nudge extraído a `src/shared/nudge/` (2026-07-23).
 - **Infra**: `tsconfig.app.json` excluye tests del build. Husky activo: pre-commit (lint) + pre-push (quality). `coverage/` en `.gitignore`.
 - **i18n**: 0 strings hardcodeados. Categorías de alimento (11 keys) con traducción ES/EN. `AOVE` se mantiene como término clínico en ambos idiomas.
