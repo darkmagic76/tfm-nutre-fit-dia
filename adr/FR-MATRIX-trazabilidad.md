@@ -52,7 +52,7 @@ Generada: 2026-07-12 | Actualizada: 2026-07-24 | Rama: `develop` | Tests: 578 �
 | Coverage: vistas al 100% stmts (2026-07-24)           | ✅     | ErrorBoundary, ScannerView, Container + tests (556→561 tests)   |
 | Coverage: gaps fáciles (2026-07-24)                   | ✅     | installPrompt, rationValidator, planGenerator (561→578 tests)   |
 | i18n: violaciones ES/EN (2026-07-24)                  | ✅     | formatViolation(), 8 claves, CATEGORY_DISPLAY_NAMES deprecado   |
-| Coverage: 100% lines, 99.76% stmts (2026-07-24)      | ✅     | 578 tests (59 files), pipeline verde, Scope Rule 0 violaciones  |
+| Coverage: 100% lines, 99.76% stmts (2026-07-24)       | ✅     | 578 tests (59 files), pipeline verde, Scope Rule 0 violaciones  |
 
 ## Leyenda
 
